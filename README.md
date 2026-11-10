@@ -26,3 +26,4 @@ Official Admin Panel for **SJT Tours & Travels Pvt. Ltd.** (Bengaluru, Karnataka
    VITE_API_URL=https://your-api-domain.com
    ```
 4. Click **Deploy**.
+

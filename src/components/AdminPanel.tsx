@@ -1070,8 +1070,8 @@ export const AdminPanel: React.FC = () => {
               type="button"
               onClick={() => {
                 setLoginRole('ADMIN');
-                setLoginEmail('sjttravels2025@gmai.com');
-                setLoginPassword('55Sharanu@');
+                setLoginEmail('sjttravels2025@gmail.com');
+                setLoginPassword('$$Sharanu@');
               }}
               className="w-full py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-[#071B49] text-xs font-bold rounded-xl border border-blue-200 transition cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
             >
@@ -1157,21 +1157,21 @@ export const AdminPanel: React.FC = () => {
           </form>
 
           <div className="pt-2 border-t border-slate-100 flex items-center justify-center gap-3 text-xs flex-wrap">
-            <button type="button" onClick={() => setActiveView('CUSTOMER_WEB')} className="text-blue-600 hover:underline font-bold cursor-pointer">
+            <a href="https://sjttarvels.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-bold">
               🌐 Customer Website
-            </button>
+            </a>
             <span className="text-slate-300">•</span>
-            <button type="button" onClick={() => setActiveView('CUSTOMER_MOBILE')} className="text-blue-600 hover:underline font-bold cursor-pointer">
+            <a href="https://sjttarvels.vercel.app/#app" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-bold">
               📱 Mobile App
-            </button>
+            </a>
             <span className="text-slate-300">•</span>
-            <button type="button" onClick={() => setActiveView('DRIVER_WEB')} className="text-emerald-600 hover:underline font-bold cursor-pointer">
+            <a href="https://sjtdrivers.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline font-bold">
               💻 Driver Website
-            </button>
+            </a>
             <span className="text-slate-300">•</span>
-            <button type="button" onClick={() => setActiveView('DRIVER_APP')} className="text-blue-600 hover:underline font-bold cursor-pointer">
+            <a href="https://sjtdrivers.vercel.app/#app" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-bold">
               🚗 Driver App
-            </button>
+            </a>
           </div>
         </div>
       </div>
