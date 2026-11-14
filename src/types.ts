@@ -216,6 +216,13 @@ export interface DriverKycApplication {
   psv_badge_doc_url?: string;
   police_verification_url?: string;
   medical_fitness_doc_url?: string;
+  rc_doc_url?: string;
+  insurance_doc_url?: string;
+  fc_doc_url?: string;
+  permit_doc_url?: string;
+  tax_doc_url?: string;
+  emission_doc_url?: string;
+  vehicle_photo_url?: string;
   live_face_photo_url?: string;
   face_match_score?: number;
   face_verified?: boolean;

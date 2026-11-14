@@ -15,6 +15,7 @@ import {
   CompanyTransaction,
   AccountsSummary
 } from '../types';
+import { getDefaultInductionDocuments } from '../utils/documentSamples';
 
 export type AppView = 
   | 'SHOWCASE' 
@@ -398,6 +399,7 @@ const DEFAULT_INDUCTION_APPLICATIONS: DriverKycApplication[] = [
       tool_kit: true
     },
     
+    documents: getDefaultInductionDocuments('Anand Gowda', 'KA 05 AU 1234'),
     kyc_status: 'PENDING',
     submitted_at: '2026-11-14 10:30 AM',
     address: 'Nagasandra BGS Layout, Bengaluru, Karnataka 560073'
@@ -1367,10 +1369,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         experienceYears: Number(targetApp.experience_years) || 8,
         totalTripsCompleted: 0,
         monthlySalarySettings: {
-          baseSalary: 22000,
-          perKmRate: 2.5,
-          perDutyAllowance: 450,
-          overtimeHourly: 75
+          baseSalary: 25000,
+          perKmRate: 4.5,
+          perDutyAllowance: 350,
+          overtimeHourly: 120
         }
       };
       setDrivers(prev => {
@@ -1432,15 +1434,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       console.warn('API doc review offline, updating locally:', e);
     }
     setKycRequests(prev => {
-      const updated = prev.map(k => {
+      const updated: DriverKycApplication[] = prev.map(k => {
         if (k.id === kycId) {
           const docItem = k.documents?.[key] || { file_name: `${key}.jpg` };
-          const newDocStatus: 'APPROVED' | 'REJECTED' = action === 'APPROVE' ? 'APPROVED' : 'REJECTED';
+          const docStatus: 'APPROVED' | 'REJECTED' = action === 'APPROVE' ? 'APPROVED' : 'REJECTED';
           return {
             ...k,
+            face_document: key === 'passport_photo' ? { ...(k.face_document || { file_name: 'chauffeur_photo.jpg' }), status: docStatus } : k.face_document,
             documents: {
               ...(k.documents || {}),
-              [key]: { ...docItem, status: newDocStatus }
+              [key]: { ...docItem, status: docStatus }
             }
           };
         }
