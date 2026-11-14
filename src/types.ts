@@ -118,12 +118,97 @@ export interface DriverKycApplication {
   driver_name: string;
   driver_phone: string;
   driver_email: string;
-  license_number: string;
-  badge_number: string;
-  aadhar_number: string;
-  pan_number?: string;
-  vehicle_preference: string;
+  vendor_name?: string;
+  father_name?: string;
+  dob?: string;
+  education?: string;
   experience_years: number;
+  inducted_date?: string;
+  photo_url?: string;
+  license_number: string;
+  license_issue_date?: string;
+  license_expiry_date?: string;
+  badge_number: string;
+  badge_issue_date?: string;
+  badge_expiry_date?: string;
+  govt_id_type?: 'Aadhaar' | 'PAN' | 'Voter ID' | string;
+  govt_id_number?: string;
+  govt_id_issue_date?: string;
+  govt_id_expiry_date?: string;
+  aadhar_number?: string;
+  pan_number?: string;
+  police_verification_date?: string;
+  police_verification_expiry?: string;
+  medical_cert_date?: string;
+  medical_cert_expiry?: string;
+  bgv_agency_name?: string;
+  duties_per_day?: number | string;
+  companies_serving?: string;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  reference_1_name?: string;
+  reference_1_phone?: string;
+  reference_2_name?: string;
+  reference_2_phone?: string;
+  fingerprint_acknowledged?: boolean;
+  driver_signature_acknowledged?: boolean;
+  inspected_by?: string;
+  approved_by?: string;
+  
+  // Vehicle details from Vehicle Induction Form
+  vehicle_vendor_name?: string;
+  vehicle_reg?: string;
+  vehicle_type?: string;
+  vehicle_model?: string;
+  seating_capacity?: number | string;
+  vehicle_ownership?: 'ATTACHED' | 'OWNED' | string;
+  fuel_type?: 'Diesel' | 'Petrol' | 'CNG' | 'EV' | string;
+  
+  // Vehicle document dates
+  rc_number?: string;
+  rc_issue_date?: string;
+  rc_expiry_date?: string;
+  insurance_number?: string;
+  insurance_issue_date?: string;
+  insurance_expiry_date?: string;
+  fc_number?: string;
+  fc_issue_date?: string;
+  fc_expiry_date?: string;
+  permit_number?: string;
+  permit_issue_date?: string;
+  permit_expiry_date?: string;
+  tax_issue_date?: string;
+  tax_expiry_date?: string;
+  emission_issue_date?: string;
+  emission_expiry_date?: string;
+  
+  // Accessories checklist (9 items from Form)
+  accessories?: {
+    fire_ext: boolean;
+    first_aid_kit: boolean;
+    co_sticker: boolean;
+    torch: boolean;
+    umbrella: boolean;
+    music_system: boolean;
+    mobile_handsfree: boolean;
+    fixed_gps: boolean;
+    fixed_panic_button: boolean;
+  };
+  
+  // Vehicle condition checklist (9 items from Form)
+  vehicle_condition?: {
+    head_lights: boolean;
+    indicators: boolean;
+    body_rattle: boolean;
+    tyres: boolean;
+    spare_wheel: boolean;
+    interior_cleanliness: boolean;
+    seats_condition: boolean;
+    seat_belts: boolean;
+    tool_kit: boolean;
+  };
+
+  vehicle_preference?: string;
   license_doc_url?: string;
   license_back_doc_url?: string;
   aadhar_doc_url?: string;
@@ -144,8 +229,6 @@ export interface DriverKycApplication {
   submitted_at: string;
   verified_at?: string;
   address?: string;
-  vehicle_reg?: string;
-  vehicle_type?: string;
   vehicle_details?: {
     make_model?: string;
     year?: number;
@@ -154,16 +237,18 @@ export interface DriverKycApplication {
   };
   documents?: Record<string, {
     file_name: string;
-    storage_key: string;
+    storage_key?: string;
+    data?: string;
     expires_at?: string;
-    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     rejection_reason?: string;
   }>;
   face_document?: {
     file_name: string;
-    storage_key: string;
+    storage_key?: string;
+    data?: string;
     expires_at?: string;
-    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     rejection_reason?: string;
   };
 }
@@ -313,7 +398,7 @@ export interface DriverProfile {
   rating: number;
   experienceYears: number;
   totalTripsCompleted?: number;
-  monthlySalarySettings: {
+  monthlySalarySettings?: {
     baseSalary: number;
     perKmRate: number;
     perDutyAllowance: number;

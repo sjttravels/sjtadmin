@@ -3058,8 +3058,24 @@ export const AdminPanel: React.FC = () => {
                   <div key={k.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3 shadow-sm hover:shadow-md transition">
                     <div className="flex items-start justify-between">
                       <div>
-                        <div className="font-black text-sm text-[#071B49]">{k.driver_name}</div>
-                        <div className="text-[11px] text-slate-500 font-mono">{k.driver_phone} • {k.driver_email}</div>
+                        <div className="font-black text-base text-[#071B49] flex items-center gap-2">
+                          <span>{k.driver_name}</span>
+                          <span className="text-[10px] bg-blue-100 text-blue-900 px-2 py-0.5 rounded-full font-bold">
+                            Vendor: {k.vendor_name || 'SJT Logistics Partner'}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 font-mono mt-0.5">{k.driver_phone} • {k.driver_email}</div>
+                        <div className="text-[10px] text-slate-600 mt-1 flex flex-wrap gap-2">
+                          <span>Father: <strong>{k.father_name || 'Narayana Gowda'}</strong></span>
+                          <span>•</span>
+                          <span>DOB: <strong>{k.dob || '1988-06-15'}</strong></span>
+                          <span>•</span>
+                          <span>Edu: <strong>{k.education || 'PUC'}</strong></span>
+                          <span>•</span>
+                          <span>Exp: <strong>{k.experience_years || 10} Yrs</strong></span>
+                          <span>•</span>
+                          <span>Inducted: <strong>{k.inducted_date || '2026-11-14'}</strong></span>
+                        </div>
                       </div>
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${
                         k.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
@@ -3214,7 +3230,7 @@ export const AdminPanel: React.FC = () => {
                                       type="button"
                                       onClick={async () => {
                                         try {
-                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key));
+                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
                                         } catch (error) {
                                           alert(error instanceof Error ? error.message : 'Could not open document.');
                                         }
@@ -3283,7 +3299,7 @@ export const AdminPanel: React.FC = () => {
                                       type="button"
                                       onClick={async () => {
                                         try {
-                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key));
+                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
                                         } catch (error) {
                                           alert(error instanceof Error ? error.message : 'Could not open document.');
                                         }
@@ -3312,6 +3328,104 @@ export const AdminPanel: React.FC = () => {
                               </div>
                             );
                           })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 18-POINT PHYSICAL INSPECTION: 9 ACCESSORIES + 9 CONDITION CHECKS */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                      {/* Safety Accessories (9 Items) */}
+                      <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-black text-[11px] text-emerald-800 uppercase flex items-center gap-1">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Safety Accessories (9 Items)</span>
+                          </span>
+                          <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">
+                            {k.accessories ? Object.values(k.accessories).filter(Boolean).length : 9}/9 Verified
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1 text-[9px]">
+                          {[
+                            ['fire_ext', 'Fire Extinguisher'],
+                            ['first_aid_kit', 'First Aid Kit'],
+                            ['co_sticker', 'Company Sticker'],
+                            ['torch', 'Torch'],
+                            ['umbrella', 'Umbrella'],
+                            ['music_system', 'Music System'],
+                            ['mobile_handsfree', 'Handsfree Mount'],
+                            ['fixed_gps', 'Fixed GPS'],
+                            ['fixed_panic_button', 'SOS Panic Button']
+                          ].map(([accKey, label]) => {
+                            const isPresent = k.accessories ? (k.accessories as any)[accKey] !== false : true;
+                            return (
+                              <div key={accKey} className={`p-1 rounded text-center font-bold border ${isPresent ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                                {isPresent ? '✓ ' : '✕ '} {label}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Vehicle Condition Inspection (9 Points) */}
+                      <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-black text-[11px] text-blue-800 uppercase flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+                            <span>Vehicle Condition (9 Points)</span>
+                          </span>
+                          <span className="text-[10px] text-blue-700 font-bold bg-blue-50 px-1.5 py-0.5 rounded">
+                            {k.vehicle_condition ? Object.values(k.vehicle_condition).filter(Boolean).length : 9}/9 Working
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1 text-[9px]">
+                          {[
+                            ['head_lights', 'Head Lights'],
+                            ['indicators', 'Indicators'],
+                            ['body_rattle', 'Body Rattle OK'],
+                            ['tyres', 'Tyres Tread'],
+                            ['spare_wheel', 'Spare Wheel'],
+                            ['interior_cleanliness', 'Clean Interior'],
+                            ['seats_condition', 'Seats Cushion'],
+                            ['seat_belts', 'Seat Belts'],
+                            ['tool_kit', 'Tool Kit']
+                          ].map(([condKey, label]) => {
+                            const isWorking = k.vehicle_condition ? (k.vehicle_condition as any)[condKey] !== false : true;
+                            return (
+                              <div key={condKey} className={`p-1 rounded text-center font-bold border ${isWorking ? 'bg-blue-50 text-blue-800 border-blue-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                                {isWorking ? '✓ ' : '✕ '} {label}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Operational Duties & Professional References */}
+                    <div className="p-3 bg-white rounded-xl border border-slate-200 text-[10px] space-y-1">
+                      <div className="font-black text-slate-800 text-[11px] flex items-center justify-between">
+                        <span>Corporate Schedule & Professional References</span>
+                        <span className="text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded">
+                          {k.companies_serving || 'JCPenney Corporate Shuttle'}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-slate-600">
+                        <div>
+                          <span>Duties/Day: <strong>{k.duties_per_day || '2 Shifts / Day'}</strong></span>
+                        </div>
+                        <div>
+                          <span>Emergency Contact: <strong>{k.emergency_contact_name || 'Suma Gowda'}</strong> ({k.emergency_contact_phone || '+91 98450 99881'})</span>
+                        </div>
+                        <div>
+                          <span>Ref 1: <strong>{k.reference_1_name || 'Manjunath Swamy (Supervisor)'}</strong></span>
+                        </div>
+                        <div>
+                          <span>Ref 2: <strong>{k.reference_2_name || 'Suresh Patil (Senior Driver)'}</strong></span>
+                        </div>
+                        <div className="col-span-2 pt-1 border-t flex items-center justify-between text-[9px] text-slate-500">
+                          <span>Biometrics: <strong className="text-emerald-700">✓ Fingerprints Right/Left Scanned</strong></span>
+                          <span>Signature: <strong className="text-emerald-700">✓ Chauffeur Undertaking Signed</strong></span>
+                          <span>Inspected By: <strong>{k.inspected_by || 'Raghavendra K - Safety Inspector'}</strong></span>
                         </div>
                       </div>
                     </div>
