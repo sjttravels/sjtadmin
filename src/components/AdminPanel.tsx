@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  Building2, 
-  Users, 
+import {
+  Building2,
+  Users,
   User,
   Award,
-  Car, 
-  Calendar, 
-  IndianRupee, 
-  FileText, 
-  CheckCircle2, 
-  TrendingUp, 
-  ArrowUpRight, 
+  Car,
+  Calendar,
+  IndianRupee,
+  FileText,
+  CheckCircle2,
+  TrendingUp,
+  ArrowUpRight,
   Database,
   RefreshCw,
   Layers,
@@ -63,28 +63,28 @@ import { PayInReceiptModal } from './PayInReceiptModal';
 import { PayoutVoucherModal } from './PayoutVoucherModal';
 
 export const AdminPanel: React.FC = () => {
-  const { 
-    bookings, 
-    updateBookingStatus, 
+  const {
+    bookings,
+    updateBookingStatus,
     updateBooking,
     deleteBooking,
     sendBookingCustomerMessage,
-    assignDriverToBooking, 
+    assignDriverToBooking,
     createBooking,
-    dutyLogs, 
-    approveCompanyDuty, 
+    dutyLogs,
+    approveCompanyDuty,
     updateCompanyDuty,
     deleteCompanyDuty,
-    drivers, 
+    drivers,
     deleteDriver,
-    vehicles, 
+    vehicles,
     createVehicle,
     updateVehicle,
     deleteVehicle,
-    invoices, 
+    invoices,
     liveStats,
     refreshData,
-    openInvoiceModal, 
+    openInvoiceModal,
     openPayslipModal,
     openClientMailModal,
     setActiveView,
@@ -267,7 +267,7 @@ export const AdminPanel: React.FC = () => {
     try {
       const saved = localStorage.getItem('sjt_saved_companies');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return [
       {
         id: 'comp-janani',
@@ -328,7 +328,7 @@ export const AdminPanel: React.FC = () => {
     setSavedCompanies(updated);
     try {
       localStorage.setItem('sjt_saved_companies', JSON.stringify(updated));
-    } catch {}
+    } catch { }
   };
 
   const deleteCompanyFromDirectory = (id: string) => {
@@ -336,7 +336,7 @@ export const AdminPanel: React.FC = () => {
     setSavedCompanies(updated);
     try {
       localStorage.setItem('sjt_saved_companies', JSON.stringify(updated));
-    } catch {}
+    } catch { }
     if (selectedCompanyId === id) setSelectedCompanyId('');
   };
 
@@ -345,7 +345,7 @@ export const AdminPanel: React.FC = () => {
     try {
       const saved = localStorage.getItem('sjt_payin_categories');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return [
       'Customer Booking Advance / Fare',
       'Corporate Client Monthly Settlement',
@@ -369,7 +369,7 @@ export const AdminPanel: React.FC = () => {
     try {
       const saved = localStorage.getItem('sjt_client_types');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return [
       'Retail Passenger / Customer',
       'Corporate Enterprise',
@@ -389,7 +389,7 @@ export const AdminPanel: React.FC = () => {
     try {
       const saved = localStorage.getItem('sjt_payee_types');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return [
       'SJT Chauffeur / Driver',
       'Fuel Station / Petrol Bunk',
@@ -407,7 +407,7 @@ export const AdminPanel: React.FC = () => {
     try {
       const saved = localStorage.getItem('sjt_payout_categories');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return [
       'Driver Duty & Trip Settlement',
       'Diesel / Petrol / CNG Fuel Card',
@@ -597,8 +597,8 @@ export const AdminPanel: React.FC = () => {
     const finalVehicleReg = assignedVehicleReg.trim() || selectedKycToApprove.vehicle_reg || 'KA 05 AB 1234';
     try {
       const res = await reviewDriverKyc(
-        selectedKycToApprove.id, 
-        'APPROVE', 
+        selectedKycToApprove.id,
+        'APPROVE',
         finalVehicleReg
       );
       alert(`✓ Driver KYC Approved!\nDriver ${selectedKycToApprove.driver_name} (${selectedKycToApprove.driver_phone}) is now verified with vehicle ${finalVehicleReg}.\nTheir Company Duties and Daily Trips dashboard is now UNLOCKED.`);
@@ -1180,7 +1180,7 @@ export const AdminPanel: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F3F7FF] text-slate-800 flex flex-col font-sans">
-      
+
       {/* --- TOP OPERATIONS HEADER --- */}
       <div className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm sticky top-0 z-30">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1266,9 +1266,8 @@ export const AdminPanel: React.FC = () => {
               <div className="hidden sm:block text-left">
                 <div className="text-[11px] font-bold text-slate-800 leading-tight flex items-center gap-1">
                   <span>{currentUser?.name || 'Administrator'}</span>
-                  <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${
-                    isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
-                  }`}>
+                  <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+                    }`}>
                     {isAdmin ? 'Master Admin' : (currentUser?.designation || 'Staff')}
                   </span>
                 </div>
@@ -1300,18 +1299,18 @@ export const AdminPanel: React.FC = () => {
             { id: 'ATTENDANCE_PAYROLL', label: 'Driver Attendance & Salary', icon: <Clock className="w-4 h-4" /> },
             { id: 'FLEET_CALENDAR', label: `Fleet Matrix (${vehicles.length})`, icon: <Calendar className="w-4 h-4" /> },
             { id: 'DRIVERS', label: `Drivers (${drivers.length})`, icon: <Users className="w-4 h-4" /> },
-            { 
-              id: 'KYC_VERIFICATION', 
-              label: `Driver KYC (${kycRequests.length})`, 
+            {
+              id: 'KYC_VERIFICATION',
+              label: `Driver KYC (${kycRequests.length})`,
               icon: <FileCheck className="w-4 h-4" />,
               badge: pendingKycList.length > 0 ? `${pendingKycList.length} Action Needed` : undefined,
               badgeColor: 'bg-amber-500'
             },
             ...(isAdmin ? [{ id: 'STAFF', label: `Staff & Employees (${employees.length})`, icon: <ShieldCheck className="w-4 h-4" /> }] : []),
             { id: 'ACCOUNTS', label: `Company Accounts & Invoicing (${transactions.length})`, icon: <Wallet className="w-4 h-4" />, badge: `${transactions.length} Txns`, badgeColor: 'bg-emerald-600' },
-            { 
-              id: 'DATABASE', 
-              label: 'Database & System Health', 
+            {
+              id: 'DATABASE',
+              label: 'Database & System Health',
               icon: <Database className="w-4 h-4" />,
               badge: liveStats.isSupabaseRemoteTableActive ? 'Active' : 'Setup',
               badgeColor: liveStats.isSupabaseRemoteTableActive ? 'bg-emerald-600' : 'bg-amber-600'
@@ -1320,11 +1319,10 @@ export const AdminPanel: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                activeTab === tab.id
-                  ? 'bg-[#071B49] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${activeTab === tab.id
+                ? 'bg-[#071B49] text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
             >
               {tab.icon}
               <span>{tab.label}</span>
@@ -1349,67 +1347,67 @@ export const AdminPanel: React.FC = () => {
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {hasPerm('bookings') && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase">Live Bookings</span>
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <Car className="w-4 h-4" />
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-500 uppercase">Live Bookings</span>
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                      <Car className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="text-3xl font-black text-[#071B49]">{liveStats.totalBookings}</div>
+                    <div className="text-[11px] text-slate-500 font-semibold mt-1">Confirmed customer trips</div>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-black text-[#071B49]">{liveStats.totalBookings}</div>
-                  <div className="text-[11px] text-slate-500 font-semibold mt-1">Confirmed customer trips</div>
-                </div>
-              </div>
               )}
 
               {hasPerm('accounts') && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase">Gross Revenue</span>
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <IndianRupee className="w-4 h-4" />
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-500 uppercase">Gross Revenue</span>
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                      <IndianRupee className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="text-3xl font-black text-[#ED1735]">
+                      ₹{((revenueAnalytics?.financialSummary?.totalGrossRevenue ?? liveStats.totalRevenue) || 0).toLocaleString('en-IN')}
+                    </div>
+                    <div className="text-[11px] text-emerald-700 font-semibold mt-1">
+                      Confirmed Customer Bookings
+                    </div>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-black text-[#ED1735]">
-                    ₹{((revenueAnalytics?.financialSummary?.totalGrossRevenue ?? liveStats.totalRevenue) || 0).toLocaleString('en-IN')}
-                  </div>
-                  <div className="text-[11px] text-emerald-700 font-semibold mt-1">
-                    Confirmed Customer Bookings
-                  </div>
-                </div>
-              </div>
               )}
 
               {hasPerm('fleet') && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase">Commercial Fleet</span>
-                  <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                    <ShieldCheck className="w-4 h-4" />
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-500 uppercase">Commercial Fleet</span>
+                    <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="text-3xl font-black text-[#071B49]">{vehicles.length}</div>
+                    <div className="text-[11px] text-purple-700 font-semibold mt-1">Active Yellow-Board Vehicles</div>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-black text-[#071B49]">{vehicles.length}</div>
-                  <div className="text-[11px] text-purple-700 font-semibold mt-1">Active Yellow-Board Vehicles</div>
-                </div>
-              </div>
               )}
 
               {hasPerm('drivers') && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase">Driver Partners</span>
-                  <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <Users className="w-4 h-4" />
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-500 uppercase">Driver Partners</span>
+                    <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                      <Users className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="text-3xl font-black text-[#071B49]">{drivers.length}</div>
+                    <div className="text-[11px] text-amber-700 font-semibold mt-1">{pendingKycList.length} Pending Verification</div>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-black text-[#071B49]">{drivers.length}</div>
-                  <div className="text-[11px] text-amber-700 font-semibold mt-1">{pendingKycList.length} Pending Verification</div>
-                </div>
-              </div>
               )}
             </div>
 
@@ -1598,9 +1596,8 @@ export const AdminPanel: React.FC = () => {
                           <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
                             <td className="py-2 px-3 text-slate-500 font-mono text-[11px] whitespace-nowrap">{tx.date}</td>
                             <td className="py-2 px-3">
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                tx.type === 'PAY_IN' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                              }`}>
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${tx.type === 'PAY_IN' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                                }`}>
                                 {tx.type === 'PAY_IN' ? '↓ PAY-IN' : '↑ PAY-OUT'}
                               </span>
                             </td>
@@ -1624,72 +1621,71 @@ export const AdminPanel: React.FC = () => {
             {/* Recent Bookings & Duty Highlights */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {hasPerm('bookings') && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-sm text-[#071B49]">Recent Customer Bookings</h3>
-                  <button onClick={() => setActiveTab('BOOKINGS')} className="text-xs font-bold text-blue-600 hover:underline">
-                    View All ({bookings.length}) →
-                  </button>
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-extrabold text-sm text-[#071B49]">Recent Customer Bookings</h3>
+                    <button onClick={() => setActiveTab('BOOKINGS')} className="text-xs font-bold text-blue-600 hover:underline">
+                      View All ({bookings.length}) →
+                    </button>
+                  </div>
+                  {bookings.length === 0 ? (
+                    <div className="p-8 text-center text-slate-400 border border-dashed rounded-xl text-xs">
+                      No bookings recorded yet. Use "+ New Offline Booking" to create a reservation.
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-slate-100">
+                      {bookings.slice(0, 4).map(b => (
+                        <div key={b.id || b._id} className="py-2.5 flex items-center justify-between text-xs">
+                          <div>
+                            <div className="font-bold text-slate-800">{b.customerName || b.customer_name}</div>
+                            <div className="text-[11px] text-slate-500">{b.pickup} → {b.destination}</div>
+                            <div className="text-[10px] text-blue-600 font-mono">#{b.bookingCode || b.booking_code} • {b.vehicleName}</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-slate-900">₹{(b.quotedAmount || b.quoted_amount || 0).toLocaleString('en-IN')}</div>
+                            <span className="text-[9px] px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800">
+                              {b.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {bookings.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400 border border-dashed rounded-xl text-xs">
-                    No bookings recorded yet. Use "+ New Offline Booking" to create a reservation.
-                  </div>
-                ) : (
-                  <div className="divide-y divide-slate-100">
-                    {bookings.slice(0, 4).map(b => (
-                      <div key={b.id || b._id} className="py-2.5 flex items-center justify-between text-xs">
-                        <div>
-                          <div className="font-bold text-slate-800">{b.customerName || b.customer_name}</div>
-                          <div className="text-[11px] text-slate-500">{b.pickup} → {b.destination}</div>
-                          <div className="text-[10px] text-blue-600 font-mono">#{b.bookingCode || b.booking_code} • {b.vehicleName}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-bold text-slate-900">₹{(b.quotedAmount || b.quoted_amount || 0).toLocaleString('en-IN')}</div>
-                          <span className="text-[9px] px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800">
-                            {b.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
 
               )}
               {hasPerm('duties') && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-sm text-[#071B49]">Corporate Duty Logs & Attendance</h3>
-                  <button onClick={() => setActiveTab('COMPANY_DUTY')} className="text-xs font-bold text-blue-600 hover:underline">
-                    View Duties ({dutyLogs.length}) →
-                  </button>
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-extrabold text-sm text-[#071B49]">Corporate Duty Logs & Attendance</h3>
+                    <button onClick={() => setActiveTab('COMPANY_DUTY')} className="text-xs font-bold text-blue-600 hover:underline">
+                      View Duties ({dutyLogs.length}) →
+                    </button>
+                  </div>
+                  {dutyLogs.length === 0 ? (
+                    <div className="p-8 text-center text-slate-400 border border-dashed rounded-xl text-xs">
+                      No company duty logs recorded yet. Drivers log duties in the Driver App.
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-slate-100">
+                      {dutyLogs.slice(0, 4).map(d => (
+                        <div key={d.id || d._id} className="py-2.5 flex items-center justify-between text-xs">
+                          <div>
+                            <div className="font-bold text-slate-800">{d.driverName || d.driver_name}</div>
+                            <div className="text-[11px] text-slate-500">{d.companyName || d.company_name} • Reg: {d.vehicleReg || d.vehicle_reg}</div>
+                            <div className="text-[10px] text-slate-400 font-mono">{d.dutyDate || d.duty_date} • {d.dailyKm || d.daily_km} KM</div>
+                          </div>
+                          <div className="text-right">
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${d.status === 'VERIFIED_BY_ADMIN' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                              }`}>
+                              {d.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {dutyLogs.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400 border border-dashed rounded-xl text-xs">
-                    No company duty logs recorded yet. Drivers log duties in the Driver App.
-                  </div>
-                ) : (
-                  <div className="divide-y divide-slate-100">
-                    {dutyLogs.slice(0, 4).map(d => (
-                      <div key={d.id || d._id} className="py-2.5 flex items-center justify-between text-xs">
-                        <div>
-                          <div className="font-bold text-slate-800">{d.driverName || d.driver_name}</div>
-                          <div className="text-[11px] text-slate-500">{d.companyName || d.company_name} • Reg: {d.vehicleReg || d.vehicle_reg}</div>
-                          <div className="text-[10px] text-slate-400 font-mono">{d.dutyDate || d.duty_date} • {d.dailyKm || d.daily_km} KM</div>
-                        </div>
-                        <div className="text-right">
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                            d.status === 'VERIFIED_BY_ADMIN' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                          }`}>
-                            {d.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
               )}
             </div>
           </div>
@@ -1716,9 +1712,8 @@ export const AdminPanel: React.FC = () => {
                   <button
                     key={p}
                     onClick={() => setRevenuePeriod(p)}
-                    className={`px-4 py-1.5 rounded-lg transition-all cursor-pointer ${
-                      revenuePeriod === p ? 'bg-[#071B49] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                    }`}
+                    className={`px-4 py-1.5 rounded-lg transition-all cursor-pointer ${revenuePeriod === p ? 'bg-[#071B49] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                      }`}
                   >
                     {p === 'DAILY' ? 'Daily Revenue' : p === 'MONTHLY' ? 'Monthly Revenue' : 'Yearly Revenue'}
                   </button>
@@ -1989,9 +1984,8 @@ export const AdminPanel: React.FC = () => {
                     <button
                       key={f}
                       onClick={() => setBookingFilter(f)}
-                      className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer ${
-                        bookingFilter === f ? 'bg-white text-[#071B49] shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                      }`}
+                      className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer ${bookingFilter === f ? 'bg-white text-[#071B49] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                        }`}
                     >
                       {f}
                     </button>
@@ -2049,21 +2043,19 @@ export const AdminPanel: React.FC = () => {
                         </td>
                         <td className="py-3 font-bold text-slate-900">₹{(b.quotedAmount || b.quoted_amount || 0).toLocaleString('en-IN')}</td>
                         <td className="py-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                            b.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' :
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${b.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' :
                             b.paymentStatus === 'PARTIAL' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'
-                          }`}>
+                            }`}>
                             {b.paymentStatus || b.payment_status || 'PENDING'}
                           </span>
                         </td>
                         <td className="py-3">
                           <div className="flex flex-col items-center gap-1">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              b.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${b.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
                               b.status === 'ON_TRIP' || b.status === 'IN_PROGRESS' ? 'bg-indigo-100 text-indigo-800 animate-pulse' :
-                              b.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-800' :
-                              b.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
-                            }`}>
+                                b.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-800' :
+                                  b.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
+                              }`}>
                               {b.status}
                             </span>
                             {b.admin_message && (
@@ -2145,7 +2137,7 @@ export const AdminPanel: React.FC = () => {
                                   onClick={() => {
                                     setNotifyingBooking(b);
                                     setCustomerNoticeText(
-                                      b.admin_message || 
+                                      b.admin_message ||
                                       'As of now, all commercial drivers are currently on active duty. Our control room is actively searching and dispatching the nearest vehicle for you.'
                                     );
                                   }}
@@ -2159,16 +2151,15 @@ export const AdminPanel: React.FC = () => {
                                   onClick={() => {
                                     setNotifyingBooking(b);
                                     setCustomerNoticeText(
-                                      b.admin_message || 
+                                      b.admin_message ||
                                       'As of now, all commercial drivers are currently on active duty. Our control room is actively searching and dispatching the nearest vehicle for you.'
                                     );
                                   }}
                                   title={b.admin_message ? `Notice active: "${b.admin_message}". Click to update or clear.` : "No Drivers Available? Send live alert to customer screen"}
-                                  className={`px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 transition shadow-xs cursor-pointer ${
-                                    b.admin_message
-                                      ? 'bg-amber-500 text-white hover:bg-amber-600 animate-pulse'
-                                      : 'bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100'
-                                  }`}
+                                  className={`px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 transition shadow-xs cursor-pointer ${b.admin_message
+                                    ? 'bg-amber-500 text-white hover:bg-amber-600 animate-pulse'
+                                    : 'bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100'
+                                    }`}
                                 >
                                   <Bell className="w-3 h-3" />
                                   <span>{b.admin_message ? 'Notice Active' : 'No Driver Alert'}</span>
@@ -2338,10 +2329,9 @@ export const AdminPanel: React.FC = () => {
                         </td>
                         <td className="py-3">
                           <div className="space-y-1">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold inline-block ${
-                              d.status === 'VERIFIED_BY_ADMIN' ? 'bg-emerald-100 text-emerald-800' :
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold inline-block ${d.status === 'VERIFIED_BY_ADMIN' ? 'bg-emerald-100 text-emerald-800' :
                               d.status === 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
-                            }`}>
+                              }`}>
                               {d.status}
                             </span>
                             {(d.duty_face_verified || (d as any).duty_selfie_url) && (
@@ -3077,11 +3067,10 @@ export const AdminPanel: React.FC = () => {
                           <span>Inducted: <strong>{k.inducted_date || '2026-11-14'}</strong></span>
                         </div>
                       </div>
-                      <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${
-                        k.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                        k.kyc_status === 'REJECTED' ? 'bg-red-100 text-red-800 border border-red-300' : 
-                        'bg-amber-100 text-amber-800 border border-amber-300'
-                      }`}>
+                      <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${k.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                        k.kyc_status === 'REJECTED' ? 'bg-red-100 text-red-800 border border-red-300' :
+                          'bg-amber-100 text-amber-800 border border-amber-300'
+                        }`}>
                         {k.kyc_status === 'APPROVED' ? '✓ APPROVED & FLEET ACTIVE' : (k.kyc_status === 'REJECTED' ? '✕ REJECTED' : '⏳ PENDING AUDIT')}
                       </span>
                     </div>
@@ -3167,23 +3156,23 @@ export const AdminPanel: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* 14 INDUCTION & STATUTORY KYC DOCUMENTS AUDIT SECTION */}
-                    <div className="rounded-2xl border border-slate-200 bg-white p-3.5 space-y-4 shadow-xs">
-                      <div className="flex items-center justify-between border-b pb-2.5">
+                    {/* 12 KYC DOCUMENTS AUDIT SECTION */}
+                    <div className="rounded-2xl border border-slate-200 bg-white p-3.5 space-y-3">
+                      <div className="flex items-center justify-between border-b pb-2">
                         <div>
                           <div className="font-black text-xs text-[#071B49] flex items-center gap-1.5">
                             <FileCheck className="w-4 h-4 text-emerald-600" />
-                            <span>Statutory Induction Dossier (7 Vehicle + 7 Chauffeur Documents)</span>
+                            <span>12 Mandatory KYC Documents (7 Vehicle + 5 Driver)</span>
                           </div>
                           <p className="text-[10px] text-slate-500">
-                            RTO commercial validity, driver identification certificates, and vehicle inspection photos
+                            Verify RTO vehicle validity and driver identification proofs
                           </p>
                         </div>
                         {k.kyc_status === 'PENDING' && (
                           <button
                             type="button"
                             onClick={() => openApproveDriverModal(k)}
-                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black cursor-pointer transition flex items-center gap-1.5 shadow-sm"
+                            className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-[10px] font-black cursor-pointer transition flex items-center gap-1"
                           >
                             <BadgeCheck className="w-3.5 h-3.5" />
                             <span>Approve All & Issue Login</span>
@@ -3191,94 +3180,57 @@ export const AdminPanel: React.FC = () => {
                         )}
                       </div>
 
-                      {/* Group A: 7 Vehicle Statutory Documents */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <div className="text-[11px] font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-                            <Car className="w-3.5 h-3.5 text-blue-600" />
-                            <span>Vehicle Statutory Documents & Exterior Photo (7 Items)</span>
-                          </div>
-                          <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-                            Yellow-Board Commercial Fleet
-                          </span>
+                      {/* Group A: 7 Vehicle Documents */}
+                      <div className="space-y-1.5">
+                        <div className="text-[10px] font-black text-blue-900 uppercase tracking-wider flex items-center gap-1">
+                          <Car className="w-3 h-3 text-blue-600" />
+                          <span>Vehicle Documents (7 Items)</span>
                         </div>
-                        <div className="grid grid-cols-1 gap-1.5">
+                        <div className="space-y-1">
                           {[
-                            ['rc', '1. Registration Certificate (RC Book)', 'rc_doc_url'],
-                            ['insurance', '2. Commercial Vehicle Insurance Policy', 'insurance_doc_url'],
-                            ['fitness', '3. Fitness Certificate (FC Form 38)', 'fc_doc_url'],
-                            ['permit', '4. Commercial Tourist/State Permit', 'permit_doc_url'],
-                            ['road_tax', '5. Commercial Road Tax Receipt', 'tax_doc_url'],
-                            ['emissions', '6. BS-VI Emission Test (PUC)', 'emission_doc_url'],
-                            ['vehicle_photo', '7. Commercial Vehicle Exterior & Number Plate', 'vehicle_photo_url']
-                          ].map(([key, label, fallbackKey]) => {
+                            ['rc', '1. RC Card (Registration Certificate)'],
+                            ['insurance', '2. Commercial Insurance Policy'],
+                            ['emissions', '3. Emission / Pollution Test (PUC)'],
+                            ['fitness', '4. Fitness Certificate (FC)'],
+                            ['b_extract', '5. B-Extract (RTO History Extract)'],
+                            ['permit', '6. Commercial Permit (Tourist / State)'],
+                            ['road_tax', '7. Road Tax Receipt / Token']
+                          ].map(([key, label]) => {
                             const item = k.documents?.[key];
-                            const docUrl = item?.data || (item as any)?.url || (k as any)[fallbackKey] || (k as any)[`${key}_doc_url`];
                             return (
-                              <div key={key} className="flex items-center justify-between p-2 bg-slate-50 hover:bg-blue-50/40 rounded-xl border border-slate-200/80 text-xs transition">
-                                <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                  {docUrl ? (
-                                    <button
-                                      type="button"
-                                      onClick={() => setDocPreviewUrl(docUrl)}
-                                      className="relative group w-12 h-10 rounded-lg overflow-hidden border border-slate-300 shadow-xs shrink-0 cursor-pointer hover:border-blue-500 transition bg-white"
-                                      title="Click to zoom / inspect genuine document"
-                                    >
-                                      <img src={docUrl} alt={label} className="w-full h-full object-cover group-hover:scale-110 transition duration-200" />
-                                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                                        <Eye className="w-3.5 h-3.5 text-white drop-shadow" />
-                                      </div>
-                                    </button>
-                                  ) : (
-                                    <div className="w-12 h-10 rounded-lg bg-slate-200/70 border border-dashed border-slate-300 flex items-center justify-center text-slate-400 shrink-0">
-                                      <Car className="w-4 h-4 text-slate-400" />
-                                    </div>
-                                  )}
-                                  <div className="min-w-0 flex-1">
-                                    <div className="font-bold text-[11px] text-slate-800 truncate">{label}</div>
-                                    <div className="text-[9px] text-slate-500 flex items-center gap-1.5 flex-wrap">
-                                      <span>{item?.file_name || 'Document image submitted'}</span>
-                                      {item?.expires_at && (
-                                        <span className="text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded font-semibold">
-                                          Exp: {item.expires_at}
-                                        </span>
-                                      )}
-                                    </div>
+                              <div key={key} className="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg border border-slate-100 text-xs">
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-bold text-[11px] text-slate-800 truncate">{label}</div>
+                                  <div className="text-[9px] text-slate-400">
+                                    {item?.file_name || 'Attached in dossier'}
+                                    {item?.expires_at ? ` · Expiry: ${item.expires_at}` : ''}
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                                  <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider ${
-                                    item?.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                                    item?.status === 'REJECTED' ? 'bg-red-100 text-red-800 border border-red-300' :
-                                    'bg-amber-100 text-amber-800 border border-amber-300'
-                                  }`}>
+                                <div className="flex items-center gap-1 shrink-0 ml-2">
+                                  <span className={`text-[9px] px-1.5 py-0.5 rounded font-black ${item?.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
+                                    item?.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                                      'bg-amber-100 text-amber-800'
+                                    }`}>
                                     {item?.status || 'PENDING'}
                                   </span>
-                                  <button
-                                    type="button"
-                                    onClick={async () => {
-                                      if (docUrl) {
-                                        setDocPreviewUrl(docUrl);
-                                      } else if (item?.storage_key) {
+                                  {item?.storage_key && (
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
                                         try {
-                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key));
+                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
                                         } catch (error) {
                                           alert(error instanceof Error ? error.message : 'Could not open document.');
                                         }
-                                      } else {
-                                        alert('Document file pending upload by driver.');
-                                      }
-                                    }}
-                                    className="px-2 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] font-bold cursor-pointer transition flex items-center gap-1"
-                                    title="View / Zoom Document"
-                                  >
-                                    <Eye className="w-3 h-3 text-slate-600" />
-                                    <span>View</span>
-                                  </button>
-                                  {item?.status !== 'APPROVED' ? (
+                                      }}
+                                      className="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold cursor-pointer"
+                                    >
+                                      Preview
+                                    </button>
+                                  )}
+                                  {item?.status !== 'APPROVED' && (
                                     <button
                                       type="button"
-                                      title="Approve Document"
                                       onClick={async () => {
                                         try {
                                           await reviewDriverDocument(k.id, key, 'APPROVE');
@@ -3286,26 +3238,9 @@ export const AdminPanel: React.FC = () => {
                                           alert(error instanceof Error ? error.message : 'Review failed.');
                                         }
                                       }}
-                                      className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold cursor-pointer transition flex items-center gap-1 shadow-xs"
+                                      className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold cursor-pointer"
                                     >
-                                      <Check className="w-3 h-3" />
-                                      <span>Approve</span>
-                                    </button>
-                                  ) : (
-                                    <button
-                                      type="button"
-                                      title="Reject / Mark for Re-upload"
-                                      onClick={async () => {
-                                        try {
-                                          await reviewDriverDocument(k.id, key, 'REJECT');
-                                        } catch (error) {
-                                          alert(error instanceof Error ? error.message : 'Review failed.');
-                                        }
-                                      }}
-                                      className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-[10px] font-bold cursor-pointer transition flex items-center gap-1"
-                                    >
-                                      <X className="w-3 h-3" />
-                                      <span>Reject</span>
+                                      ✓
                                     </button>
                                   )}
                                 </div>
@@ -3315,94 +3250,55 @@ export const AdminPanel: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Group B: 7 Chauffeur Identity & Statutory Documents */}
-                      <div className="space-y-2 pt-2 border-t">
-                        <div className="flex items-center justify-between">
-                          <div className="text-[11px] font-black text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
-                            <User className="w-3.5 h-3.5 text-purple-600" />
-                            <span>Chauffeur Identity & Statutory Credentials (7 Items)</span>
-                          </div>
-                          <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
-                            PSV & Background Verified
-                          </span>
+                      {/* Group B: 5 Driver Documents */}
+                      <div className="space-y-1.5 pt-1 border-t">
+                        <div className="text-[10px] font-black text-purple-900 uppercase tracking-wider flex items-center gap-1">
+                          <User className="w-3 h-3 text-purple-600" />
+                          <span>Driver Identity Documents (5 Items)</span>
                         </div>
-                        <div className="grid grid-cols-1 gap-1.5">
+                        <div className="space-y-1">
                           {[
-                            ['passport_photo', '1. Chauffeur Passport Photograph', 'live_face_photo_url'],
-                            ['dl', '2. Commercial Driving Licence (DL Front)', 'license_doc_url'],
-                            ['dl_back', '3. Commercial Driving Licence (DL Back / Endorsements)', 'dl_back_doc_url'],
-                            ['badge', '4. Commercial PSV Driver Badge (KA RTO)', 'badge_doc_url'],
-                            ['aadhaar', '5. Government ID Proof (Aadhaar / Voter / PAN)', 'aadhaar_doc_url'],
-                            ['police_certificate', '6. Police Verification Certificate (PCC)', 'police_doc_url'],
-                            ['medical_certificate', '7. Form 1-A Commercial Medical Fitness', 'medical_doc_url']
-                          ].map(([key, label, fallbackKey]) => {
+                            ['dl', '1. Commercial Driving License (DL)'],
+                            ['aadhaar', '2. Aadhaar Card (Front & Back)'],
+                            ['pan', '3. PAN Card (IT Department)'],
+                            ['police_certificate', '4. Police Verification Certificate'],
+                            ['passport_photo', '5. Passport Size Photo (Driver Portrait)']
+                          ].map(([key, label]) => {
                             const item = key === 'passport_photo' ? (k.face_document || k.documents?.[key]) : k.documents?.[key];
-                            const docUrl = item?.data || (item as any)?.url || (k as any)[fallbackKey] || (k as any)[`${key}_doc_url`] || (key === 'passport_photo' ? (k.face_document?.data || k.live_face_photo_url) : undefined);
                             return (
-                              <div key={key} className="flex items-center justify-between p-2 bg-slate-50 hover:bg-purple-50/40 rounded-xl border border-slate-200/80 text-xs transition">
-                                <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                  {docUrl ? (
-                                    <button
-                                      type="button"
-                                      onClick={() => setDocPreviewUrl(docUrl)}
-                                      className="relative group w-12 h-10 rounded-lg overflow-hidden border border-slate-300 shadow-xs shrink-0 cursor-pointer hover:border-purple-500 transition bg-white"
-                                      title="Click to zoom / inspect genuine document"
-                                    >
-                                      <img src={docUrl} alt={label} className="w-full h-full object-cover group-hover:scale-110 transition duration-200" />
-                                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                                        <Eye className="w-3.5 h-3.5 text-white drop-shadow" />
-                                      </div>
-                                    </button>
-                                  ) : (
-                                    <div className="w-12 h-10 rounded-lg bg-slate-200/70 border border-dashed border-slate-300 flex items-center justify-center text-slate-400 shrink-0">
-                                      <User className="w-4 h-4 text-slate-400" />
-                                    </div>
-                                  )}
-                                  <div className="min-w-0 flex-1">
-                                    <div className="font-bold text-[11px] text-slate-800 truncate">{label}</div>
-                                    <div className="text-[9px] text-slate-500 flex items-center gap-1.5 flex-wrap">
-                                      <span>{item?.file_name || 'Document image submitted'}</span>
-                                      {item?.expires_at && (
-                                        <span className="text-purple-800 bg-purple-50 px-1.5 py-0.2 rounded font-semibold">
-                                          Exp: {item.expires_at}
-                                        </span>
-                                      )}
-                                    </div>
+                              <div key={key} className="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg border border-slate-100 text-xs">
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-bold text-[11px] text-slate-800 truncate">{label}</div>
+                                  <div className="text-[9px] text-slate-400">
+                                    {item?.file_name || 'Verified digital copy'}
+                                    {item?.expires_at ? ` · Expiry: ${item.expires_at}` : ''}
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                                  <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider ${
-                                    item?.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                                    item?.status === 'REJECTED' ? 'bg-red-100 text-red-800 border border-red-300' :
-                                    'bg-amber-100 text-amber-800 border border-amber-300'
-                                  }`}>
+                                <div className="flex items-center gap-1 shrink-0 ml-2">
+                                  <span className={`text-[9px] px-1.5 py-0.5 rounded font-black ${item?.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
+                                    item?.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                                      'bg-amber-100 text-amber-800'
+                                    }`}>
                                     {item?.status || 'PENDING'}
                                   </span>
-                                  <button
-                                    type="button"
-                                    onClick={async () => {
-                                      if (docUrl) {
-                                        setDocPreviewUrl(docUrl);
-                                      } else if (item?.storage_key) {
+                                  {item?.storage_key && (
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
                                         try {
-                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key));
+                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
                                         } catch (error) {
                                           alert(error instanceof Error ? error.message : 'Could not open document.');
                                         }
-                                      } else {
-                                        alert('Document file pending upload by driver.');
-                                      }
-                                    }}
-                                    className="px-2 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] font-bold cursor-pointer transition flex items-center gap-1"
-                                    title="View / Zoom Document"
-                                  >
-                                    <Eye className="w-3 h-3 text-slate-600" />
-                                    <span>View</span>
-                                  </button>
-                                  {item?.status !== 'APPROVED' ? (
+                                      }}
+                                      className="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold cursor-pointer"
+                                    >
+                                      Preview
+                                    </button>
+                                  )}
+                                  {item?.status !== 'APPROVED' && (
                                     <button
                                       type="button"
-                                      title="Approve Document"
                                       onClick={async () => {
                                         try {
                                           await reviewDriverDocument(k.id, key === 'passport_photo' ? 'face' : key, 'APPROVE');
@@ -3410,26 +3306,9 @@ export const AdminPanel: React.FC = () => {
                                           alert(error instanceof Error ? error.message : 'Review failed.');
                                         }
                                       }}
-                                      className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold cursor-pointer transition flex items-center gap-1 shadow-xs"
+                                      className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold cursor-pointer"
                                     >
-                                      <Check className="w-3 h-3" />
-                                      <span>Approve</span>
-                                    </button>
-                                  ) : (
-                                    <button
-                                      type="button"
-                                      title="Reject / Mark for Re-upload"
-                                      onClick={async () => {
-                                        try {
-                                          await reviewDriverDocument(k.id, key === 'passport_photo' ? 'face' : key, 'REJECT');
-                                        } catch (error) {
-                                          alert(error instanceof Error ? error.message : 'Review failed.');
-                                        }
-                                      }}
-                                      className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-[10px] font-bold cursor-pointer flex items-center gap-1"
-                                    >
-                                      <X className="w-3 h-3" />
-                                      <span>Reject</span>
+                                      ✓
                                     </button>
                                   )}
                                 </div>
@@ -3704,9 +3583,8 @@ export const AdminPanel: React.FC = () => {
                           ₹{(emp.salary || 25000).toLocaleString('en-IN')}
                         </td>
                         <td className="p-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                            emp.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
-                          }`}>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${emp.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                            }`}>
                             {emp.status || 'ACTIVE'}
                           </span>
                         </td>
@@ -4002,16 +3880,14 @@ export const AdminPanel: React.FC = () => {
                       <button
                         key={st.id}
                         onClick={() => setAccountsSubTab(st.id as any)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
-                          accountsSubTab === st.id
-                            ? 'bg-[#071B49] text-white shadow-sm'
-                            : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
-                        }`}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${accountsSubTab === st.id
+                          ? 'bg-[#071B49] text-white shadow-sm'
+                          : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                          }`}
                       >
                         <span>{st.label}</span>
-                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                          accountsSubTab === st.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-                        }`}>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${accountsSubTab === st.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                          }`}>
                           {st.count}
                         </span>
                       </button>
@@ -4064,11 +3940,10 @@ export const AdminPanel: React.FC = () => {
                                 </td>
 
                                 <td className="py-3 px-3 whitespace-nowrap">
-                                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black ${
-                                    tx.type === 'PAY_IN' 
-                                      ? 'bg-emerald-100 text-emerald-800' 
-                                      : 'bg-rose-100 text-rose-800'
-                                  }`}>
+                                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black ${tx.type === 'PAY_IN'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : 'bg-rose-100 text-rose-800'
+                                    }`}>
                                     {tx.type === 'PAY_IN' ? <ArrowDownLeft className="w-3 h-3" /> : <ArrowUpRight className="w-3 h-3" />}
                                     <span>{tx.type === 'PAY_IN' ? 'PAY-IN' : 'PAYOUT'}</span>
                                   </span>
@@ -4276,13 +4151,12 @@ export const AdminPanel: React.FC = () => {
                                   </td>
 
                                   <td className="py-3 px-3 text-center whitespace-nowrap">
-                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                                      inv.status === 'PAID'
-                                        ? 'bg-emerald-100 text-emerald-800'
-                                        : inv.status === 'ISSUED'
+                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${inv.status === 'PAID'
+                                      ? 'bg-emerald-100 text-emerald-800'
+                                      : inv.status === 'ISSUED'
                                         ? 'bg-blue-100 text-blue-800'
                                         : 'bg-amber-100 text-amber-800'
-                                    }`}>
+                                      }`}>
                                       {inv.status}
                                     </span>
                                   </td>
@@ -4521,8 +4395,8 @@ export const AdminPanel: React.FC = () => {
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 mt-1">
-                  {liveStats.isSupabaseRemoteTableActive 
-                    ? 'Connected to PostgreSQL Cloud Cluster' 
+                  {liveStats.isSupabaseRemoteTableActive
+                    ? 'Connected to PostgreSQL Cloud Cluster'
                     : 'Running with local persistent store'}
                 </div>
               </div>
@@ -4571,17 +4445,16 @@ export const AdminPanel: React.FC = () => {
               </div>
 
               {dbConnectMsg && (
-                <div className={`p-4 rounded-xl text-xs font-bold flex items-center gap-2 ${
-                  dbConnectMsg.type === 'success' 
-                    ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
-                    : 'bg-red-50 text-red-800 border border-red-200'
-                }`}>
+                <div className={`p-4 rounded-xl text-xs font-bold flex items-center gap-2 ${dbConnectMsg.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                  : 'bg-red-50 text-red-800 border border-red-200'
+                  }`}>
                   {dbConnectMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" /> : <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />}
                   <span>{dbConnectMsg.text}</span>
                 </div>
               )}
 
-              <form 
+              <form
                 onSubmit={async (e) => {
                   e.preventDefault();
                   if (!dbUrlInput.trim()) return;
@@ -4659,7 +4532,7 @@ export const AdminPanel: React.FC = () => {
                   <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-black text-xs">2</div>
                   <div className="font-bold text-slate-800">Low-Latency Mumbai Region</div>
                   <p className="text-slate-500 leading-relaxed text-[11px]">
-                  Check the connected provider dashboards for the configured region and measured latency. This app does not collect live GPS.
+                    Check the connected provider dashboards for the configured region and measured latency. This app does not collect live GPS.
                   </p>
                 </div>
 
@@ -5764,10 +5637,10 @@ export const AdminPanel: React.FC = () => {
                 {/* Live Selfie */}
                 <div className="bg-slate-800 p-2.5 rounded-xl text-center space-y-1.5 border border-slate-700">
                   <div className="w-24 h-24 mx-auto rounded-xl overflow-hidden border-2 border-emerald-400 shadow">
-                    <img 
-                      src={docInspectionModal.live_face_photo_url || ''} 
-                      alt="Live Face" 
-                      className="w-full h-full object-cover" 
+                    <img
+                      src={docInspectionModal.live_face_photo_url || ''}
+                      alt="Live Face"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <span className="text-[10px] font-bold text-slate-300 block">Live App Selfie Capture</span>
@@ -5779,10 +5652,10 @@ export const AdminPanel: React.FC = () => {
                 {/* DL Photo */}
                 <div className="bg-slate-800 p-2.5 rounded-xl text-center space-y-1.5 border border-slate-700">
                   <div className="w-24 h-24 mx-auto rounded-xl overflow-hidden border-2 border-blue-400 shadow">
-                    <img 
-                      src={docInspectionModal.license_doc_url || ''} 
-                      alt="DL Photo" 
-                      className="w-full h-full object-cover" 
+                    <img
+                      src={docInspectionModal.license_doc_url || ''}
+                      alt="DL Photo"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <span className="text-[10px] font-bold text-slate-300 block">Government Driving License Photo</span>
@@ -5817,17 +5690,17 @@ export const AdminPanel: React.FC = () => {
                   <div className="font-mono text-[11px] text-slate-600">No: {docInspectionModal.license_number}</div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img 
-                        src={docInspectionModal.license_doc_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&q=80'} 
-                        alt="DL Front" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={docInspectionModal.license_doc_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&q=80'}
+                        alt="DL Front"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img 
-                        src={docInspectionModal.license_back_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'} 
-                        alt="DL Back" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={docInspectionModal.license_back_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'}
+                        alt="DL Back"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   </div>
@@ -5844,17 +5717,17 @@ export const AdminPanel: React.FC = () => {
                   <div className="font-mono text-[11px] text-slate-600">No: {docInspectionModal.aadhar_number}</div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img 
-                        src={docInspectionModal.aadhar_doc_url || 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&q=80'} 
-                        alt="Aadhaar Front" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={docInspectionModal.aadhar_doc_url || 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&q=80'}
+                        alt="Aadhaar Front"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img 
-                        src={docInspectionModal.aadhar_back_doc_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'} 
-                        alt="Aadhaar Back" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={docInspectionModal.aadhar_back_doc_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'}
+                        alt="Aadhaar Back"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   </div>
@@ -5870,10 +5743,10 @@ export const AdminPanel: React.FC = () => {
                   </div>
                   <div className="font-mono text-[11px] text-slate-600">Badge: {docInspectionModal.badge_number || 'PSV-KA-84920'}</div>
                   <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                    <img 
-                      src={docInspectionModal.psv_badge_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'} 
-                      alt="PSV Badge" 
-                      className="w-full h-full object-cover" 
+                    <img
+                      src={docInspectionModal.psv_badge_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'}
+                      alt="PSV Badge"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 </div>
@@ -5889,17 +5762,17 @@ export const AdminPanel: React.FC = () => {
                   <div className="text-[11px] text-slate-600">No police or medical registry check performed by SJT.</div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img 
-                        src={docInspectionModal.police_verification_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'} 
-                        alt="Police Clearance" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={docInspectionModal.police_verification_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'}
+                        alt="Police Clearance"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img 
-                        src={docInspectionModal.medical_fitness_doc_url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80'} 
-                        alt="Medical Certificate" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={docInspectionModal.medical_fitness_doc_url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80'}
+                        alt="Medical Certificate"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   </div>
@@ -6023,7 +5896,7 @@ export const AdminPanel: React.FC = () => {
                           if (customPayInCatName.trim()) {
                             const updated = [...payInCategories, customPayInCatName.trim()];
                             setPayInCategories(updated);
-                            try { localStorage.setItem('sjt_payin_categories', JSON.stringify(updated)); } catch {}
+                            try { localStorage.setItem('sjt_payin_categories', JSON.stringify(updated)); } catch { }
                             setPayInForm({ ...payInForm, category: customPayInCatName.trim() });
                             setCustomPayInCatName('');
                             setShowAddPayInCatInput(false);
@@ -6179,7 +6052,7 @@ export const AdminPanel: React.FC = () => {
                           if (customClientTypeName.trim()) {
                             const updated = [...clientTypes, customClientTypeName.trim()];
                             setClientTypes(updated);
-                            try { localStorage.setItem('sjt_client_types', JSON.stringify(updated)); } catch {}
+                            try { localStorage.setItem('sjt_client_types', JSON.stringify(updated)); } catch { }
                             setPayInForm({ ...payInForm, party_type: customClientTypeName.trim() as any });
                             setCustomClientTypeName('');
                             setShowAddClientTypeInput(false);
@@ -6392,7 +6265,7 @@ export const AdminPanel: React.FC = () => {
                           if (customPayoutCatName.trim()) {
                             const updated = [...payoutCategories, customPayoutCatName.trim()];
                             setPayoutCategories(updated);
-                            try { localStorage.setItem('sjt_payout_categories', JSON.stringify(updated)); } catch {}
+                            try { localStorage.setItem('sjt_payout_categories', JSON.stringify(updated)); } catch { }
                             setPayoutForm({ ...payoutForm, category: customPayoutCatName.trim() });
                             setCustomPayoutCatName('');
                             setShowAddPayoutCatInput(false);
@@ -6530,7 +6403,7 @@ export const AdminPanel: React.FC = () => {
                           if (customPayeeTypeName.trim()) {
                             const updated = [...payeeTypes, customPayeeTypeName.trim()];
                             setPayeeTypes(updated);
-                            try { localStorage.setItem('sjt_payee_types', JSON.stringify(updated)); } catch {}
+                            try { localStorage.setItem('sjt_payee_types', JSON.stringify(updated)); } catch { }
                             setPayoutForm({ ...payoutForm, party_type: customPayeeTypeName.trim() as any });
                             setCustomPayeeTypeName('');
                             setShowAddPayeeTypeInput(false);
@@ -7073,11 +6946,11 @@ export const AdminPanel: React.FC = () => {
                       onChange={(e) => {
                         const q = Number(e.target.value) || 0;
                         const r = Number(invoiceForm.rate_per_unit) || 0;
-                        setInvoiceForm({ 
-                          ...invoiceForm, 
-                          quantity: q, 
+                        setInvoiceForm({
+                          ...invoiceForm,
+                          quantity: q,
                           total_trips: q,
-                          subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal 
+                          subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal
                         });
                       }}
                       className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
@@ -7093,10 +6966,10 @@ export const AdminPanel: React.FC = () => {
                       onChange={(e) => {
                         const r = Number(e.target.value) || 0;
                         const q = Number(invoiceForm.quantity) || 1;
-                        setInvoiceForm({ 
-                          ...invoiceForm, 
-                          rate_per_unit: r, 
-                          subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal 
+                        setInvoiceForm({
+                          ...invoiceForm,
+                          rate_per_unit: r,
+                          subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal
                         });
                       }}
                       className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"

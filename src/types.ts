@@ -1,11 +1,11 @@
 export type TripType = 'POINT_TO_POINT' | 'LOCAL' | 'OUTSTATION' | 'AIRPORT' | 'ROUND_TRIP' | 'CORPORATE' | 'WEDDING';
 
-export type BookingStatus = 
-  | 'REQUESTED' 
-  | 'CONFIRMED' 
-  | 'ASSIGNED' 
-  | 'IN_PROGRESS' 
-  | 'COMPLETED' 
+export type BookingStatus =
+  | 'REQUESTED'
+  | 'CONFIRMED'
+  | 'ASSIGNED'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
   | 'CANCELLED';
 
 export type DriverMode = 'REGULAR' | 'COMPANY_DUTY' | 'BOTH';
@@ -154,7 +154,7 @@ export interface DriverKycApplication {
   driver_signature_acknowledged?: boolean;
   inspected_by?: string;
   approved_by?: string;
-  
+
   // Vehicle details from Vehicle Induction Form
   vehicle_vendor_name?: string;
   vehicle_reg?: string;
@@ -163,7 +163,7 @@ export interface DriverKycApplication {
   seating_capacity?: number | string;
   vehicle_ownership?: 'ATTACHED' | 'OWNED' | string;
   fuel_type?: 'Diesel' | 'Petrol' | 'CNG' | 'EV' | string;
-  
+
   // Vehicle document dates
   rc_number?: string;
   rc_issue_date?: string;
@@ -181,7 +181,7 @@ export interface DriverKycApplication {
   tax_expiry_date?: string;
   emission_issue_date?: string;
   emission_expiry_date?: string;
-  
+
   // Accessories checklist (9 items from Form)
   accessories?: {
     fire_ext: boolean;
@@ -194,7 +194,7 @@ export interface DriverKycApplication {
     fixed_gps: boolean;
     fixed_panic_button: boolean;
   };
-  
+
   // Vehicle condition checklist (9 items from Form)
   vehicle_condition?: {
     head_lights: boolean;
@@ -352,6 +352,9 @@ export interface CompanyDutyLog {
   driver_name?: string;
   companyName: string;
   company_name?: string;
+  client_name?: string;
+  clientType?: string;
+  client_type?: string;
   externalTripId: string;
   external_trip_id?: string;
   vehicleReg: string;
@@ -460,6 +463,9 @@ export interface CorporateInvoice {
   invoice_number?: string;
   companyName: string;
   company_name?: string;
+  client_name?: string;
+  clientType?: string;
+  client_type?: string;
   companyGstin?: string;
   client_gstin?: string;
   client_address?: string;

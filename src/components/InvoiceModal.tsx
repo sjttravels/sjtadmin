@@ -1,6 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Printer, Download, Mail, CheckCircle2, ShieldCheck, QrCode } from 'lucide-react';
+import { X, Printer, Download, Mail, CheckCircle2, ShieldCheck, QrCode, Share2, Send, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 // Number to Words converter (Indian Currency Format: Lakhs, Crores, Rupees)
 export function numberToWordsINR(amount: number): string {
@@ -123,8 +125,73 @@ export const InvoiceModal: React.FC = () => {
     holder: inv.bank_account_holder || 'SHARANAPPA'
   };
 
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!invoiceRef.current) return;
+    setDownloadingPdf(true);
+    try {
+      const element = invoiceRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, Math.min(pdfHeight, 295));
+      pdf.save(`SJT_Tax_Invoice_${String(invoiceNo).replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`);
+    } catch (err) {
+      console.warn('PDF generation fallback to system print:', err);
+      window.print();
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
+  const handleSendWhatsApp = () => {
+    const cleanPhone = String(clientContact).replace(/[^0-9]/g, '');
+    const phoneParam = cleanPhone.length >= 10 ? (cleanPhone.startsWith('91') ? cleanPhone : `91${cleanPhone}`) : '';
+    const message = `*TAX INVOICE - SHARANAJYOTI TOURS & TRAVELS PVT LTD*\n` +
+      `-----------------------------------------\n` +
+      `Invoice No: *${invoiceNo}*\n` +
+      `Date: ${invoiceDate}\n` +
+      `Client: *${clientName}*\n` +
+      `Billing: ${billingPeriod}\n` +
+      `Service: ${itemName} (SAC ${hsnSac})\n` +
+      `-----------------------------------------\n` +
+      `Taxable Amount: ₹${taxableAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n` +
+      `GST (${gstRate}%): ₹${totalTax.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n` +
+      `*Net Payable: ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}*\n` +
+      `Amount in Words: ${amountInWords}\n` +
+      `-----------------------------------------\n` +
+      `Bank: ${bank.name}\n` +
+      `A/C: ${bank.accountNo}\n` +
+      `IFSC: ${bank.ifsc}\n` +
+      `UPI: 919902278722@okaxis\n\n` +
+      `Thank you for choosing SJT Travels!`;
+    const waUrl = phoneParam 
+      ? `https://wa.me/${phoneParam}?text=${encodeURIComponent(message)}`
+      : `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+    window.open(waUrl, '_blank');
+  };
+
+  const handleSendEmail = () => {
+    const subject = `Tax Invoice #${invoiceNo} - Sharanajyoti Tours & Travels Pvt Ltd`;
+    const body = `Dear ${clientName},\n\nPlease find your B2B GST Tax Invoice #${invoiceNo} for passenger transport services (${billingPeriod}).\n\nTotal Payable Amount: ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\nDue Date: ${inv.due_date || 'Within 15 days'}\n\nBank Payment Coordinates:\nAccount Name: ${bank.holder}\nBank: ${bank.name}\nAccount Number: ${bank.accountNo}\nIFSC Code: ${bank.ifsc}\n\nWarm regards,\nSharanajyoti Tours & Travels Pvt Ltd\nPhone: +91 919902278722 | Email: md@sjttravels.in`;
+    window.location.href = `mailto:${clientName.toLowerCase().replace(/[^a-z0-9]/g, '')}@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   return (
@@ -545,13 +612,15 @@ export const InvoiceModal: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-8 text-center sm:text-right space-y-1">
+                <div className="pt-6 text-center sm:text-right space-y-1">
                   {/* Digital Signature representation matching image */}
                   <div className="inline-block text-right">
-                    <div className="font-serif italic text-base font-bold text-blue-950 tracking-wider">
-                      Sharanappa
+                    <div className="h-10 flex items-center justify-end pr-2">
+                      <svg viewBox="0 0 160 45" width="130" height="38" className="inline-block">
+                        <path d="M12,32 C28,14 36,38 46,18 C54,8 66,35 78,16 C90,4 104,28 126,14 C136,8 142,22 148,18 M16,36 C55,34 98,33 146,31" fill="none" stroke="#0f172a" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     </div>
-                    <div className="w-40 border-b border-slate-700 mx-auto sm:ml-auto mt-1"></div>
+                    <div className="w-44 border-b border-slate-700 mx-auto sm:ml-auto mt-0.5"></div>
                     <div className="font-bold text-xs text-slate-800 mt-1">
                       Authorized Signatory
                     </div>
@@ -574,22 +643,37 @@ export const InvoiceModal: React.FC = () => {
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>Vyapar format verified · Ready for B2B GST tax returns & client dispatch</span>
           </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
             <button
-              onClick={() => {
-                alert(`Official Tax Invoice ${invoiceNo} sent to client billing accounts at ${clientName.toLowerCase().replace(/[^a-z]/g, '')}@gmail.com`);
-              }}
-              className="flex-1 sm:flex-initial px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              onClick={handleSendWhatsApp}
+              className="flex-1 sm:flex-initial px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              title="Share Invoice via WhatsApp"
+            >
+              <Share2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>WhatsApp</span>
+            </button>
+            <button
+              onClick={handleSendEmail}
+              className="flex-1 sm:flex-initial px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              title="Email Invoice to Client"
             >
               <Mail className="w-3.5 h-3.5" />
-              <span>Email Client</span>
+              <span>Email</span>
             </button>
             <button
               onClick={handlePrint}
-              className="flex-1 sm:flex-initial px-5 py-2 bg-[#071B49] hover:bg-blue-900 text-white font-bold text-xs rounded-lg flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/20 transition-all cursor-pointer"
+              className="flex-1 sm:flex-initial px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Download PDF</span>
+              <Printer className="w-3.5 h-3.5 text-blue-300" />
+              <span>Print</span>
+            </button>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={downloadingPdf}
+              className="flex-1 sm:flex-initial px-5 py-2 bg-[#071B49] hover:bg-blue-900 disabled:opacity-50 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/20 transition-all cursor-pointer"
+            >
+              {downloadingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              <span>{downloadingPdf ? 'Generating PDF...' : 'Download PDF'}</span>
             </button>
           </div>
         </div>

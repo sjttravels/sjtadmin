@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { 
-  Vehicle, 
-  Booking, 
-  CompanyDutyLog, 
-  DriverProfile, 
-  DriverPayrollRecord, 
-  CorporateInvoice, 
+import {
+  Vehicle,
+  Booking,
+  CompanyDutyLog,
+  DriverProfile,
+  DriverPayrollRecord,
+  CorporateInvoice,
   NotificationItem,
   User,
   DriverKycApplication,
@@ -17,13 +17,13 @@ import {
 } from '../types';
 import { getDefaultInductionDocuments } from '../utils/documentSamples';
 
-export type AppView = 
-  | 'SHOWCASE' 
-  | 'CUSTOMER_WEB' 
-  | 'CUSTOMER_MOBILE' 
-  | 'DRIVER_APP' 
+export type AppView =
+  | 'SHOWCASE'
+  | 'CUSTOMER_WEB'
+  | 'CUSTOMER_MOBILE'
+  | 'DRIVER_APP'
   | 'DRIVER_WEB'
-  | 'ADMIN_PANEL' 
+  | 'ADMIN_PANEL'
   | 'CLIENT_MAIL';
 
 // Resilient API Base: Only point to localhost:5000 if running locally in development; on Vercel use VITE_API_URL or relative
@@ -345,7 +345,7 @@ const DEFAULT_INDUCTION_APPLICATIONS: DriverKycApplication[] = [
     driver_signature_acknowledged: true,
     inspected_by: 'Inspector Raghavendra K - SJT Safety & Compliance',
     approved_by: 'Master Operations Admin - Sharanu',
-    
+
     // Vehicle Details
     vehicle_vendor_name: 'SJT Logistics & Travels Partner',
     vehicle_reg: 'KA 05 AU 1234',
@@ -354,7 +354,7 @@ const DEFAULT_INDUCTION_APPLICATIONS: DriverKycApplication[] = [
     seating_capacity: 17,
     vehicle_ownership: 'ATTACHED',
     fuel_type: 'Diesel',
-    
+
     // Vehicle Document Details
     rc_number: 'RC-KA05AU1234-COMM',
     rc_issue_date: '2023-03-12',
@@ -372,7 +372,7 @@ const DEFAULT_INDUCTION_APPLICATIONS: DriverKycApplication[] = [
     tax_expiry_date: '2027-03-31',
     emission_issue_date: '2026-06-15',
     emission_expiry_date: '2026-12-14',
-    
+
     // Accessories Checklist (All 9 items)
     accessories: {
       fire_ext: true,
@@ -385,7 +385,7 @@ const DEFAULT_INDUCTION_APPLICATIONS: DriverKycApplication[] = [
       fixed_gps: true,
       fixed_panic_button: true
     },
-    
+
     // Vehicle Condition Checklist (All 9 items)
     vehicle_condition: {
       head_lights: true,
@@ -398,7 +398,7 @@ const DEFAULT_INDUCTION_APPLICATIONS: DriverKycApplication[] = [
       seat_belts: true,
       tool_kit: true
     },
-    
+
     documents: getDefaultInductionDocuments('Anand Gowda', 'KA 05 AU 1234'),
     kyc_status: 'PENDING',
     submitted_at: '2026-11-14 10:30 AM',
@@ -604,7 +604,7 @@ interface AppContextType {
   login: (email: string, password: string, expectedRole?: User['role'], targetView?: AppView) => Promise<User>;
   logout: () => void;
   register: (data: RegisterPayload, targetView?: AppView) => Promise<User>;
-  
+
   // KYC
   kycRequests: DriverKycApplication[];
   driverKyc: DriverKycApplication | null;
@@ -763,11 +763,11 @@ function getInitialView(): { view: AppView; standalone: boolean } {
 
     // Hash or Parameter Based Navigation
     if (
-      hash === '#driver-app' || 
-      hash === '#driver-portal' || 
-      viewParam === 'driver-app' || 
-      viewParam === 'driver-portal' || 
-      pathname.startsWith('/driver-app') || 
+      hash === '#driver-app' ||
+      hash === '#driver-portal' ||
+      viewParam === 'driver-app' ||
+      viewParam === 'driver-portal' ||
+      pathname.startsWith('/driver-app') ||
       pathname.startsWith('/driver-portal') ||
       port === '3004'
     ) {
@@ -775,15 +775,15 @@ function getInitialView(): { view: AppView; standalone: boolean } {
     }
 
     if (
-      hash === '#driver-web' || 
-      hash === '#driver-website' || 
-      hash === '#driver' || 
-      viewParam === 'driver-web' || 
-      viewParam === 'driver-website' || 
-      viewParam === 'driver' || 
-      pathname.startsWith('/driver-web') || 
-      pathname.startsWith('/driver-website') || 
-      pathname.startsWith('/driver') || 
+      hash === '#driver-web' ||
+      hash === '#driver-website' ||
+      hash === '#driver' ||
+      viewParam === 'driver-web' ||
+      viewParam === 'driver-website' ||
+      viewParam === 'driver' ||
+      pathname.startsWith('/driver-web') ||
+      pathname.startsWith('/driver-website') ||
+      pathname.startsWith('/driver') ||
       port === '3002'
     ) {
       return { view: 'DRIVER_WEB', standalone: true };
@@ -794,18 +794,18 @@ function getInitialView(): { view: AppView; standalone: boolean } {
     }
 
     if (
-      hash === '#user-app' || 
-      hash === '#customer-app' || 
-      hash === '#mobile' || 
-      hash === '#app' || 
-      port === '3001' || 
-      viewParam === 'user-app' || 
-      viewParam === 'customer-app' || 
-      viewParam === 'mobile' || 
-      viewParam === 'app' || 
-      pathname.startsWith('/user-app') || 
-      pathname.startsWith('/customer-app') || 
-      pathname.startsWith('/mobile') || 
+      hash === '#user-app' ||
+      hash === '#customer-app' ||
+      hash === '#mobile' ||
+      hash === '#app' ||
+      port === '3001' ||
+      viewParam === 'user-app' ||
+      viewParam === 'customer-app' ||
+      viewParam === 'mobile' ||
+      viewParam === 'app' ||
+      pathname.startsWith('/user-app') ||
+      pathname.startsWith('/customer-app') ||
+      pathname.startsWith('/mobile') ||
       pathname.startsWith('/app')
     ) {
       return { view: 'CUSTOMER_MOBILE', standalone: true };
@@ -847,7 +847,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const saved = localStorage.getItem('sjt_user');
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch (e) { }
     return null;
   });
 
@@ -857,14 +857,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const saved = localStorage.getItem('sjt_admin_vehicles');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return DEFAULT_ADMIN_VEHICLES;
   });
   const [bookings, setBookings] = useState<Booking[]>(() => {
     try {
       const saved = localStorage.getItem('sjt_bookings_list');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return DEFAULT_ADMIN_BOOKINGS;
   });
   const [dutyLogs, setDutyLogs] = useState<CompanyDutyLog[]>([]);
@@ -872,7 +872,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const saved = localStorage.getItem('sjt_kyc_list');
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { }
     return DEFAULT_INDUCTION_APPLICATIONS;
   });
   const [driverKyc, setDriverKyc] = useState<DriverKycApplication | null>(null);
@@ -929,7 +929,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setActiveTripOtp(freshOtp);
     try {
       localStorage.setItem('sjt_active_trip_otp', freshOtp);
-    } catch {}
+    } catch { }
     return freshOtp;
   }, []);
 
@@ -1168,7 +1168,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (targetView) setActiveView(targetView);
           else setActiveView('ADMIN_PANEL');
 
-          await refreshData(true).catch(() => {});
+          await refreshData(true).catch(() => { });
           return data.user;
         }
       }
@@ -1177,11 +1177,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // Resilient offline / Vercel fallback for Admin and Employee sign-in
-    const isAdminMatch = 
+    const isAdminMatch =
       (cleanEmail === 'sjttravels2025@gmail.com' || cleanEmail === 'sjttravels2025@gmai.com' || cleanEmail === 'admin@sjttravels.com' || cleanEmail.includes('admin')) &&
       (cleanPass === '$$Sharanu@' || cleanPass === '55Sharanu@' || cleanPass === 'admin123' || cleanPass.length >= 4);
 
-    const isEmpMatch = 
+    const isEmpMatch =
       (cleanEmail.includes('employee') || cleanEmail.includes('emp') || expectedRole === 'EMPLOYEE') &&
       (cleanPass === 'employee123' || cleanPass.length >= 4);
 
@@ -1315,9 +1315,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Admin KYC review
   const reviewDriverKyc = async (
-    kycId: string, 
-    action: 'APPROVE' | 'REJECT', 
-    vehicleReg?: string, 
+    kycId: string,
+    action: 'APPROVE' | 'REJECT',
+    vehicleReg?: string,
     reason?: string,
     credentials?: { login_id?: string; password?: string }
   ) => {
@@ -1367,13 +1367,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         assignedVehicleReg: vehicleReg || targetApp.vehicle_reg || 'KA 05 AU 1234',
         rating: 5.0,
         experienceYears: Number(targetApp.experience_years) || 8,
-        totalTripsCompleted: 0,
-        monthlySalarySettings: {
-          baseSalary: 25000,
-          perKmRate: 4.5,
-          perDutyAllowance: 350,
-          overtimeHourly: 120
-        }
+        totalTripsCompleted: 0
       };
       setDrivers(prev => {
         const next = [newDriver, ...prev.filter(d => d.phone !== newDriver.phone && d.email !== newDriver.email)];
@@ -1412,13 +1406,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     triggerNotification({
       type: action === 'APPROVE' ? 'KYC_APPROVED' : 'KYC_REJECTED',
       title: `Driver KYC ${action === 'APPROVE' ? 'Approved & Assigned' : 'Rejected'}`,
-      message: action === 'APPROVE' 
-        ? `Chauffeur verified. Yellow-board fleet ${vehicleReg || 'KA 05 AU 1234'} inducted into active service.` 
+      message: action === 'APPROVE'
+        ? `Chauffeur verified. Yellow-board fleet ${vehicleReg || 'KA 05 AU 1234'} inducted into active service.`
         : `KYC rejected: ${reason}`,
       target: 'ADMIN'
     });
 
-    await refreshData(true).catch(() => {});
+    await refreshData(true).catch(() => { });
     return { success: true };
   };
 
@@ -1460,9 +1454,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return URL.createObjectURL(await res.blob());
   };
 
-  const currentDriver: DriverProfile | null = 
-    drivers.find(d => (d._id || d.id) === currentDriverId) || 
-    (currentUser?.role === 'DRIVER' ? drivers.find(d => d.email === currentUser.email) || null : null) || 
+  const currentDriver: DriverProfile | null =
+    drivers.find(d => (d._id || d.id) === currentDriverId) ||
+    (currentUser?.role === 'DRIVER' ? drivers.find(d => d.email === currentUser.email) || null : null) ||
     (drivers.length > 0 ? drivers[0] : null);
 
   const activeDutyDriverId = currentUser?.role === 'DRIVER' ? currentUser.id : currentDriverId;
@@ -1535,8 +1529,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setBookings(prev => {
       const updated = prev.map(b => {
         const matches = (
-          String(b.id) === cleanId || 
-          String(b._id) === cleanId || 
+          String(b.id) === cleanId ||
+          String(b._id) === cleanId ||
           String(b.bookingCode || b.booking_code) === cleanId ||
           String(b.bookingCode || b.booking_code) === id
         );
@@ -1550,7 +1544,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       });
       try {
         localStorage.setItem('sjt_bookings_list', JSON.stringify(updated));
-      } catch {}
+      } catch { }
       return updated;
     });
 
@@ -1583,8 +1577,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setBookings(prev => {
       const updated = prev.map(b => {
         const matches = (
-          String(b.id) === cleanId || 
-          String(b._id) === cleanId || 
+          String(b.id) === cleanId ||
+          String(b._id) === cleanId ||
           String(b.bookingCode || b.booking_code) === cleanId ||
           String(b.bookingCode || b.booking_code) === bookingId
         );
@@ -1606,7 +1600,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       });
       try {
         localStorage.setItem('sjt_bookings_list', JSON.stringify(updated));
-      } catch {}
+      } catch { }
       return updated;
     });
 
@@ -1659,8 +1653,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setBookings(prev => {
       const updated = prev.map(b => {
         const matches = (
-          String(b.id) === cleanId || 
-          String(b._id) === cleanId || 
+          String(b.id) === cleanId ||
+          String(b._id) === cleanId ||
           String(b.bookingCode || b.booking_code) === cleanId ||
           String(b.bookingCode || b.booking_code) === id
         );
@@ -1668,7 +1662,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       });
       try {
         localStorage.setItem('sjt_bookings_list', JSON.stringify(updated));
-      } catch {}
+      } catch { }
       return updated;
     });
 
@@ -1690,15 +1684,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Optimistically remove from state and persistent storage
     setBookings(prev => {
-      const filtered = prev.filter(b => 
-        String(b.id) !== cleanId && 
-        String(b._id) !== cleanId && 
-        String(b.bookingCode || b.booking_code) !== cleanId && 
+      const filtered = prev.filter(b =>
+        String(b.id) !== cleanId &&
+        String(b._id) !== cleanId &&
+        String(b.bookingCode || b.booking_code) !== cleanId &&
         String(b.bookingCode || b.booking_code) !== id
       );
       try {
         localStorage.setItem('sjt_bookings_list', JSON.stringify(filtered));
-      } catch {}
+      } catch { }
       return filtered;
     });
 
@@ -1726,9 +1720,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setBookings(prev => {
       const updated = prev.map(b => {
         const matches = (
-          String(b.id) === cleanId || 
-          String(b._id) === cleanId || 
-          String(b.bookingCode || b.booking_code) === cleanId || 
+          String(b.id) === cleanId ||
+          String(b._id) === cleanId ||
+          String(b.bookingCode || b.booking_code) === cleanId ||
           String(b.bookingCode || b.booking_code) === id
         );
         if (matches) {
@@ -1742,7 +1736,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       });
       try {
         localStorage.setItem('sjt_bookings_list', JSON.stringify(updated));
-      } catch {}
+      } catch { }
       return updated;
     });
 
@@ -2103,8 +2097,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Modals
   const openRazorpayModal = (
-    bookingData: Partial<Booking>, 
-    amount: number, 
+    bookingData: Partial<Booking>,
+    amount: number,
     onSuccess: (paymentId: string) => void
   ) => {
     setRazorpayModal({ open: true, bookingData, amount, onSuccess });
@@ -2207,21 +2201,111 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const generateInvoice = async (data: any): Promise<CorporateInvoice> => {
-    const res = await fetch(`${API_BASE}/api/invoices/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.error || 'Failed to generate invoice');
+    let resultInvoice: CorporateInvoice | null = null;
+    try {
+      const res = await fetch(`${API_BASE}/api/invoices/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
+        body: JSON.stringify(data)
+      });
+      const ct = res.headers.get('content-type') || '';
+      if (res.ok && ct.includes('application/json')) {
+        const result = await res.json();
+        if (result && result.invoice) {
+          resultInvoice = result.invoice;
+        }
+      }
+    } catch (e) {
+      console.warn('API invoice endpoint unavailable, using local calculation engine:', e);
+    }
+
+    if (!resultInvoice) {
+      const clientName = data.client_name || data.companyName || 'Corporate Client';
+      const clientType = data.client_type || 'CORPORATE';
+      const invNum = data.invoice_number || `26-27/${54 + invoices.length}`;
+      const qty = Number(data.quantity || data.total_trips || 76);
+      const rate = Number(data.rate_per_unit || 650);
+      const subtotal = Number(data.subtotal || (qty * rate));
+      const gstRate = Number(data.gst_rate ?? 18);
+      const totalTax = Math.round(subtotal * (gstRate / 100));
+      const cgst = Math.round(totalTax / 2);
+      const sgst = totalTax - cgst;
+      const gspRent = Number(data.gsp_rent || 0);
+      const tdsCgst = Number(data.tds_cgst || 0);
+      const tdsAmount = Number(data.tds_amount || 0);
+      const roundOff = Number(data.round_off || 0);
+      const grandTotal = Math.round(subtotal + totalTax - gspRent - tdsCgst - tdsAmount + roundOff);
+
+      resultInvoice = {
+        id: `inv-${Date.now()}`,
+        _id: `inv-${Date.now()}`,
+        invoiceNumber: invNum,
+        invoice_number: invNum,
+        companyName: clientName,
+        company_name: clientName,
+        client_name: clientName,
+        clientType: clientType,
+        client_type: clientType,
+        companyGstin: data.client_gstin || '',
+        client_gstin: data.client_gstin || '',
+        client_address: data.client_address || '',
+        client_phone: data.client_phone || '',
+        billingPeriod: data.billing_period || 'bill for the month of oct',
+        billing_period: data.billing_period || 'bill for the month of oct',
+        invoiceDate: data.invoice_date || new Date().toLocaleDateString('en-GB'),
+        invoice_date: data.invoice_date || new Date().toLocaleDateString('en-GB'),
+        invoiceTime: data.invoice_time || '11:37 AM',
+        invoice_time: data.invoice_time || '11:37 AM',
+        place_of_supply: data.place_of_supply || '29-Karnataka',
+        vehicle_type: data.vehicle_type || 'SEDAN',
+        vehicle_name: data.vehicle_name || 'Toyota Etios / Sedan',
+        vehicle_reg: data.vehicle_reg || 'KA 05 AB 1234',
+        vehicle_model: data.vehicle_model || '2024 / ETIOS',
+        supervisor_name: data.supervisor_name || 'SHARANAPPA',
+        indication_date: data.indication_date || data.invoice_date || new Date().toLocaleDateString('en-GB'),
+        transport_company_name: data.transport_company_name || clientName,
+        item_name: data.item_name || 'SEDAN ROUTE',
+        hsn_sac: data.hsn_sac || '9964',
+        quantity: qty,
+        rate_per_unit: rate,
+        taxable_amount: subtotal,
+        subtotal: subtotal,
+        gst_rate: gstRate,
+        cgst: cgst,
+        sgst: sgst,
+        total_tax: totalTax,
+        cgst_amount: cgst,
+        sgst_amount: sgst,
+        gsp_rent: gspRent,
+        tds_cgst: tdsCgst,
+        tds_amount: tdsAmount,
+        round_off: roundOff,
+        totalAmount: grandTotal,
+        grand_total: grandTotal,
+        amount_in_words: data.amount_in_words || undefined,
+        notes: data.notes || 'Thanks for doing business with us!',
+        payment_method: data.payment_method || 'NEFT / RTGS',
+        status: 'ISSUED',
+        createdAt: new Date().toISOString()
+      } as any;
+
+      setInvoices(prev => {
+        const next = [resultInvoice!, ...prev];
+        try { localStorage.setItem('sjt_invoices_list', JSON.stringify(next)); } catch (_) {}
+        return next;
+      });
+    }
+
+    const finalInv = resultInvoice!;
     triggerNotification({
       type: 'PAYMENT',
       title: 'Tax Invoice Generated',
-      message: `Invoice #${result.invoice.invoice_number || result.invoice.invoiceNumber} created for ${result.invoice.client_name || result.invoice.companyName}. Amount: ₹${Number(result.invoice.grand_total || result.invoice.totalAmount).toLocaleString('en-IN')}`,
+      message: `Invoice #${finalInv.invoice_number || finalInv.invoiceNumber} created for ${finalInv.client_name || finalInv.companyName}. Amount: ₹${Number(finalInv.grand_total || finalInv.totalAmount).toLocaleString('en-IN')}`,
       target: 'ADMIN'
     });
-    await refreshData();
-    return result.invoice;
+
+    try { await refreshData(); } catch (_) {}
+    return finalInv;
   };
 
   const updateInvoiceStatus = async (id: string, status: string): Promise<void> => {
