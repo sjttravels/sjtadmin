@@ -150,91 +150,7 @@ const DEFAULT_ADMIN_VEHICLES: Vehicle[] = [
   }
 ];
 
-const DEFAULT_ADMIN_BOOKINGS: Booking[] = [
-  {
-    id: 'bkg_1',
-    _id: 'bkg_1',
-    bookingCode: 'SJT-544066',
-    booking_code: 'SJT-544066',
-    customerName: 'Aravind Swaminathan',
-    customerPhone: '+91 98887 76655',
-    customerEmail: 'aravind@gmail.com',
-    tripType: 'AIRPORT',
-    trip_type: 'AIRPORT',
-    pickup: 'Nagasandra BGS Layout, Bengaluru',
-    destination: 'Kempegowda International Airport (BLR T2)',
-    journeyDate: new Date().toISOString().split('T')[0],
-    journey_date: new Date().toISOString().split('T')[0],
-    journeyTime: '06:00 AM',
-    pickupTime: '06:00 AM',
-    vehicleId: 'innova',
-    vehicleName: 'Toyota Innova Crysta',
-    passengers: 4,
-    quotedAmount: 4500,
-    advancePaid: 500,
-    paymentStatus: 'ADVANCE_PAID',
-    status: 'CONFIRMED',
-    createdAt: new Date().toISOString(),
-    source: 'WEBSITE'
-  },
-  {
-    id: 'bkg_2',
-    _id: 'bkg_2',
-    bookingCode: 'SJT-987128',
-    booking_code: 'SJT-987128',
-    customerName: 'Test Passenger',
-    customerPhone: '+91 99888 77777',
-    customerEmail: 'test@gmail.com',
-    tripType: 'POINT_TO_POINT',
-    trip_type: 'POINT_TO_POINT',
-    pickup: 'Uttarahalli, Bengaluru',
-    destination: 'Indiranagar, Bengaluru',
-    journeyDate: new Date().toISOString().split('T')[0],
-    journey_date: new Date().toISOString().split('T')[0],
-    journeyTime: '10:00 AM',
-    pickupTime: '10:00 AM',
-    vehicleId: 'etios',
-    vehicleName: 'Toyota Etios / Sedan',
-    passengers: 2,
-    quotedAmount: 216,
-    advancePaid: 0,
-    paymentStatus: 'PENDING',
-    status: 'CONFIRMED',
-    createdAt: new Date().toISOString(),
-    source: 'WEBSITE'
-  },
-  {
-    id: 'bkg_3',
-    _id: 'bkg_3',
-    bookingCode: 'SJT-766173',
-    booking_code: 'SJT-766173',
-    customerName: 'Yeshwanth K',
-    customerPhone: '+91 97259 85286',
-    customerEmail: 'yeshwanth@sjttravels.com',
-    tripType: 'POINT_TO_POINT',
-    trip_type: 'POINT_TO_POINT',
-    pickup: 'Uttarahalli, Bengaluru, Karnataka',
-    destination: 'Whitefield, Bengaluru',
-    journeyDate: new Date().toISOString().split('T')[0],
-    journey_date: new Date().toISOString().split('T')[0],
-    journeyTime: '02:30 PM',
-    pickupTime: '02:30 PM',
-    vehicleId: 'ertiga',
-    vehicleName: 'Maruti Suzuki Ertiga',
-    passengers: 3,
-    quotedAmount: 1850,
-    advancePaid: 500,
-    paymentStatus: 'ADVANCE_PAID',
-    status: 'ASSIGNED',
-    assignedDriverId: 'drv_ramesh',
-    assigned_driver_id: 'drv_ramesh',
-    assignedDriverName: 'Ramesh Kumar',
-    assigned_driver_name: 'Ramesh Kumar',
-    assigned_driver_phone: '+91 99009 75920',
-    createdAt: new Date().toISOString(),
-    source: 'CUSTOMER_APP'
-  }
-];
+const DEFAULT_ADMIN_BOOKINGS: Booking[] = [];
 
 const DEFAULT_ADMIN_DRIVERS: DriverProfile[] = [
   {
@@ -863,9 +779,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [bookings, setBookings] = useState<Booking[]>(() => {
     try {
       const saved = localStorage.getItem('sjt_bookings_list');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.filter((b: any) =>
+            b && !String(b.id || '').startsWith('bkg_') &&
+            !['SJT-544066', 'SJT-987128', 'SJT-766173'].includes(b.bookingCode || b.booking_code) &&
+            !['Aravind Swaminathan', 'Test Passenger', 'Overlapping Customer', 'Vinay Kumar', 'Priya Sharma', 'Antigravity Test Customer'].includes(b.customerName || b.customer_name)
+          );
+        }
+      }
     } catch { }
-    return DEFAULT_ADMIN_BOOKINGS;
+    return [];
   });
   const [dutyLogs, setDutyLogs] = useState<CompanyDutyLog[]>([]);
   const [kycRequests, setKycRequests] = useState<DriverKycApplication[]>(() => {
@@ -1132,7 +1057,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [refreshData]);
 
   useEffect(() => {
-    const syncTimer = window.setInterval(() => refreshData(true), 8000);
+    const syncTimer = window.setInterval(() => refreshData(true), 4000);
     return () => window.clearInterval(syncTimer);
   }, [refreshData]);
 
