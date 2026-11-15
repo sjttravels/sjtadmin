@@ -884,27 +884,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const isDriver = currentUser?.role === 'DRIVER';
       const employeePermissions = currentUser?.permissions || [];
       const canAccess = (permission: string) => isAdmin || (isEmployee && employeePermissions.includes(permission));
+      const shouldFetchFull = !silent;
       const [vRes, bRes, dRes, sRes, invRes, kycRes, drvRes, empRes, revRes, attRes, txRes, accRes] = await Promise.all([
-        fetch(`${API_BASE}/api/vehicles`).catch(() => null),
+        shouldFetchFull ? fetch(`${API_BASE}/api/vehicles`).catch(() => null) : Promise.resolve(null),
         fetch(bookingsUrl, { headers: sessionHeaders() }).catch(() => null),
         fetch(`${API_BASE}/api/duties`, { headers: sessionHeaders() }).catch(() => null),
-        hasSession && isAdmin
+        shouldFetchFull && hasSession && isAdmin
           ? fetch(`${API_BASE}/api/stats`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && canAccess('accounts')
+        shouldFetchFull && hasSession && canAccess('accounts')
           ? fetch(`${API_BASE}/api/invoices`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && isAdmin
+        shouldFetchFull && hasSession && isAdmin
           ? fetch(`${API_BASE}/api/admin/kyc-requests`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && canAccess('drivers')
+        shouldFetchFull && hasSession && canAccess('drivers')
           ? fetch(`${API_BASE}/api/drivers`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && isAdmin
+        shouldFetchFull && hasSession && isAdmin
           ? fetch(`${API_BASE}/api/employees`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && canAccess('accounts')
+        shouldFetchFull && hasSession && canAccess('accounts')
           ? fetch(`${API_BASE}/api/admin/revenue-analytics`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && (canAccess('attendance') || canAccess('payroll'))
+        shouldFetchFull && hasSession && (canAccess('attendance') || canAccess('payroll'))
           ? fetch(`${API_BASE}/api/admin/driver-attendance-payroll`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && canAccess('accounts')
+        shouldFetchFull && hasSession && canAccess('accounts')
           ? fetch(`${API_BASE}/api/accounts/transactions`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && canAccess('accounts')
+        shouldFetchFull && hasSession && canAccess('accounts')
           ? fetch(`${API_BASE}/api/accounts/summary`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null)
       ]);
 
