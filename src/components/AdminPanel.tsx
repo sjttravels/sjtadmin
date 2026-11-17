@@ -54,8 +54,11 @@ import {
   Search,
   ChevronDown,
   Calculator,
-  CreditCard
+  CreditCard,
+  Compass,
+  Home
 } from 'lucide-react';
+import { parseLocationDetails } from '../utils/locationUtils';
 import { Booking, Vehicle, Employee, DriverAttendanceRecord, CompanyTransaction, CorporateInvoice, SavedCompanyProfile, DriverPaymentVoucher } from '../types';
 import { exportToExcel, printSectionTable } from '../utils/exportUtils';
 import { DriverVoucherModal } from './DriverVoucherModal';
@@ -2018,7 +2021,9 @@ export const AdminPanel: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {filteredBookings.map(b => (
+                    {filteredBookings.map(b => {
+                      const loc = parseLocationDetails(b);
+                      return (
                       <tr key={b.id || b._id} className="hover:bg-slate-50 transition-colors">
                         <td className="py-3 font-mono font-bold text-[#ED1735]">#{b.bookingCode || b.booking_code}</td>
                         <td className="py-3">
@@ -2027,18 +2032,38 @@ export const AdminPanel: React.FC = () => {
                         </td>
                         <td className="py-3 text-slate-600">
                           <div className="flex items-center gap-1 flex-wrap">
-                            <span className="font-semibold text-slate-800">{b.pickup}</span>
+                            <span className="font-semibold text-slate-800">{loc.cleanPickup || b.pickup}</span>
+                            {loc.mapsDirUrl && (
+                              <a
+                                href={loc.mapsDirUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 bg-emerald-50 border border-emerald-200 rounded"
+                                title="Turn-by-turn GPS Navigation to Customer Doorstep"
+                              >
+                                <Compass className="w-2.5 h-2.5 text-emerald-600" />
+                                <span>Navigate</span>
+                              </a>
+                            )}
                             <a
-                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.pickup)}`}
+                              href={loc.mapsPinUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.cleanPickup || b.pickup)}`}
                               target="_blank"
                               rel="noreferrer"
                               className="text-blue-600 hover:text-blue-800 inline-flex items-center gap-0.5 text-[10px] font-bold px-1 py-0.5 bg-blue-50 rounded"
                               title="Open Pickup in Google Maps"
                             >
                               <ExternalLink className="w-2.5 h-2.5" />
-                              <span>Maps</span>
+                              <span>{loc.mapsDirUrl ? 'Pin' : 'Maps'}</span>
                             </a>
                           </div>
+                          {loc.exactAddress && (
+                            <div className="text-[11px] text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 border border-emerald-200 flex items-start gap-1">
+                              <Home className="w-3 h-3 text-emerald-600 shrink-0 mt-0.5" />
+                              <span className="font-medium truncate max-w-[220px]" title={loc.exactAddress}>
+                                {loc.exactAddress}
+                              </span>
+                            </div>
+                          )}
                           <div className="text-[11px] text-slate-500">→ {b.destination}</div>
                         </td>
                         <td className="py-3 font-bold text-slate-900">₹{(b.quotedAmount || b.quoted_amount || 0).toLocaleString('en-IN')}</td>
@@ -2189,7 +2214,8 @@ export const AdminPanel: React.FC = () => {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -5161,9 +5187,38 @@ export const AdminPanel: React.FC = () => {
                 <span className="font-bold text-slate-800">{notifyingBooking.customerName || notifyingBooking.customer_name}</span>
                 <span className="font-mono text-slate-600">{notifyingBooking.customerPhone || notifyingBooking.customer_phone}</span>
               </div>
-              <div className="text-[11px] text-slate-600 flex items-center gap-1 truncate">
-                <span className="text-[#ED1735] font-bold">From:</span> {notifyingBooking.pickup}
-              </div>
+              {(() => {
+                const loc = parseLocationDetails(notifyingBooking);
+                return (
+                  <>
+                    <div className="text-[11px] text-slate-600 flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[#ED1735] font-bold">From:</span>
+                      <span>{loc.cleanPickup || notifyingBooking.pickup}</span>
+                      {loc.mapsDirUrl && (
+                        <a
+                          href={loc.mapsDirUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
+                          title="Open Turn-by-turn GPS Navigation"
+                        >
+                          <Compass className="w-2.5 h-2.5 text-emerald-600" />
+                          <span>Navigate</span>
+                        </a>
+                      )}
+                    </div>
+                    {loc.exactAddress && (
+                      <div className="text-[11px] text-emerald-900 bg-emerald-50/90 border border-emerald-200 px-2 py-1 rounded-lg flex items-start gap-1.5">
+                        <Home className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-bold">Doorstep / Flat Address: </span>
+                          <span>{loc.exactAddress}</span>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
               <div className="text-[11px] text-slate-600 flex items-center gap-1 truncate">
                 <span className="text-emerald-600 font-bold">To:</span> {notifyingBooking.destination || notifyingBooking.drop}
               </div>
