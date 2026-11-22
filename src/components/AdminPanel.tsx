@@ -3244,7 +3244,7 @@ export const AdminPanel: React.FC = () => {
                                       type="button"
                                       onClick={async () => {
                                         try {
-                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
+                                                                                    setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
                                         } catch (error) {
                                           alert(error instanceof Error ? error.message : 'Could not open document.');
                                         }
@@ -3312,7 +3312,7 @@ export const AdminPanel: React.FC = () => {
                                       type="button"
                                       onClick={async () => {
                                         try {
-                                          setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
+                                                                                    setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
                                         } catch (error) {
                                           alert(error instanceof Error ? error.message : 'Could not open document.');
                                         }
@@ -5617,13 +5617,13 @@ export const AdminPanel: React.FC = () => {
       {/* MODAL: LEGACY DOCUMENT INSPECTION MODAL */}
       {/* ======================================================== */}
       {docPreviewUrl && (
-        <div 
-          className="fixed inset-0 z-[120] bg-black/85 backdrop-blur-sm p-4 flex items-center justify-center animate-fade-in" 
-          onClick={() => { 
+        <div
+          className="fixed inset-0 z-[120] bg-black/85 backdrop-blur-sm p-4 flex items-center justify-center animate-fade-in"
+          onClick={() => {
             if (docPreviewUrl && !docPreviewUrl.startsWith('data:')) {
-              try { URL.revokeObjectURL(docPreviewUrl); } catch (_) {}
+              try { URL.revokeObjectURL(docPreviewUrl); } catch (_) { }
             }
-            setDocPreviewUrl(null); 
+            setDocPreviewUrl(null);
           }}
         >
           <div className="w-full max-w-4xl max-h-[90vh] bg-slate-900 rounded-3xl p-5 flex flex-col gap-3 shadow-2xl border border-slate-700" onClick={e => e.stopPropagation()}>
@@ -5632,13 +5632,13 @@ export const AdminPanel: React.FC = () => {
                 <FileCheck className="w-5 h-5 text-emerald-400" />
                 <strong className="text-sm font-black text-white">Commercial Induction Document Preview & Inspection</strong>
               </div>
-              <button 
-                onClick={() => { 
+              <button
+                onClick={() => {
                   if (docPreviewUrl && !docPreviewUrl.startsWith('data:')) {
-                    try { URL.revokeObjectURL(docPreviewUrl); } catch (_) {}
+                    try { URL.revokeObjectURL(docPreviewUrl); } catch (_) { }
                   }
-                  setDocPreviewUrl(null); 
-                }} 
+                  setDocPreviewUrl(null);
+                }}
                 className="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition cursor-pointer"
               >
                 ✕ Close
@@ -5655,356 +5655,1010 @@ export const AdminPanel: React.FC = () => {
         </div>
       )}
 
-      {docInspectionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 my-8">
-            <div className="flex items-center justify-between border-b pb-3">
-              <div>
-                <h3 className="font-black text-lg text-[#071B49] flex items-center gap-2">
-                  <FileCheck className="w-5 h-5 text-emerald-600" />
-                  <span>Legacy driver application</span>
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Chauffeur: <strong>{docInspectionModal.driver_name}</strong> • Phone: {docInspectionModal.driver_phone}
-                </p>
-              </div>
-              <button
-                onClick={() => setDocInspectionModal(null)}
-                className="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Legacy photo preview; this does not perform identity matching. */}
-            <div className="bg-slate-900 text-white p-4 rounded-2xl space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black flex items-center gap-1.5 text-emerald-400">
-                  <Scan className="w-4 h-4" />
-                  <span>Manual photo review only</span>
-                </span>
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-500/40">
-                  Automated verification unavailable
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Live Selfie */}
-                <div className="bg-slate-800 p-2.5 rounded-xl text-center space-y-1.5 border border-slate-700">
-                  <div className="w-24 h-24 mx-auto rounded-xl overflow-hidden border-2 border-emerald-400 shadow">
-                    <img
-                      src={docInspectionModal.live_face_photo_url || ''}
-                      alt="Live Face"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span className="text-[10px] font-bold text-slate-300 block">Live App Selfie Capture</span>
-                  <span className="text-[9px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded font-bold border border-emerald-800">
-                    Photo upload only; no liveness check
-                  </span>
-                </div>
-
-                {/* DL Photo */}
-                <div className="bg-slate-800 p-2.5 rounded-xl text-center space-y-1.5 border border-slate-700">
-                  <div className="w-24 h-24 mx-auto rounded-xl overflow-hidden border-2 border-blue-400 shadow">
-                    <img
-                      src={docInspectionModal.license_doc_url || ''}
-                      alt="DL Photo"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span className="text-[10px] font-bold text-slate-300 block">Government Driving License Photo</span>
-                  <span className="text-[9px] text-blue-400 bg-blue-950/60 px-1.5 py-0.5 rounded font-bold border border-blue-800">
-                    External registry not checked
-                  </span>
-                </div>
-              </div>
-
-              <div className="text-[10px] text-slate-400 bg-black/40 p-2 rounded-xl flex items-center justify-between">
-                <span>No facial analysis performed</span>
-                <span>No anti-spoofing check</span>
-                <span>Manual administrator review only</span>
-              </div>
-            </div>
-
-            {/* 5 GOVERNMENT DOCUMENTS VAULT */}
-            <div className="space-y-3">
-              <span className="font-extrabold text-xs text-[#071B49] uppercase block">
-                Legacy documents · administrator review required
-              </span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                {/* 1. DL Front & Back */}
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-800">1. Commercial DL (Sarathi)</span>
-                    <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold">
-                      Review required
-                    </span>
-                  </div>
-                  <div className="font-mono text-[11px] text-slate-600">No: {docInspectionModal.license_number}</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img
-                        src={docInspectionModal.license_doc_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&q=80'}
-                        alt="DL Front"
-                        className="w-full h-full object-cover"
-                      />
+            {docInspectionModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+                <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 my-8">
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <div>
+                      <h3 className="font-black text-lg text-[#071B49] flex items-center gap-2">
+                        <FileCheck className="w-5 h-5 text-emerald-600" />
+                        <span>Legacy driver application</span>
+                      </h3>
+                      <p className="text-xs text-slate-500">
+                        Chauffeur: <strong>{docInspectionModal.driver_name}</strong> • Phone: {docInspectionModal.driver_phone}
+                      </p>
                     </div>
-                    <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img
-                        src={docInspectionModal.license_back_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'}
-                        alt="DL Back"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. Aadhaar Card Front & Back */}
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-800">2. UIDAI Aadhaar Card</span>
-                    <span className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded font-bold">
-                      UIDAI Matched
-                    </span>
-                  </div>
-                  <div className="font-mono text-[11px] text-slate-600">No: {docInspectionModal.aadhar_number}</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img
-                        src={docInspectionModal.aadhar_doc_url || 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&q=80'}
-                        alt="Aadhaar Front"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img
-                        src={docInspectionModal.aadhar_back_doc_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'}
-                        alt="Aadhaar Back"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. PSV Commercial Badge */}
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-800">3. Commercial PSV Badge</span>
-                    <span className="text-[9px] bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded font-bold">
-                      Transport PSV
-                    </span>
-                  </div>
-                  <div className="font-mono text-[11px] text-slate-600">Badge: {docInspectionModal.badge_number || 'PSV-KA-84920'}</div>
-                  <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                    <img
-                      src={docInspectionModal.psv_badge_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'}
-                      alt="PSV Badge"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* 4 & 5. Police Clearance & Medical Fitness */}
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-800">4. Police & Medical (Form 1A)</span>
-                    <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold">
-                      Review required
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-slate-600">No police or medical registry check performed by SJT.</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img
-                        src={docInspectionModal.police_verification_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'}
-                        alt="Police Clearance"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
-                      <img
-                        src={docInspectionModal.medical_fitness_doc_url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80'}
-                        alt="Medical Certificate"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* MODAL ACTIONS */}
-            <div className="flex gap-2 pt-3 border-t">
-              <button
-                type="button"
-                onClick={() => setDocInspectionModal(null)}
-                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs cursor-pointer"
-              >
-                Close Audit
-              </button>
-              {docInspectionModal.kyc_status === 'PENDING' && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const target = docInspectionModal;
-                      setDocInspectionModal(null);
-                      setShowRejectModal(target.id);
-                    }}
-                    className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl font-bold text-xs cursor-pointer"
-                  >
-                    Reject
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const target = docInspectionModal;
-                      setDocInspectionModal(null);
-                      openApproveDriverModal(target);
-                    }}
-                    className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    <BadgeCheck className="w-4 h-4" />
-                    <span>Approve & Assign Vehicle</span>
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* MODAL: RECORD PAY-IN / BILLING INFLOW */}
-      {/* ======================================================== */}
-      {showAddPayInModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-8">
-            <div className="bg-gradient-to-r from-emerald-700 to-teal-800 text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
-                  <ArrowDownLeft className="w-5 h-5 text-emerald-300" />
-                </div>
-                <div>
-                  <h3 className="text-base font-black">Record Company Pay-In / Billing</h3>
-                  <p className="text-xs text-emerald-200">Incoming revenue, customer advances & corporate payments</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAddPayInModal(false)}
-                className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreatePayIn} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Amount (₹) <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      placeholder="5500"
-                      value={payInForm.amount}
-                      onChange={(e) => setPayInForm({ ...payInForm, amount: e.target.value })}
-                      className="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-slate-700">
-                      Category <span className="text-red-500">*</span>
-                    </label>
                     <button
-                      type="button"
-                      onClick={() => setShowAddPayInCatInput(!showAddPayInCatInput)}
-                      className="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-0.5 cursor-pointer"
+                      onClick={() => setDocInspectionModal(null)}
+                      className="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer"
                     >
-                      <Plus className="w-3 h-3" />
-                      <span>{showAddPayInCatInput ? 'Close' : '+ Custom'}</span>
+                      ✕
                     </button>
                   </div>
 
-                  {showAddPayInCatInput ? (
-                    <div className="flex gap-1.5">
-                      <input
-                        type="text"
-                        placeholder="New category name..."
-                        value={customPayInCatName}
-                        onChange={(e) => setCustomPayInCatName(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-emerald-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (customPayInCatName.trim()) {
-                            const updated = [...payInCategories, customPayInCatName.trim()];
-                            setPayInCategories(updated);
-                            try { localStorage.setItem('sjt_payin_categories', JSON.stringify(updated)); } catch { }
-                            setPayInForm({ ...payInForm, category: customPayInCatName.trim() });
-                            setCustomPayInCatName('');
-                            setShowAddPayInCatInput(false);
-                          }
-                        }}
-                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer"
-                      >
-                        Add
-                      </button>
+                  {/* Legacy photo preview; this does not perform identity matching. */}
+                  <div className="bg-slate-900 text-white p-4 rounded-2xl space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black flex items-center gap-1.5 text-emerald-400">
+                        <Scan className="w-4 h-4" />
+                        <span>Manual photo review only</span>
+                      </span>
+                      <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-500/40">
+                        Automated verification unavailable
+                      </span>
                     </div>
-                  ) : (
-                    <select
-                      value={payInForm.category}
-                      onChange={(e) => {
-                        if (e.target.value === '__ADD_NEW__') {
-                          setShowAddPayInCatInput(true);
-                        } else {
-                          setPayInForm({ ...payInForm, category: e.target.value });
-                        }
-                      }}
-                      className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Live Selfie */}
+                      <div className="bg-slate-800 p-2.5 rounded-xl text-center space-y-1.5 border border-slate-700">
+                        <div className="w-24 h-24 mx-auto rounded-xl overflow-hidden border-2 border-emerald-400 shadow">
+                          <img
+                            src={docInspectionModal.live_face_photo_url || ''}
+                            alt="Live Face"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-300 block">Live App Selfie Capture</span>
+                        <span className="text-[9px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded font-bold border border-emerald-800">
+                          Photo upload only; no liveness check
+                        </span>
+                      </div>
+
+                      {/* DL Photo */}
+                      <div className="bg-slate-800 p-2.5 rounded-xl text-center space-y-1.5 border border-slate-700">
+                        <div className="w-24 h-24 mx-auto rounded-xl overflow-hidden border-2 border-blue-400 shadow">
+                          <img
+                            src={docInspectionModal.license_doc_url || ''}
+                            alt="DL Photo"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-300 block">Government Driving License Photo</span>
+                        <span className="text-[9px] text-blue-400 bg-blue-950/60 px-1.5 py-0.5 rounded font-bold border border-blue-800">
+                          External registry not checked
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-[10px] text-slate-400 bg-black/40 p-2 rounded-xl flex items-center justify-between">
+                      <span>No facial analysis performed</span>
+                      <span>No anti-spoofing check</span>
+                      <span>Manual administrator review only</span>
+                    </div>
+                  </div>
+
+                  {/* 5 GOVERNMENT DOCUMENTS VAULT */}
+                  <div className="space-y-3">
+                    <span className="font-extrabold text-xs text-[#071B49] uppercase block">
+                      Legacy documents · administrator review required
+                    </span>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                      {/* 1. DL Front & Back */}
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-800">1. Commercial DL (Sarathi)</span>
+                          <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold">
+                            Review required
+                          </span>
+                        </div>
+                        <div className="font-mono text-[11px] text-slate-600">No: {docInspectionModal.license_number}</div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
+                            <img
+                              src={docInspectionModal.license_doc_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&q=80'}
+                              alt="DL Front"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
+                            <img
+                              src={docInspectionModal.license_back_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'}
+                              alt="DL Back"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 2. Aadhaar Card Front & Back */}
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-800">2. UIDAI Aadhaar Card</span>
+                          <span className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded font-bold">
+                            UIDAI Matched
+                          </span>
+                        </div>
+                        <div className="font-mono text-[11px] text-slate-600">No: {docInspectionModal.aadhar_number}</div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
+                            <img
+                              src={docInspectionModal.aadhar_doc_url || 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&q=80'}
+                              alt="Aadhaar Front"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
+                            <img
+                              src={docInspectionModal.aadhar_back_doc_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'}
+                              alt="Aadhaar Back"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3. PSV Commercial Badge */}
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-800">3. Commercial PSV Badge</span>
+                          <span className="text-[9px] bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded font-bold">
+                            Transport PSV
+                          </span>
+                        </div>
+                        <div className="font-mono text-[11px] text-slate-600">Badge: {docInspectionModal.badge_number || 'PSV-KA-84920'}</div>
+                        <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
+                          <img
+                            src={docInspectionModal.psv_badge_doc_url || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80'}
+                            alt="PSV Badge"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+
+                      {/* 4 & 5. Police Clearance & Medical Fitness */}
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-800">4. Police & Medical (Form 1A)</span>
+                          <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold">
+                            Review required
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-600">No police or medical registry check performed by SJT.</div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
+                            <img
+                              src={docInspectionModal.police_verification_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80'}
+                              alt="Police Clearance"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="h-24 rounded-lg overflow-hidden border border-slate-300 bg-white">
+                            <img
+                              src={docInspectionModal.medical_fitness_doc_url || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80'}
+                              alt="Medical Certificate"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* MODAL ACTIONS */}
+                  <div className="flex gap-2 pt-3 border-t">
+                    <button
+                      type="button"
+                      onClick={() => setDocInspectionModal(null)}
+                      className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs cursor-pointer"
                     >
-                      {payInCategories.map((cat, idx) => (
-                        <option key={idx} value={cat}>{cat}</option>
-                      ))}
-                      <option value="__ADD_NEW__">+ Add Custom Category...</option>
-                    </select>
-                  )}
+                      Close Audit
+                    </button>
+                    {docInspectionModal.kyc_status === 'PENDING' && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const target = docInspectionModal;
+                            setDocInspectionModal(null);
+                            setShowRejectModal(target.id);
+                          }}
+                          className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl font-bold text-xs cursor-pointer"
+                        >
+                          Reject
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const target = docInspectionModal;
+                            setDocInspectionModal(null);
+                            openApproveDriverModal(target);
+                          }}
+                          className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                          <BadgeCheck className="w-4 h-4" />
+                          <span>Approve & Assign Vehicle</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
+            )}
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Description / Title <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Booking Advance - Bengaluru to Mysuru (12 Pax)"
-                  value={payInForm.title}
-                  onChange={(e) => setPayInForm({ ...payInForm, title: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
+            {/* ======================================================== */}
+            {/* MODAL: RECORD PAY-IN / BILLING INFLOW */}
+            {/* ======================================================== */}
+            {showAddPayInModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+                <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-8">
+                  <div className="bg-gradient-to-r from-emerald-700 to-teal-800 text-white px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
+                        <ArrowDownLeft className="w-5 h-5 text-emerald-300" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black">Record Company Pay-In / Billing</h3>
+                        <p className="text-xs text-emerald-200">Incoming revenue, customer advances & corporate payments</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddPayInModal(false)}
+                      className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreatePayIn} className="p-6 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
+                          Amount (₹) <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+                          <input
+                            type="number"
+                            required
+                            min="1"
+                            placeholder="5500"
+                            value={payInForm.amount}
+                            onChange={(e) => setPayInForm({ ...payInForm, amount: e.target.value })}
+                            className="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-xs font-bold text-slate-700">
+                            Category <span className="text-red-500">*</span>
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddPayInCatInput(!showAddPayInCatInput)}
+                            className="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>{showAddPayInCatInput ? 'Close' : '+ Custom'}</span>
+                          </button>
+                        </div>
+
+                        {showAddPayInCatInput ? (
+                          <div className="flex gap-1.5">
+                            <input
+                              type="text"
+                              placeholder="New category name..."
+                              value={customPayInCatName}
+                              onChange={(e) => setCustomPayInCatName(e.target.value)}
+                              className="w-full px-2.5 py-1.5 bg-slate-50 border border-emerald-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (customPayInCatName.trim()) {
+                                  const updated = [...payInCategories, customPayInCatName.trim()];
+                                  setPayInCategories(updated);
+                                  try { localStorage.setItem('sjt_payin_categories', JSON.stringify(updated)); } catch { }
+                                  setPayInForm({ ...payInForm, category: customPayInCatName.trim() });
+                                  setCustomPayInCatName('');
+                                  setShowAddPayInCatInput(false);
+                                }
+                              }}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                            >
+                              Add
+                            </button>
+                          </div>
+                        ) : (
+                          <select
+                            value={payInForm.category}
+                            onChange={(e) => {
+                              if (e.target.value === '__ADD_NEW__') {
+                                setShowAddPayInCatInput(true);
+                              } else {
+                                setPayInForm({ ...payInForm, category: e.target.value });
+                              }
+                            }}
+                            className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          >
+                            {payInCategories.map((cat, idx) => (
+                              <option key={idx} value={cat}>{cat}</option>
+                            ))}
+                            <option value="__ADD_NEW__">+ Add Custom Category...</option>
+                          </select>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        Description / Title <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Booking Advance - Bengaluru to Mysuru (12 Pax)"
+                        value={payInForm.title}
+                        onChange={(e) => setPayInForm({ ...payInForm, title: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-xs font-bold text-slate-700">Client / Payer Name <span className="text-red-500">*</span></label>
+                          <div className="flex items-center gap-1">
+                            <select
+                              onChange={(e) => {
+                                if (e.target.value === '__NEW__') {
+                                  setNewCompanyForm({
+                                    name: '',
+                                    clientType: 'CORPORATE',
+                                    gstin: '',
+                                    phone: '',
+                                    address: '',
+                                    placeOfSupply: '29-Karnataka',
+                                    defaultVehicleType: 'SEDAN',
+                                    defaultItemName: 'Passenger Transport Services',
+                                    defaultHsnSac: '9964',
+                                    defaultRatePerUnit: 650,
+                                    defaultGstRate: 18
+                                  });
+                                  setShowAddCompanyModal(true);
+                                } else if (e.target.value) {
+                                  const c = savedCompanies.find(x => x.id === e.target.value);
+                                  if (c) {
+                                    setPayInForm({ ...payInForm, party_name: c.name, party_type: c.clientType as any });
+                                  }
+                                }
+                              }}
+                              className="text-[10px] bg-slate-100 border border-slate-300 rounded px-1.5 py-0.5 text-slate-700 max-w-[130px] truncate font-medium cursor-pointer"
+                            >
+                              <option value="">Saved Companies...</option>
+                              {savedCompanies.map(c => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                              ))}
+                              <option value="__NEW__">+ Add New Company...</option>
+                            </select>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setNewCompanyForm({
+                                  name: '',
+                                  clientType: 'CORPORATE',
+                                  gstin: '',
+                                  phone: '',
+                                  address: '',
+                                  placeOfSupply: '29-Karnataka',
+                                  defaultVehicleType: 'SEDAN',
+                                  defaultItemName: 'Passenger Transport Services',
+                                  defaultHsnSac: '9964',
+                                  defaultRatePerUnit: 650,
+                                  defaultGstRate: 18
+                                });
+                                setShowAddCompanyModal(true);
+                              }}
+                              className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded text-[10px] font-bold flex items-center gap-0.5 cursor-pointer border border-emerald-300"
+                              title="Add New Company Profile"
+                            >
+                              <Plus className="w-3 h-3" />
+                              <span>Company</span>
+                            </button>
+                          </div>
+                        </div>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Aravind K / Infosys Ltd. / Janani Tours"
+                          value={payInForm.party_name}
+                          onChange={(e) => setPayInForm({ ...payInForm, party_name: e.target.value })}
+                          className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                        <label className="flex items-center gap-1.5 cursor-pointer text-[10px] font-bold text-emerald-800 mt-1">
+                          <input
+                            type="checkbox"
+                            checked={savePayInCompanyCheckbox}
+                            onChange={(e) => setSavePayInCompanyCheckbox(e.target.checked)}
+                            className="rounded text-emerald-600 w-3 h-3 cursor-pointer"
+                          />
+                          <span>Save to company directory for 1-click billing</span>
+                        </label>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-xs font-bold text-slate-700">Client Type</label>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddClientTypeInput(!showAddClientTypeInput)}
+                            className="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>{showAddClientTypeInput ? 'Cancel' : '+ Custom Type'}</span>
+                          </button>
+                        </div>
+
+                        {showAddClientTypeInput ? (
+                          <div className="flex gap-1.5">
+                            <input
+                              type="text"
+                              placeholder="New client type..."
+                              value={customClientTypeName}
+                              onChange={(e) => setCustomClientTypeName(e.target.value)}
+                              className="w-full px-2.5 py-1.5 bg-slate-50 border border-emerald-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (customClientTypeName.trim()) {
+                                  const updated = [...clientTypes, customClientTypeName.trim()];
+                                  setClientTypes(updated);
+                                  try { localStorage.setItem('sjt_client_types', JSON.stringify(updated)); } catch { }
+                                  setPayInForm({ ...payInForm, party_type: customClientTypeName.trim() as any });
+                                  setCustomClientTypeName('');
+                                  setShowAddClientTypeInput(false);
+                                }
+                              }}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                            >
+                              Add
+                            </button>
+                          </div>
+                        ) : (
+                          <select
+                            value={payInForm.party_type}
+                            onChange={(e) => {
+                              if (e.target.value === '__ADD_CLIENT_TYPE__') {
+                                setShowAddClientTypeInput(true);
+                              } else {
+                                setPayInForm({ ...payInForm, party_type: e.target.value as any });
+                              }
+                            }}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          >
+                            {clientTypes.map((ct, idx) => (
+                              <option key={idx} value={ct}>{ct}</option>
+                            ))}
+                            <option value="__ADD_CLIENT_TYPE__">+ Add Custom Client Type...</option>
+                          </select>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Payment Mode</label>
+                        <select
+                          value={payInForm.payment_mode}
+                          onChange={(e) => setPayInForm({ ...payInForm, payment_mode: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        >
+                          <option value="UPI">UPI (GPay/PhonePe)</option>
+                          <option value="BANK_TRANSFER">Bank Transfer / IMPS</option>
+                          <option value="CASH">Cash at Counter</option>
+                          <option value="CARD">Credit / Debit Card</option>
+                          <option value="NET_BANKING">Net Banking</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">UTR / Ref No.</label>
+                        <input
+                          type="text"
+                          placeholder="UPI-263526-REF"
+                          value={payInForm.reference_no}
+                          onChange={(e) => setPayInForm({ ...payInForm, reference_no: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Date</label>
+                        <input
+                          type="date"
+                          value={payInForm.date}
+                          onChange={(e) => setPayInForm({ ...payInForm, date: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Related Booking Code (Optional)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. SJT263526"
+                          value={payInForm.related_booking_code}
+                          onChange={(e) => setPayInForm({ ...payInForm, related_booking_code: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Related Invoice # (Optional)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. SJT-INV-2026-001"
+                          value={payInForm.related_invoice_no}
+                          onChange={(e) => setPayInForm({ ...payInForm, related_invoice_no: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Notes / Remarks</label>
+                      <textarea
+                        rows={2}
+                        placeholder="Additional operational or accounting notes..."
+                        value={payInForm.notes}
+                        onChange={(e) => setPayInForm({ ...payInForm, notes: e.target.value })}
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+
+                    <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-emerald-950">
+                        <input
+                          type="checkbox"
+                          checked={printPayInReceiptOnSave}
+                          onChange={(e) => setPrintPayInReceiptOnSave(e.target.checked)}
+                          className="w-4 h-4 text-emerald-600 rounded cursor-pointer"
+                        />
+                        <span>Generate & Open Official Inward Payment Receipt / Inflow Bill</span>
+                      </label>
+                      <p className="text-[10px] text-emerald-800 mt-0.5 ml-6">
+                        Creates an official printable commercial invoice receipt with SAC 9964, Apex Bank details, and 3D logo.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setShowAddPayInModal(false)}
+                        className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Save Pay-In to Accounts</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
+            )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-slate-700">Client / Payer Name <span className="text-red-500">*</span></label>
-                    <div className="flex items-center gap-1">
-                      <select
-                        onChange={(e) => {
-                          if (e.target.value === '__NEW__') {
+            {/* ======================================================== */}
+            {/* MODAL: RECORD PAYOUT / EXPENSE OUTFLOW */}
+            {/* ======================================================== */}
+            {showAddPayoutModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+                <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-8">
+                  <div className="bg-gradient-to-r from-rose-700 to-red-800 text-white px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
+                        <ArrowUp className="w-5 h-5 text-rose-300" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black">Record Company Payout / Expense</h3>
+                        <p className="text-xs text-rose-200">Driver settlements, fuel, maintenance, Fastag & operations</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddPayoutModal(false)}
+                      className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreatePayout} className="p-6 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
+                          Disbursement Amount (₹) <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+                          <input
+                            type="number"
+                            required
+                            min="1"
+                            placeholder="1850"
+                            value={payoutForm.amount}
+                            onChange={(e) => setPayoutForm({ ...payoutForm, amount: e.target.value })}
+                            className="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-xs font-bold text-slate-700">
+                            Expense Category <span className="text-red-500">*</span>
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddPayoutCatInput(!showAddPayoutCatInput)}
+                            className="text-[10px] text-rose-700 hover:text-rose-900 font-bold flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>{showAddPayoutCatInput ? 'Close' : '+ Custom'}</span>
+                          </button>
+                        </div>
+
+                        {showAddPayoutCatInput ? (
+                          <div className="flex gap-1.5">
+                            <input
+                              type="text"
+                              placeholder="New expense category..."
+                              value={customPayoutCatName}
+                              onChange={(e) => setCustomPayoutCatName(e.target.value)}
+                              className="w-full px-2.5 py-1.5 bg-slate-50 border border-rose-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (customPayoutCatName.trim()) {
+                                  const updated = [...payoutCategories, customPayoutCatName.trim()];
+                                  setPayoutCategories(updated);
+                                  try { localStorage.setItem('sjt_payout_categories', JSON.stringify(updated)); } catch { }
+                                  setPayoutForm({ ...payoutForm, category: customPayoutCatName.trim() });
+                                  setCustomPayoutCatName('');
+                                  setShowAddPayoutCatInput(false);
+                                }
+                              }}
+                              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                            >
+                              Add
+                            </button>
+                          </div>
+                        ) : (
+                          <select
+                            value={payoutForm.category}
+                            onChange={(e) => {
+                              if (e.target.value === '__ADD_NEW__') {
+                                setShowAddPayoutCatInput(true);
+                              } else {
+                                setPayoutForm({ ...payoutForm, category: e.target.value });
+                              }
+                            }}
+                            className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          >
+                            {payoutCategories.map((cat, idx) => (
+                              <option key={idx} value={cat}>{cat}</option>
+                            ))}
+                            <option value="__ADD_NEW__">+ Add Custom Category...</option>
+                          </select>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        Title / Reason <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Daily duty payout to Chauffeur Ramesh Kumar (KA 05 AB 1234)"
+                        value={payoutForm.title}
+                        onChange={(e) => setPayoutForm({ ...payoutForm, title: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-xs font-bold text-slate-700">Payee / Beneficiary <span className="text-red-500">*</span></label>
+                          <div className="flex items-center gap-1">
+                            <select
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '__ADD_NEW__') {
+                                  setNewCompanyForm({ name: '', clientType: 'CORPORATE' });
+                                  setShowAddCompanyModal(true);
+                                } else if (val.startsWith('DRV:')) {
+                                  const drvId = val.replace('DRV:', '');
+                                  const d = drivers.find(x => String(x.id || (x as any)._id) === drvId);
+                                  if (d) setPayoutForm({ ...payoutForm, party_name: `${d.name} (${d.assignedVehicleReg || 'Driver'})`, party_type: 'SJT Chauffeur / Driver' as any });
+                                } else if (val.startsWith('COMP:')) {
+                                  const compId = val.replace('COMP:', '');
+                                  const c = savedCompanies.find(x => x.id === compId);
+                                  if (c) setPayoutForm({ ...payoutForm, party_name: c.name, party_type: 'Commercial Associate / Bus Partner' as any });
+                                }
+                              }}
+                              className="text-[10px] bg-slate-100 border border-slate-300 rounded px-1.5 py-0.5 text-slate-700 max-w-[130px] truncate font-medium cursor-pointer"
+                            >
+                              <option value="">Quick Pick Payee...</option>
+                              {drivers.length > 0 && (
+                                <optgroup label="Registered Chauffeurs">
+                                  {drivers.map(d => (
+                                    <option key={d.id || (d as any)._id} value={`DRV:${d.id || (d as any)._id}`}>{d.name}</option>
+                                  ))}
+                                </optgroup>
+                              )}
+                              {savedCompanies.length > 0 && (
+                                <optgroup label="Saved Companies / Vendors">
+                                  {savedCompanies.map(c => (
+                                    <option key={c.id} value={`COMP:${c.id}`}>{c.name}</option>
+                                  ))}
+                                </optgroup>
+                              )}
+                              <option value="__ADD_NEW__">+ Add Company/Vendor...</option>
+                            </select>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setNewCompanyForm({ name: '', clientType: 'CORPORATE' });
+                                setShowAddCompanyModal(true);
+                              }}
+                              className="px-1.5 py-0.5 bg-rose-100 text-rose-800 hover:bg-rose-200 rounded text-[10px] font-bold flex items-center gap-0.5 cursor-pointer border border-rose-300"
+                              title="Add New Vendor Profile"
+                            >
+                              <Plus className="w-3 h-3" />
+                              <span>Vendor</span>
+                            </button>
+                          </div>
+                        </div>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Ramesh Kumar (Driver) / Bharat Petroleum / Apex Bank"
+                          value={payoutForm.party_name}
+                          onChange={(e) => setPayoutForm({ ...payoutForm, party_name: e.target.value })}
+                          className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-xs font-bold text-slate-700">Payee Type</label>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddPayeeTypeInput(!showAddPayeeTypeInput)}
+                            className="text-[10px] text-rose-700 hover:text-rose-900 font-bold flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>{showAddPayeeTypeInput ? 'Cancel' : '+ Custom'}</span>
+                          </button>
+                        </div>
+
+                        {showAddPayeeTypeInput ? (
+                          <div className="flex gap-1.5">
+                            <input
+                              type="text"
+                              placeholder="New payee type..."
+                              value={customPayeeTypeName}
+                              onChange={(e) => setCustomPayeeTypeName(e.target.value)}
+                              className="w-full px-2.5 py-1.5 bg-slate-50 border border-rose-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (customPayeeTypeName.trim()) {
+                                  const updated = [...payeeTypes, customPayeeTypeName.trim()];
+                                  setPayeeTypes(updated);
+                                  try { localStorage.setItem('sjt_payee_types', JSON.stringify(updated)); } catch { }
+                                  setPayoutForm({ ...payoutForm, party_type: customPayeeTypeName.trim() as any });
+                                  setCustomPayeeTypeName('');
+                                  setShowAddPayeeTypeInput(false);
+                                }
+                              }}
+                              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                            >
+                              Add
+                            </button>
+                          </div>
+                        ) : (
+                          <select
+                            value={payoutForm.party_type}
+                            onChange={(e) => {
+                              if (e.target.value === '__ADD_PAYEE_TYPE__') {
+                                setShowAddPayeeTypeInput(true);
+                              } else {
+                                setPayoutForm({ ...payoutForm, party_type: e.target.value as any });
+                              }
+                            }}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          >
+                            {payeeTypes.map((pt, idx) => (
+                              <option key={idx} value={pt}>{pt}</option>
+                            ))}
+                            <option value="__ADD_PAYEE_TYPE__">+ Add Custom Payee Type...</option>
+                          </select>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Payment Mode</label>
+                        <select
+                          value={payoutForm.payment_mode}
+                          onChange={(e) => setPayoutForm({ ...payoutForm, payment_mode: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        >
+                          <option value="UPI">UPI Instant Pay</option>
+                          <option value="BANK_TRANSFER">Bank NEFT / IMPS</option>
+                          <option value="CASH">Cash Voucher</option>
+                          <option value="CARD">Corporate Fuel Card</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">UTR / Ref No.</label>
+                        <input
+                          type="text"
+                          placeholder="TXN-PAYOUT-8891"
+                          value={payoutForm.reference_no}
+                          onChange={(e) => setPayoutForm({ ...payoutForm, reference_no: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Date</label>
+                        <input
+                          type="date"
+                          value={payoutForm.date}
+                          onChange={(e) => setPayoutForm({ ...payoutForm, date: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Related Duty Code (Optional)</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. DUTY-001 or SJTR263526"
+                        value={payoutForm.related_duty_code}
+                        onChange={(e) => setPayoutForm({ ...payoutForm, related_duty_code: e.target.value })}
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Notes / Remarks</label>
+                      <textarea
+                        rows={2}
+                        placeholder="Voucher details, approved by supervisor, etc..."
+                        value={payoutForm.notes}
+                        onChange={(e) => setPayoutForm({ ...payoutForm, notes: e.target.value })}
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                      />
+                    </div>
+
+                    <div className="bg-rose-50/70 p-3 rounded-xl border border-rose-200">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-rose-950">
+                        <input
+                          type="checkbox"
+                          checked={printPayoutVoucherOnSave}
+                          onChange={(e) => setPrintPayoutVoucherOnSave(e.target.checked)}
+                          className="w-4 h-4 text-rose-600 rounded cursor-pointer"
+                        />
+                        <span>Generate & Open Official Payment Voucher / Expense Invoice Bill</span>
+                      </label>
+                      <p className="text-[10px] text-rose-800 mt-0.5 ml-6">
+                        Creates an official printable commercial expense voucher with dual signatures, debited bank account, and 3D logo.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setShowAddPayoutModal(false)}
+                        className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Record Payout Disbursement</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* ======================================================== */}
+            {/* MODAL: GENERATE OFFICIAL VYAPAR GST TAX INVOICE */}
+            {/* ======================================================== */}
+            {showGenerateInvoiceModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+                <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden border border-slate-200 my-8">
+                  <div className="bg-[#071B49] text-white px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
+                        <Receipt className="w-5 h-5 text-amber-300" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black">Generate Vyapar B2B GST Tax Invoice</h3>
+                        <p className="text-xs text-slate-300">Sharanajyoti Tours & Travels Pvt Ltd • SAC 9964 Passenger Transport</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowGenerateInvoiceModal(false)}
+                      className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors cursor-pointer"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Company / Client Directory (Vyapar & Tally 1-Click Billing) */}
+                  <div className="bg-slate-50 border-b border-slate-200 px-6 py-3.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-[#071B49]" />
+                        <span className="text-xs font-black text-[#071B49] uppercase tracking-wider">
+                          Company / Client Directory:
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <select
+                          value={selectedCompanyId}
+                          onChange={(e) => {
+                            const compId = e.target.value;
+                            setSelectedCompanyId(compId);
+                            const comp = savedCompanies.find(c => c.id === compId);
+                            if (comp) {
+                              setInvoiceForm(prev => ({
+                                ...prev,
+                                client_name: comp.name,
+                                client_type: (comp.clientType as any) || 'CORPORATE',
+                                client_gstin: comp.gstin || '',
+                                client_phone: comp.phone || '',
+                                client_address: comp.address || '',
+                                place_of_supply: comp.placeOfSupply || '29-Karnataka',
+                                vehicle_type: comp.defaultVehicleType || prev.vehicle_type,
+                                vehicle_model: comp.defaultVehicleModel || prev.vehicle_model,
+                                vehicle_reg: comp.defaultVehicleReg || prev.vehicle_reg,
+                                transport_company_name: comp.name,
+                                item_name: comp.defaultItemName || prev.item_name,
+                                hsn_sac: comp.defaultHsnSac || prev.hsn_sac,
+                                rate_per_unit: comp.defaultRatePerUnit || prev.rate_per_unit,
+                                gst_rate: comp.defaultGstRate || prev.gst_rate,
+                                subtotal: (prev.quantity || 1) * (comp.defaultRatePerUnit || prev.rate_per_unit)
+                              }));
+                            }
+                          }}
+                          className="px-3 py-1.5 bg-white border-2 border-blue-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49] cursor-pointer max-w-[260px]"
+                        >
+                          <option value="">-- Choose Saved Company Profile ({savedCompanies.length}) --</option>
+                          {savedCompanies.map(c => (
+                            <option key={c.id} value={c.id}>
+                              {c.name} {c.gstin ? `(${c.gstin.slice(0, 10)}...)` : ''}
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={() => {
                             setNewCompanyForm({
                               name: '',
                               clientType: 'CORPORATE',
@@ -6013,2041 +6667,1387 @@ export const AdminPanel: React.FC = () => {
                               address: '',
                               placeOfSupply: '29-Karnataka',
                               defaultVehicleType: 'SEDAN',
+                              defaultVehicleModel: '',
+                              defaultVehicleReg: '',
                               defaultItemName: 'Passenger Transport Services',
                               defaultHsnSac: '9964',
                               defaultRatePerUnit: 650,
                               defaultGstRate: 18
                             });
                             setShowAddCompanyModal(true);
-                          } else if (e.target.value) {
-                            const c = savedCompanies.find(x => x.id === e.target.value);
-                            if (c) {
-                              setPayInForm({ ...payInForm, party_name: c.name, party_type: c.clientType as any });
-                            }
-                          }
-                        }}
-                        className="text-[10px] bg-slate-100 border border-slate-300 rounded px-1.5 py-0.5 text-slate-700 max-w-[130px] truncate font-medium cursor-pointer"
-                      >
-                        <option value="">Saved Companies...</option>
-                        {savedCompanies.map(c => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                        <option value="__NEW__">+ Add New Company...</option>
-                      </select>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewCompanyForm({
-                            name: '',
-                            clientType: 'CORPORATE',
-                            gstin: '',
-                            phone: '',
-                            address: '',
-                            placeOfSupply: '29-Karnataka',
-                            defaultVehicleType: 'SEDAN',
-                            defaultItemName: 'Passenger Transport Services',
-                            defaultHsnSac: '9964',
-                            defaultRatePerUnit: 650,
-                            defaultGstRate: 18
-                          });
-                          setShowAddCompanyModal(true);
-                        }}
-                        className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded text-[10px] font-bold flex items-center gap-0.5 cursor-pointer border border-emerald-300"
-                        title="Add New Company Profile"
-                      >
-                        <Plus className="w-3 h-3" />
-                        <span>Company</span>
-                      </button>
-                    </div>
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Aravind K / Infosys Ltd. / Janani Tours"
-                    value={payInForm.party_name}
-                    onChange={(e) => setPayInForm({ ...payInForm, party_name: e.target.value })}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                  <label className="flex items-center gap-1.5 cursor-pointer text-[10px] font-bold text-emerald-800 mt-1">
-                    <input
-                      type="checkbox"
-                      checked={savePayInCompanyCheckbox}
-                      onChange={(e) => setSavePayInCompanyCheckbox(e.target.checked)}
-                      className="rounded text-emerald-600 w-3 h-3 cursor-pointer"
-                    />
-                    <span>Save to company directory for 1-click billing</span>
-                  </label>
-                </div>
+                          }}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>+ Add Company Profile</span>
+                        </button>
 
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-slate-700">Client Type</label>
-                    <button
-                      type="button"
-                      onClick={() => setShowAddClientTypeInput(!showAddClientTypeInput)}
-                      className="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-0.5 cursor-pointer"
-                    >
-                      <Plus className="w-3 h-3" />
-                      <span>{showAddClientTypeInput ? 'Cancel' : '+ Custom Type'}</span>
-                    </button>
-                  </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCompanyId('');
+                            setInvoiceForm({
+                              client_name: '',
+                              client_type: 'CORPORATE',
+                              client_gstin: '',
+                              client_address: '',
+                              client_phone: '',
+                              place_of_supply: '29-Karnataka',
+                              invoice_number: `26-27/${Math.floor(56 + Math.random() * 40)}`,
+                              invoice_date: new Date().toLocaleDateString('en-GB'),
+                              invoice_time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                              billing_period: `bill for the month of ${new Date().toLocaleString('en-US', { month: 'short' }).toLowerCase()}`,
+                              vehicle_type: 'SEDAN',
+                              vehicle_reg: '',
+                              supervisor_name: 'SHARANAPPA',
+                              indication_date: new Date().toLocaleDateString('en-GB'),
+                              transport_company_name: '',
+                              vehicle_model: '',
+                              item_name: 'Passenger Transport Services',
+                              hsn_sac: '9964',
+                              quantity: 1,
+                              rate_per_unit: 0,
+                              subtotal: 0,
+                              gst_rate: 18,
+                              gsp_rent: 0,
+                              tds_cgst: 0,
+                              tds_amount: 0,
+                              round_off: 0,
+                              total_trips: 1,
+                              total_km: 0,
+                              vehicle_name: '',
+                              payment_method: 'NEFT / RTGS',
+                              notes: 'Thanks for doing business with us!'
+                            });
+                          }}
+                          className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                        >
+                          Clear Form
+                        </button>
 
-                  {showAddClientTypeInput ? (
-                    <div className="flex gap-1.5">
-                      <input
-                        type="text"
-                        placeholder="New client type..."
-                        value={customClientTypeName}
-                        onChange={(e) => setCustomClientTypeName(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-emerald-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (customClientTypeName.trim()) {
-                            const updated = [...clientTypes, customClientTypeName.trim()];
-                            setClientTypes(updated);
-                            try { localStorage.setItem('sjt_client_types', JSON.stringify(updated)); } catch { }
-                            setPayInForm({ ...payInForm, party_type: customClientTypeName.trim() as any });
-                            setCustomClientTypeName('');
-                            setShowAddClientTypeInput(false);
-                          }
-                        }}
-                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  ) : (
-                    <select
-                      value={payInForm.party_type}
-                      onChange={(e) => {
-                        if (e.target.value === '__ADD_CLIENT_TYPE__') {
-                          setShowAddClientTypeInput(true);
-                        } else {
-                          setPayInForm({ ...payInForm, party_type: e.target.value as any });
-                        }
-                      }}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      {clientTypes.map((ct, idx) => (
-                        <option key={idx} value={ct}>{ct}</option>
-                      ))}
-                      <option value="__ADD_CLIENT_TYPE__">+ Add Custom Client Type...</option>
-                    </select>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Payment Mode</label>
-                  <select
-                    value={payInForm.payment_mode}
-                    onChange={(e) => setPayInForm({ ...payInForm, payment_mode: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  >
-                    <option value="UPI">UPI (GPay/PhonePe)</option>
-                    <option value="BANK_TRANSFER">Bank Transfer / IMPS</option>
-                    <option value="CASH">Cash at Counter</option>
-                    <option value="CARD">Credit / Debit Card</option>
-                    <option value="NET_BANKING">Net Banking</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">UTR / Ref No.</label>
-                  <input
-                    type="text"
-                    placeholder="UPI-263526-REF"
-                    value={payInForm.reference_no}
-                    onChange={(e) => setPayInForm({ ...payInForm, reference_no: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Date</label>
-                  <input
-                    type="date"
-                    value={payInForm.date}
-                    onChange={(e) => setPayInForm({ ...payInForm, date: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Related Booking Code (Optional)</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. SJT263526"
-                    value={payInForm.related_booking_code}
-                    onChange={(e) => setPayInForm({ ...payInForm, related_booking_code: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Related Invoice # (Optional)</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. SJT-INV-2026-001"
-                    value={payInForm.related_invoice_no}
-                    onChange={(e) => setPayInForm({ ...payInForm, related_invoice_no: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Notes / Remarks</label>
-                <textarea
-                  rows={2}
-                  placeholder="Additional operational or accounting notes..."
-                  value={payInForm.notes}
-                  onChange={(e) => setPayInForm({ ...payInForm, notes: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
-
-              <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-emerald-950">
-                  <input
-                    type="checkbox"
-                    checked={printPayInReceiptOnSave}
-                    onChange={(e) => setPrintPayInReceiptOnSave(e.target.checked)}
-                    className="w-4 h-4 text-emerald-600 rounded cursor-pointer"
-                  />
-                  <span>Generate & Open Official Inward Payment Receipt / Inflow Bill</span>
-                </label>
-                <p className="text-[10px] text-emerald-800 mt-0.5 ml-6">
-                  Creates an official printable commercial invoice receipt with SAC 9964, Apex Bank details, and 3D logo.
-                </p>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setShowAddPayInModal(false)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Save Pay-In to Accounts</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* MODAL: RECORD PAYOUT / EXPENSE OUTFLOW */}
-      {/* ======================================================== */}
-      {showAddPayoutModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-8">
-            <div className="bg-gradient-to-r from-rose-700 to-red-800 text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
-                  <ArrowUp className="w-5 h-5 text-rose-300" />
-                </div>
-                <div>
-                  <h3 className="text-base font-black">Record Company Payout / Expense</h3>
-                  <p className="text-xs text-rose-200">Driver settlements, fuel, maintenance, Fastag & operations</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAddPayoutModal(false)}
-                className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreatePayout} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Disbursement Amount (₹) <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      placeholder="1850"
-                      value={payoutForm.amount}
-                      onChange={(e) => setPayoutForm({ ...payoutForm, amount: e.target.value })}
-                      className="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-slate-700">
-                      Expense Category <span className="text-red-500">*</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setShowAddPayoutCatInput(!showAddPayoutCatInput)}
-                      className="text-[10px] text-rose-700 hover:text-rose-900 font-bold flex items-center gap-0.5 cursor-pointer"
-                    >
-                      <Plus className="w-3 h-3" />
-                      <span>{showAddPayoutCatInput ? 'Close' : '+ Custom'}</span>
-                    </button>
-                  </div>
-
-                  {showAddPayoutCatInput ? (
-                    <div className="flex gap-1.5">
-                      <input
-                        type="text"
-                        placeholder="New expense category..."
-                        value={customPayoutCatName}
-                        onChange={(e) => setCustomPayoutCatName(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-rose-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (customPayoutCatName.trim()) {
-                            const updated = [...payoutCategories, customPayoutCatName.trim()];
-                            setPayoutCategories(updated);
-                            try { localStorage.setItem('sjt_payout_categories', JSON.stringify(updated)); } catch { }
-                            setPayoutForm({ ...payoutForm, category: customPayoutCatName.trim() });
-                            setCustomPayoutCatName('');
-                            setShowAddPayoutCatInput(false);
-                          }
-                        }}
-                        className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  ) : (
-                    <select
-                      value={payoutForm.category}
-                      onChange={(e) => {
-                        if (e.target.value === '__ADD_NEW__') {
-                          setShowAddPayoutCatInput(true);
-                        } else {
-                          setPayoutForm({ ...payoutForm, category: e.target.value });
-                        }
-                      }}
-                      className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    >
-                      {payoutCategories.map((cat, idx) => (
-                        <option key={idx} value={cat}>{cat}</option>
-                      ))}
-                      <option value="__ADD_NEW__">+ Add Custom Category...</option>
-                    </select>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Title / Reason <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Daily duty payout to Chauffeur Ramesh Kumar (KA 05 AB 1234)"
-                  value={payoutForm.title}
-                  onChange={(e) => setPayoutForm({ ...payoutForm, title: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-slate-700">Payee / Beneficiary <span className="text-red-500">*</span></label>
-                    <div className="flex items-center gap-1">
-                      <select
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (val === '__ADD_NEW__') {
-                            setNewCompanyForm({ name: '', clientType: 'CORPORATE' });
-                            setShowAddCompanyModal(true);
-                          } else if (val.startsWith('DRV:')) {
-                            const drvId = val.replace('DRV:', '');
-                            const d = drivers.find(x => String(x.id || (x as any)._id) === drvId);
-                            if (d) setPayoutForm({ ...payoutForm, party_name: `${d.name} (${d.assignedVehicleReg || 'Driver'})`, party_type: 'SJT Chauffeur / Driver' as any });
-                          } else if (val.startsWith('COMP:')) {
-                            const compId = val.replace('COMP:', '');
-                            const c = savedCompanies.find(x => x.id === compId);
-                            if (c) setPayoutForm({ ...payoutForm, party_name: c.name, party_type: 'Commercial Associate / Bus Partner' as any });
-                          }
-                        }}
-                        className="text-[10px] bg-slate-100 border border-slate-300 rounded px-1.5 py-0.5 text-slate-700 max-w-[130px] truncate font-medium cursor-pointer"
-                      >
-                        <option value="">Quick Pick Payee...</option>
-                        {drivers.length > 0 && (
-                          <optgroup label="Registered Chauffeurs">
-                            {drivers.map(d => (
-                              <option key={d.id || (d as any)._id} value={`DRV:${d.id || (d as any)._id}`}>{d.name}</option>
-                            ))}
-                          </optgroup>
+                        {selectedCompanyId && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (confirm(`Remove this company profile from saved directory?`)) {
+                                deleteCompanyFromDirectory(selectedCompanyId);
+                              }
+                            }}
+                            className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors cursor-pointer"
+                            title="Delete profile from directory"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         )}
-                        {savedCompanies.length > 0 && (
-                          <optgroup label="Saved Companies / Vendors">
-                            {savedCompanies.map(c => (
-                              <option key={c.id} value={`COMP:${c.id}`}>{c.name}</option>
-                            ))}
-                          </optgroup>
-                        )}
-                        <option value="__ADD_NEW__">+ Add Company/Vendor...</option>
-                      </select>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewCompanyForm({ name: '', clientType: 'CORPORATE' });
-                          setShowAddCompanyModal(true);
-                        }}
-                        className="px-1.5 py-0.5 bg-rose-100 text-rose-800 hover:bg-rose-200 rounded text-[10px] font-bold flex items-center gap-0.5 cursor-pointer border border-rose-300"
-                        title="Add New Vendor Profile"
-                      >
-                        <Plus className="w-3 h-3" />
-                        <span>Vendor</span>
-                      </button>
+                      </div>
                     </div>
                   </div>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Ramesh Kumar (Driver) / Bharat Petroleum / Apex Bank"
-                    value={payoutForm.party_name}
-                    onChange={(e) => setPayoutForm({ ...payoutForm, party_name: e.target.value })}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  />
-                </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-slate-700">Payee Type</label>
+                  <form onSubmit={handleGenerateInvoiceSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+                    {/* SECTION 1: CLIENT / BILL TO INFORMATION */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
+                          <UserCheck className="w-4 h-4 text-blue-600" />
+                          <span>1. Client / Corporate "Bill To" Information</span>
+                        </div>
+                        <label className="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold text-[#071B49]">
+                          <input
+                            type="checkbox"
+                            checked={saveCompanyCheckbox}
+                            onChange={(e) => setSaveCompanyCheckbox(e.target.checked)}
+                            className="w-3.5 h-3.5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
+                          />
+                          <span>Save in Directory for Next Time</span>
+                        </label>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                            Client / Company Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. JANANI TOURS AND TRAVELS PRIVETE LIMITED"
+                            value={invoiceForm.client_name}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, client_name: e.target.value })}
+                            className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Client Type</label>
+                          <select
+                            value={invoiceForm.client_type}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, client_type: e.target.value as any })}
+                            className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          >
+                            {clientTypes.map((ct, idx) => (
+                              <option key={idx} value={ct}>{ct}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Client GSTIN (15 Digits)</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 29AAACJ9953G1Z5"
+                            value={invoiceForm.client_gstin}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, client_gstin: e.target.value.toUpperCase() })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono uppercase text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Contact Phone No</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 9900046809"
+                            value={invoiceForm.client_phone}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, client_phone: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Place of Supply</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 29-Karnataka"
+                            value={invoiceForm.place_of_supply}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, place_of_supply: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Client Billing Address</label>
+                        <textarea
+                          rows={2}
+                          placeholder="e.g. Ground floor L-171 Outer Ring Road Bengaluru, Karnataka-560102 India"
+                          value={invoiceForm.client_address}
+                          onChange={(e) => setInvoiceForm({ ...invoiceForm, client_address: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice No.</label>
+                          <input
+                            type="text"
+                            placeholder="26-27/54"
+                            value={invoiceForm.invoice_number}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, invoice_number: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice Date</label>
+                          <input
+                            type="text"
+                            placeholder="31/10/2026"
+                            value={invoiceForm.invoice_date}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, invoice_date: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice Time</label>
+                          <input
+                            type="text"
+                            placeholder="11:37 AM"
+                            value={invoiceForm.invoice_time}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, invoice_time: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Billing Period</label>
+                          <input
+                            type="text"
+                            placeholder="bill for the month of oct"
+                            value={invoiceForm.billing_period}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, billing_period: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 2: TRANSPORTATION DETAILS (VYAPAR BOX) */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
+                        <Car className="w-4 h-4 text-emerald-600" />
+                        <span>2. Transportation Details (Exact Box as per Vyapar Invoice)</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Type</label>
+                          <input
+                            type="text"
+                            placeholder="SEDAN / MOTORCAB / TEMPO"
+                            value={invoiceForm.vehicle_type}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, vehicle_type: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Number</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. KA 05 AB 1234"
+                            value={invoiceForm.vehicle_reg}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, vehicle_reg: e.target.value.toUpperCase() })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono uppercase text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Supervisor Name</label>
+                          <input
+                            type="text"
+                            placeholder="SHARANAPPA"
+                            value={invoiceForm.supervisor_name}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, supervisor_name: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Indication Date</label>
+                          <input
+                            type="text"
+                            placeholder="31/10/2026"
+                            value={invoiceForm.indication_date}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, indication_date: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Company Name</label>
+                          <input
+                            type="text"
+                            placeholder="JANANI TOURS AND TRAVELS"
+                            value={invoiceForm.transport_company_name}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, transport_company_name: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Model</label>
+                          <input
+                            type="text"
+                            placeholder="2024 / ETIOS"
+                            value={invoiceForm.vehicle_model}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, vehicle_model: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 3: LINE ITEM & PRICING PARTICULARS */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
+                        <Calculator className="w-4 h-4 text-amber-600" />
+                        <span>3. Line Item, HSN/SAC 9964 & Tax Rates</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="md:col-span-2">
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                            Item / Service Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. SEDAN ROUTE or Vehicle Hire Charges"
+                            value={invoiceForm.item_name}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, item_name: e.target.value })}
+                            className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">HSN / SAC Code</label>
+                          <input
+                            type="text"
+                            placeholder="9964"
+                            value={invoiceForm.hsn_sac}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, hsn_sac: e.target.value })}
+                            className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Quantity (Shifts/Duties)</label>
+                          <input
+                            type="number"
+                            min="1"
+                            value={invoiceForm.quantity}
+                            onChange={(e) => {
+                              const q = Number(e.target.value) || 0;
+                              const r = Number(invoiceForm.rate_per_unit) || 0;
+                              setInvoiceForm({
+                                ...invoiceForm,
+                                quantity: q,
+                                total_trips: q,
+                                subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal
+                              });
+                            }}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Rate Card (₹ per unit)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={invoiceForm.rate_per_unit}
+                            onChange={(e) => {
+                              const r = Number(e.target.value) || 0;
+                              const q = Number(invoiceForm.quantity) || 1;
+                              setInvoiceForm({
+                                ...invoiceForm,
+                                rate_per_unit: r,
+                                subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal
+                              });
+                            }}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                            Taxable Amount (₹) <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            min="1"
+                            value={invoiceForm.subtotal}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, subtotal: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-amber-50 border border-amber-300 rounded-xl text-xs font-black text-[#071B49] focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">GST Rate (%)</label>
+                          <select
+                            value={invoiceForm.gst_rate}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, gst_rate: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          >
+                            <option value={18}>18% (CGST 9% + SGST 9%)</option>
+                            <option value={5}>5% (CGST 2.5% + SGST 2.5%)</option>
+                            <option value={12}>12% (CGST 6% + SGST 6%)</option>
+                            <option value={0}>0% (Exempt)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 4: DEDUCTIONS & ADJUSTMENTS (VYAPAR BOTTOM RIGHT BOX) */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
+                        <CreditCard className="w-4 h-4 text-rose-600" />
+                        <span>4. Deductions, GSP Rent, TDS & Round Off Adjustments</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">GSP Rent Deduction (₹)</label>
+                          <input
+                            type="number"
+                            value={invoiceForm.gsp_rent}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, gsp_rent: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">TDSCGST Deduction (₹)</label>
+                          <input
+                            type="number"
+                            value={invoiceForm.tds_cgst}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, tds_cgst: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">TDS @ 2% (192) (₹)</label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={invoiceForm.tds_amount}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, tds_amount: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Round Off Adjustment (₹)</label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={invoiceForm.round_off}
+                            onChange={(e) => setInvoiceForm({ ...invoiceForm, round_off: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* LIVE MATHEMATICAL BREAKDOWN PREVIEW */}
+                    {(() => {
+                      const sub = Number(invoiceForm.subtotal) || 0;
+                      const gstRate = Number(invoiceForm.gst_rate) || 0;
+                      const totalTax = (sub * gstRate) / 100;
+                      const halfTax = totalTax / 2;
+                      const subTotalGross = sub + totalTax;
+                      const gsp = Number(invoiceForm.gsp_rent) || 0;
+                      const tdscgst = Number(invoiceForm.tds_cgst) || 0;
+                      const tds = Number(invoiceForm.tds_amount) || 0;
+                      const roundOff = Number(invoiceForm.round_off) || 0;
+                      const netPayable = subTotalGross - gsp - tdscgst - tds + roundOff;
+                      const invoiceValBeforeTds = subTotalGross - gsp - tdscgst;
+
+                      return (
+                        <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-2">
+                          <div className="flex items-center justify-between text-xs font-black text-emerald-900 uppercase tracking-wide">
+                            <span>Exact Vyapar Tax & Deduction Calculation Summary</span>
+                            <span className="font-mono text-emerald-700">GSTIN: 29ABOCS4536M1ZI</span>
+                          </div>
+
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2 text-xs">
+                            <div className="bg-white p-2.5 rounded-xl border border-slate-200">
+                              <div className="text-[10px] text-slate-500 font-bold uppercase">Taxable Subtotal</div>
+                              <div className="font-mono font-black text-sm text-[#071B49]">₹{sub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                            </div>
+
+                            <div className="bg-white p-2.5 rounded-xl border border-slate-200">
+                              <div className="text-[10px] text-slate-500 font-bold uppercase">CGST ({gstRate / 2}%) + SGST ({gstRate / 2}%)</div>
+                              <div className="font-mono font-bold text-sm text-slate-700">₹{totalTax.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                              <div className="text-[10px] text-slate-400">₹{halfTax.toFixed(2)} each</div>
+                            </div>
+
+                            <div className="bg-white p-2.5 rounded-xl border border-slate-200">
+                              <div className="text-[10px] text-slate-500 font-bold uppercase">Total Deductions (GSP+TDS)</div>
+                              <div className="font-mono font-bold text-sm text-rose-600">-₹{(gsp + tdscgst + tds).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                            </div>
+
+                            <div className="bg-emerald-100/70 p-2.5 rounded-xl border border-emerald-300">
+                              <div className="text-[10px] text-emerald-800 font-black uppercase">Net Total (Payable)</div>
+                              <div className="font-mono font-black text-base text-emerald-800">₹{netPayable.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-600 pt-2 border-t border-emerald-200">
+                            <span>Sub Total (Before Deductions): <strong className="font-mono">₹{subTotalGross.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
+                            <span>Invoice Value Before TDS: <strong className="font-mono text-blue-800">₹{invoiceValBeforeTds.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
+                            <span>Bank: <strong>The Karnataka State Cooperative Apex Bank (A/C: 1039111020000025)</strong></span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Payment Method / Term</label>
+                        <input
+                          type="text"
+                          placeholder="NEFT / RTGS"
+                          value={invoiceForm.payment_method}
+                          onChange={(e) => setInvoiceForm({ ...invoiceForm, payment_method: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice Notes / Terms</label>
+                        <input
+                          type="text"
+                          placeholder="Thanks for doing business with us!"
+                          value={invoiceForm.notes}
+                          onChange={(e) => setInvoiceForm({ ...invoiceForm, notes: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setShowGenerateInvoiceModal(false)}
+                        className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2.5 bg-[#071B49] hover:bg-[#0A2668] active:scale-95 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all cursor-pointer flex items-center gap-2"
+                      >
+                        <Receipt className="w-4 h-4 text-amber-300" />
+                        <span>Generate & Preview Vyapar Tax Invoice</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* ======================================================== */}
+            {/* MODAL: ADD / REGISTER NEW COMPANY PROFILE TO DIRECTORY */}
+            {/* ======================================================== */}
+            {showAddCompanyModal && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+                <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-8">
+                  <div className="bg-[#071B49] text-white px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
+                        <Building2 className="w-5 h-5 text-amber-300" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black">Register Company / Corporate Profile</h3>
+                        <p className="text-xs text-slate-300">Save company details for 1-click Vyapar tax billing</p>
+                      </div>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => setShowAddPayeeTypeInput(!showAddPayeeTypeInput)}
-                      className="text-[10px] text-rose-700 hover:text-rose-900 font-bold flex items-center gap-0.5 cursor-pointer"
+                      onClick={() => setShowAddCompanyModal(false)}
+                      className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors cursor-pointer"
                     >
-                      <Plus className="w-3 h-3" />
-                      <span>{showAddPayeeTypeInput ? 'Cancel' : '+ Custom'}</span>
+                      <X className="w-5 h-5" />
                     </button>
                   </div>
 
-                  {showAddPayeeTypeInput ? (
-                    <div className="flex gap-1.5">
-                      <input
-                        type="text"
-                        placeholder="New payee type..."
-                        value={customPayeeTypeName}
-                        onChange={(e) => setCustomPayeeTypeName(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-slate-50 border border-rose-400 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (customPayeeTypeName.trim()) {
-                            const updated = [...payeeTypes, customPayeeTypeName.trim()];
-                            setPayeeTypes(updated);
-                            try { localStorage.setItem('sjt_payee_types', JSON.stringify(updated)); } catch { }
-                            setPayoutForm({ ...payoutForm, party_type: customPayeeTypeName.trim() as any });
-                            setCustomPayeeTypeName('');
-                            setShowAddPayeeTypeInput(false);
-                          }
-                        }}
-                        className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  ) : (
-                    <select
-                      value={payoutForm.party_type}
-                      onChange={(e) => {
-                        if (e.target.value === '__ADD_PAYEE_TYPE__') {
-                          setShowAddPayeeTypeInput(true);
-                        } else {
-                          setPayoutForm({ ...payoutForm, party_type: e.target.value as any });
-                        }
-                      }}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    >
-                      {payeeTypes.map((pt, idx) => (
-                        <option key={idx} value={pt}>{pt}</option>
-                      ))}
-                      <option value="__ADD_PAYEE_TYPE__">+ Add Custom Payee Type...</option>
-                    </select>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Payment Mode</label>
-                  <select
-                    value={payoutForm.payment_mode}
-                    onChange={(e) => setPayoutForm({ ...payoutForm, payment_mode: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  >
-                    <option value="UPI">UPI Instant Pay</option>
-                    <option value="BANK_TRANSFER">Bank NEFT / IMPS</option>
-                    <option value="CASH">Cash Voucher</option>
-                    <option value="CARD">Corporate Fuel Card</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">UTR / Ref No.</label>
-                  <input
-                    type="text"
-                    placeholder="TXN-PAYOUT-8891"
-                    value={payoutForm.reference_no}
-                    onChange={(e) => setPayoutForm({ ...payoutForm, reference_no: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Date</label>
-                  <input
-                    type="date"
-                    value={payoutForm.date}
-                    onChange={(e) => setPayoutForm({ ...payoutForm, date: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Related Duty Code (Optional)</label>
-                <input
-                  type="text"
-                  placeholder="e.g. DUTY-001 or SJTR263526"
-                  value={payoutForm.related_duty_code}
-                  onChange={(e) => setPayoutForm({ ...payoutForm, related_duty_code: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Notes / Remarks</label>
-                <textarea
-                  rows={2}
-                  placeholder="Voucher details, approved by supervisor, etc..."
-                  value={payoutForm.notes}
-                  onChange={(e) => setPayoutForm({ ...payoutForm, notes: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                />
-              </div>
-
-              <div className="bg-rose-50/70 p-3 rounded-xl border border-rose-200">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-rose-950">
-                  <input
-                    type="checkbox"
-                    checked={printPayoutVoucherOnSave}
-                    onChange={(e) => setPrintPayoutVoucherOnSave(e.target.checked)}
-                    className="w-4 h-4 text-rose-600 rounded cursor-pointer"
-                  />
-                  <span>Generate & Open Official Payment Voucher / Expense Invoice Bill</span>
-                </label>
-                <p className="text-[10px] text-rose-800 mt-0.5 ml-6">
-                  Creates an official printable commercial expense voucher with dual signatures, debited bank account, and 3D logo.
-                </p>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setShowAddPayoutModal(false)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Record Payout Disbursement</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* MODAL: GENERATE OFFICIAL VYAPAR GST TAX INVOICE */}
-      {/* ======================================================== */}
-      {showGenerateInvoiceModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden border border-slate-200 my-8">
-            <div className="bg-[#071B49] text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
-                  <Receipt className="w-5 h-5 text-amber-300" />
-                </div>
-                <div>
-                  <h3 className="text-base font-black">Generate Vyapar B2B GST Tax Invoice</h3>
-                  <p className="text-xs text-slate-300">Sharanajyoti Tours & Travels Pvt Ltd • SAC 9964 Passenger Transport</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowGenerateInvoiceModal(false)}
-                className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Company / Client Directory (Vyapar & Tally 1-Click Billing) */}
-            <div className="bg-slate-50 border-b border-slate-200 px-6 py-3.5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#071B49]" />
-                  <span className="text-xs font-black text-[#071B49] uppercase tracking-wider">
-                    Company / Client Directory:
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 flex-wrap">
-                  <select
-                    value={selectedCompanyId}
-                    onChange={(e) => {
-                      const compId = e.target.value;
-                      setSelectedCompanyId(compId);
-                      const comp = savedCompanies.find(c => c.id === compId);
-                      if (comp) {
-                        setInvoiceForm(prev => ({
-                          ...prev,
-                          client_name: comp.name,
-                          client_type: (comp.clientType as any) || 'CORPORATE',
-                          client_gstin: comp.gstin || '',
-                          client_phone: comp.phone || '',
-                          client_address: comp.address || '',
-                          place_of_supply: comp.placeOfSupply || '29-Karnataka',
-                          vehicle_type: comp.defaultVehicleType || prev.vehicle_type,
-                          vehicle_model: comp.defaultVehicleModel || prev.vehicle_model,
-                          vehicle_reg: comp.defaultVehicleReg || prev.vehicle_reg,
-                          transport_company_name: comp.name,
-                          item_name: comp.defaultItemName || prev.item_name,
-                          hsn_sac: comp.defaultHsnSac || prev.hsn_sac,
-                          rate_per_unit: comp.defaultRatePerUnit || prev.rate_per_unit,
-                          gst_rate: comp.defaultGstRate || prev.gst_rate,
-                          subtotal: (prev.quantity || 1) * (comp.defaultRatePerUnit || prev.rate_per_unit)
-                        }));
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!newCompanyForm.name?.trim()) {
+                        alert('Please enter company / client name');
+                        return;
                       }
+                      const newProfile: SavedCompanyProfile = {
+                        id: `comp-${Date.now()}`,
+                        name: newCompanyForm.name.trim(),
+                        clientType: (newCompanyForm.clientType as any) || 'CORPORATE',
+                        gstin: newCompanyForm.gstin?.trim() || undefined,
+                        phone: newCompanyForm.phone?.trim() || undefined,
+                        address: newCompanyForm.address?.trim() || undefined,
+                        placeOfSupply: newCompanyForm.placeOfSupply?.trim() || '29-Karnataka',
+                        defaultVehicleType: newCompanyForm.defaultVehicleType || 'SEDAN',
+                        defaultVehicleModel: newCompanyForm.defaultVehicleModel?.trim() || undefined,
+                        defaultVehicleReg: newCompanyForm.defaultVehicleReg?.trim() || undefined,
+                        defaultItemName: newCompanyForm.defaultItemName?.trim() || 'Passenger Transport Services',
+                        defaultHsnSac: newCompanyForm.defaultHsnSac?.trim() || '9964',
+                        defaultRatePerUnit: Number(newCompanyForm.defaultRatePerUnit) || 650,
+                        defaultGstRate: Number(newCompanyForm.defaultGstRate) || 18
+                      };
+                      saveCompanyToDirectory(newProfile);
+                      setSelectedCompanyId(newProfile.id);
+                      setInvoiceForm(prev => ({
+                        ...prev,
+                        client_name: newProfile.name,
+                        client_type: (newProfile.clientType as any) || 'CORPORATE',
+                        client_gstin: newProfile.gstin || '',
+                        client_phone: newProfile.phone || '',
+                        client_address: newProfile.address || '',
+                        place_of_supply: newProfile.placeOfSupply || '29-Karnataka',
+                        vehicle_type: newProfile.defaultVehicleType || prev.vehicle_type,
+                        vehicle_model: newProfile.defaultVehicleModel || prev.vehicle_model,
+                        vehicle_reg: newProfile.defaultVehicleReg || prev.vehicle_reg,
+                        transport_company_name: newProfile.name,
+                        item_name: newProfile.defaultItemName || prev.item_name,
+                        hsn_sac: newProfile.defaultHsnSac || prev.hsn_sac,
+                        rate_per_unit: newProfile.defaultRatePerUnit || prev.rate_per_unit,
+                        gst_rate: newProfile.defaultGstRate || prev.gst_rate,
+                        subtotal: (prev.quantity || 1) * (newProfile.defaultRatePerUnit || prev.rate_per_unit)
+                      }));
+                      setShowAddCompanyModal(false);
                     }}
-                    className="px-3 py-1.5 bg-white border-2 border-blue-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49] cursor-pointer max-w-[260px]"
+                    className="p-6 space-y-4 max-h-[80vh] overflow-y-auto"
                   >
-                    <option value="">-- Choose Saved Company Profile ({savedCompanies.length}) --</option>
-                    {savedCompanies.map(c => (
-                      <option key={c.id} value={c.id}>
-                        {c.name} {c.gstin ? `(${c.gstin.slice(0, 10)}...)` : ''}
-                      </option>
-                    ))}
-                  </select>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNewCompanyForm({
-                        name: '',
-                        clientType: 'CORPORATE',
-                        gstin: '',
-                        phone: '',
-                        address: '',
-                        placeOfSupply: '29-Karnataka',
-                        defaultVehicleType: 'SEDAN',
-                        defaultVehicleModel: '',
-                        defaultVehicleReg: '',
-                        defaultItemName: 'Passenger Transport Services',
-                        defaultHsnSac: '9964',
-                        defaultRatePerUnit: 650,
-                        defaultGstRate: 18
-                      });
-                      setShowAddCompanyModal(true);
-                    }}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1 cursor-pointer"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>+ Add Company Profile</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedCompanyId('');
-                      setInvoiceForm({
-                        client_name: '',
-                        client_type: 'CORPORATE',
-                        client_gstin: '',
-                        client_address: '',
-                        client_phone: '',
-                        place_of_supply: '29-Karnataka',
-                        invoice_number: `26-27/${Math.floor(56 + Math.random() * 40)}`,
-                        invoice_date: new Date().toLocaleDateString('en-GB'),
-                        invoice_time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-                        billing_period: `bill for the month of ${new Date().toLocaleString('en-US', { month: 'short' }).toLowerCase()}`,
-                        vehicle_type: 'SEDAN',
-                        vehicle_reg: '',
-                        supervisor_name: 'SHARANAPPA',
-                        indication_date: new Date().toLocaleDateString('en-GB'),
-                        transport_company_name: '',
-                        vehicle_model: '',
-                        item_name: 'Passenger Transport Services',
-                        hsn_sac: '9964',
-                        quantity: 1,
-                        rate_per_unit: 0,
-                        subtotal: 0,
-                        gst_rate: 18,
-                        gsp_rent: 0,
-                        tds_cgst: 0,
-                        tds_amount: 0,
-                        round_off: 0,
-                        total_trips: 1,
-                        total_km: 0,
-                        vehicle_name: '',
-                        payment_method: 'NEFT / RTGS',
-                        notes: 'Thanks for doing business with us!'
-                      });
-                    }}
-                    className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                  >
-                    Clear Form
-                  </button>
-
-                  {selectedCompanyId && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (confirm(`Remove this company profile from saved directory?`)) {
-                          deleteCompanyFromDirectory(selectedCompanyId);
-                        }
-                      }}
-                      className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors cursor-pointer"
-                      title="Delete profile from directory"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <form onSubmit={handleGenerateInvoiceSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-              {/* SECTION 1: CLIENT / BILL TO INFORMATION */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
-                    <UserCheck className="w-4 h-4 text-blue-600" />
-                    <span>1. Client / Corporate "Bill To" Information</span>
-                  </div>
-                  <label className="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold text-[#071B49]">
-                    <input
-                      type="checkbox"
-                      checked={saveCompanyCheckbox}
-                      onChange={(e) => setSaveCompanyCheckbox(e.target.checked)}
-                      className="w-3.5 h-3.5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Save in Directory for Next Time</span>
-                  </label>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Client / Company Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. JANANI TOURS AND TRAVELS PRIVETE LIMITED"
-                      value={invoiceForm.client_name}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, client_name: e.target.value })}
-                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Client Type</label>
-                    <select
-                      value={invoiceForm.client_type}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, client_type: e.target.value as any })}
-                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    >
-                      {clientTypes.map((ct, idx) => (
-                        <option key={idx} value={ct}>{ct}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Client GSTIN (15 Digits)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 29AAACJ9953G1Z5"
-                      value={invoiceForm.client_gstin}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, client_gstin: e.target.value.toUpperCase() })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono uppercase text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Contact Phone No</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 9900046809"
-                      value={invoiceForm.client_phone}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, client_phone: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Place of Supply</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 29-Karnataka"
-                      value={invoiceForm.place_of_supply}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, place_of_supply: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Client Billing Address</label>
-                  <textarea
-                    rows={2}
-                    placeholder="e.g. Ground floor L-171 Outer Ring Road Bengaluru, Karnataka-560102 India"
-                    value={invoiceForm.client_address}
-                    onChange={(e) => setInvoiceForm({ ...invoiceForm, client_address: e.target.value })}
-                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice No.</label>
-                    <input
-                      type="text"
-                      placeholder="26-27/54"
-                      value={invoiceForm.invoice_number}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, invoice_number: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice Date</label>
-                    <input
-                      type="text"
-                      placeholder="31/10/2026"
-                      value={invoiceForm.invoice_date}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, invoice_date: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice Time</label>
-                    <input
-                      type="text"
-                      placeholder="11:37 AM"
-                      value={invoiceForm.invoice_time}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, invoice_time: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Billing Period</label>
-                    <input
-                      type="text"
-                      placeholder="bill for the month of oct"
-                      value={invoiceForm.billing_period}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, billing_period: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* SECTION 2: TRANSPORTATION DETAILS (VYAPAR BOX) */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
-                  <Car className="w-4 h-4 text-emerald-600" />
-                  <span>2. Transportation Details (Exact Box as per Vyapar Invoice)</span>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Type</label>
-                    <input
-                      type="text"
-                      placeholder="SEDAN / MOTORCAB / TEMPO"
-                      value={invoiceForm.vehicle_type}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, vehicle_type: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Number</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. KA 05 AB 1234"
-                      value={invoiceForm.vehicle_reg}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, vehicle_reg: e.target.value.toUpperCase() })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono uppercase text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Supervisor Name</label>
-                    <input
-                      type="text"
-                      placeholder="SHARANAPPA"
-                      value={invoiceForm.supervisor_name}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, supervisor_name: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Indication Date</label>
-                    <input
-                      type="text"
-                      placeholder="31/10/2026"
-                      value={invoiceForm.indication_date}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, indication_date: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Company Name</label>
-                    <input
-                      type="text"
-                      placeholder="JANANI TOURS AND TRAVELS"
-                      value={invoiceForm.transport_company_name}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, transport_company_name: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Model</label>
-                    <input
-                      type="text"
-                      placeholder="2024 / ETIOS"
-                      value={invoiceForm.vehicle_model}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, vehicle_model: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* SECTION 3: LINE ITEM & PRICING PARTICULARS */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
-                  <Calculator className="w-4 h-4 text-amber-600" />
-                  <span>3. Line Item, HSN/SAC 9964 & Tax Rates</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="md:col-span-2">
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Item / Service Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. SEDAN ROUTE or Vehicle Hire Charges"
-                      value={invoiceForm.item_name}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, item_name: e.target.value })}
-                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">HSN / SAC Code</label>
-                    <input
-                      type="text"
-                      placeholder="9964"
-                      value={invoiceForm.hsn_sac}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, hsn_sac: e.target.value })}
-                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Quantity (Shifts/Duties)</label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={invoiceForm.quantity}
-                      onChange={(e) => {
-                        const q = Number(e.target.value) || 0;
-                        const r = Number(invoiceForm.rate_per_unit) || 0;
-                        setInvoiceForm({
-                          ...invoiceForm,
-                          quantity: q,
-                          total_trips: q,
-                          subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal
-                        });
-                      }}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Rate Card (₹ per unit)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={invoiceForm.rate_per_unit}
-                      onChange={(e) => {
-                        const r = Number(e.target.value) || 0;
-                        const q = Number(invoiceForm.quantity) || 1;
-                        setInvoiceForm({
-                          ...invoiceForm,
-                          rate_per_unit: r,
-                          subtotal: q > 0 && r > 0 ? q * r : invoiceForm.subtotal
-                        });
-                      }}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Taxable Amount (₹) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      value={invoiceForm.subtotal}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, subtotal: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-amber-50 border border-amber-300 rounded-xl text-xs font-black text-[#071B49] focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">GST Rate (%)</label>
-                    <select
-                      value={invoiceForm.gst_rate}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, gst_rate: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    >
-                      <option value={18}>18% (CGST 9% + SGST 9%)</option>
-                      <option value={5}>5% (CGST 2.5% + SGST 2.5%)</option>
-                      <option value={12}>12% (CGST 6% + SGST 6%)</option>
-                      <option value={0}>0% (Exempt)</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* SECTION 4: DEDUCTIONS & ADJUSTMENTS (VYAPAR BOTTOM RIGHT BOX) */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
-                  <CreditCard className="w-4 h-4 text-rose-600" />
-                  <span>4. Deductions, GSP Rent, TDS & Round Off Adjustments</span>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">GSP Rent Deduction (₹)</label>
-                    <input
-                      type="number"
-                      value={invoiceForm.gsp_rent}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, gsp_rent: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">TDSCGST Deduction (₹)</label>
-                    <input
-                      type="number"
-                      value={invoiceForm.tds_cgst}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, tds_cgst: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">TDS @ 2% (192) (₹)</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={invoiceForm.tds_amount}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, tds_amount: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Round Off Adjustment (₹)</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={invoiceForm.round_off}
-                      onChange={(e) => setInvoiceForm({ ...invoiceForm, round_off: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* LIVE MATHEMATICAL BREAKDOWN PREVIEW */}
-              {(() => {
-                const sub = Number(invoiceForm.subtotal) || 0;
-                const gstRate = Number(invoiceForm.gst_rate) || 0;
-                const totalTax = (sub * gstRate) / 100;
-                const halfTax = totalTax / 2;
-                const subTotalGross = sub + totalTax;
-                const gsp = Number(invoiceForm.gsp_rent) || 0;
-                const tdscgst = Number(invoiceForm.tds_cgst) || 0;
-                const tds = Number(invoiceForm.tds_amount) || 0;
-                const roundOff = Number(invoiceForm.round_off) || 0;
-                const netPayable = subTotalGross - gsp - tdscgst - tds + roundOff;
-                const invoiceValBeforeTds = subTotalGross - gsp - tdscgst;
-
-                return (
-                  <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-2">
-                    <div className="flex items-center justify-between text-xs font-black text-emerald-900 uppercase tracking-wide">
-                      <span>Exact Vyapar Tax & Deduction Calculation Summary</span>
-                      <span className="font-mono text-emerald-700">GSTIN: 29ABOCS4536M1ZI</span>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        Company / Client Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. INFOSYS TECHNOLOGIES LIMITED / JANANI TOURS"
+                        value={newCompanyForm.name || ''}
+                        onChange={(e) => setNewCompanyForm({ ...newCompanyForm, name: e.target.value })}
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
+                      />
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2 text-xs">
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                        <div className="text-[10px] text-slate-500 font-bold uppercase">Taxable Subtotal</div>
-                        <div className="font-mono font-black text-sm text-[#071B49]">₹{sub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-                      </div>
-
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                        <div className="text-[10px] text-slate-500 font-bold uppercase">CGST ({gstRate / 2}%) + SGST ({gstRate / 2}%)</div>
-                        <div className="font-mono font-bold text-sm text-slate-700">₹{totalTax.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-                        <div className="text-[10px] text-slate-400">₹{halfTax.toFixed(2)} each</div>
-                      </div>
-
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                        <div className="text-[10px] text-slate-500 font-bold uppercase">Total Deductions (GSP+TDS)</div>
-                        <div className="font-mono font-bold text-sm text-rose-600">-₹{(gsp + tdscgst + tds).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-                      </div>
-
-                      <div className="bg-emerald-100/70 p-2.5 rounded-xl border border-emerald-300">
-                        <div className="text-[10px] text-emerald-800 font-black uppercase">Net Total (Payable)</div>
-                        <div className="font-mono font-black text-base text-emerald-800">₹{netPayable.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-600 pt-2 border-t border-emerald-200">
-                      <span>Sub Total (Before Deductions): <strong className="font-mono">₹{subTotalGross.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
-                      <span>Invoice Value Before TDS: <strong className="font-mono text-blue-800">₹{invoiceValBeforeTds.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
-                      <span>Bank: <strong>The Karnataka State Cooperative Apex Bank (A/C: 1039111020000025)</strong></span>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Payment Method / Term</label>
-                  <input
-                    type="text"
-                    placeholder="NEFT / RTGS"
-                    value={invoiceForm.payment_method}
-                    onChange={(e) => setInvoiceForm({ ...invoiceForm, payment_method: e.target.value })}
-                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Invoice Notes / Terms</label>
-                  <input
-                    type="text"
-                    placeholder="Thanks for doing business with us!"
-                    value={invoiceForm.notes}
-                    onChange={(e) => setInvoiceForm({ ...invoiceForm, notes: e.target.value })}
-                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setShowGenerateInvoiceModal(false)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 bg-[#071B49] hover:bg-[#0A2668] active:scale-95 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <Receipt className="w-4 h-4 text-amber-300" />
-                  <span>Generate & Preview Vyapar Tax Invoice</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* MODAL: ADD / REGISTER NEW COMPANY PROFILE TO DIRECTORY */}
-      {/* ======================================================== */}
-      {showAddCompanyModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-8">
-            <div className="bg-[#071B49] text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white">
-                  <Building2 className="w-5 h-5 text-amber-300" />
-                </div>
-                <div>
-                  <h3 className="text-base font-black">Register Company / Corporate Profile</h3>
-                  <p className="text-xs text-slate-300">Save company details for 1-click Vyapar tax billing</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAddCompanyModal(false)}
-                className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!newCompanyForm.name?.trim()) {
-                  alert('Please enter company / client name');
-                  return;
-                }
-                const newProfile: SavedCompanyProfile = {
-                  id: `comp-${Date.now()}`,
-                  name: newCompanyForm.name.trim(),
-                  clientType: (newCompanyForm.clientType as any) || 'CORPORATE',
-                  gstin: newCompanyForm.gstin?.trim() || undefined,
-                  phone: newCompanyForm.phone?.trim() || undefined,
-                  address: newCompanyForm.address?.trim() || undefined,
-                  placeOfSupply: newCompanyForm.placeOfSupply?.trim() || '29-Karnataka',
-                  defaultVehicleType: newCompanyForm.defaultVehicleType || 'SEDAN',
-                  defaultVehicleModel: newCompanyForm.defaultVehicleModel?.trim() || undefined,
-                  defaultVehicleReg: newCompanyForm.defaultVehicleReg?.trim() || undefined,
-                  defaultItemName: newCompanyForm.defaultItemName?.trim() || 'Passenger Transport Services',
-                  defaultHsnSac: newCompanyForm.defaultHsnSac?.trim() || '9964',
-                  defaultRatePerUnit: Number(newCompanyForm.defaultRatePerUnit) || 650,
-                  defaultGstRate: Number(newCompanyForm.defaultGstRate) || 18
-                };
-                saveCompanyToDirectory(newProfile);
-                setSelectedCompanyId(newProfile.id);
-                setInvoiceForm(prev => ({
-                  ...prev,
-                  client_name: newProfile.name,
-                  client_type: (newProfile.clientType as any) || 'CORPORATE',
-                  client_gstin: newProfile.gstin || '',
-                  client_phone: newProfile.phone || '',
-                  client_address: newProfile.address || '',
-                  place_of_supply: newProfile.placeOfSupply || '29-Karnataka',
-                  vehicle_type: newProfile.defaultVehicleType || prev.vehicle_type,
-                  vehicle_model: newProfile.defaultVehicleModel || prev.vehicle_model,
-                  vehicle_reg: newProfile.defaultVehicleReg || prev.vehicle_reg,
-                  transport_company_name: newProfile.name,
-                  item_name: newProfile.defaultItemName || prev.item_name,
-                  hsn_sac: newProfile.defaultHsnSac || prev.hsn_sac,
-                  rate_per_unit: newProfile.defaultRatePerUnit || prev.rate_per_unit,
-                  gst_rate: newProfile.defaultGstRate || prev.gst_rate,
-                  subtotal: (prev.quantity || 1) * (newProfile.defaultRatePerUnit || prev.rate_per_unit)
-                }));
-                setShowAddCompanyModal(false);
-              }}
-              className="p-6 space-y-4 max-h-[80vh] overflow-y-auto"
-            >
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Company / Client Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. INFOSYS TECHNOLOGIES LIMITED / JANANI TOURS"
-                  value={newCompanyForm.name || ''}
-                  onChange={(e) => setNewCompanyForm({ ...newCompanyForm, name: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#071B49]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Client Type</label>
-                  <select
-                    value={newCompanyForm.clientType || 'Corporate Enterprise'}
-                    onChange={(e) => setNewCompanyForm({ ...newCompanyForm, clientType: e.target.value as any })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
-                  >
-                    {clientTypes.map((ct, idx) => (
-                      <option key={idx} value={ct}>{ct}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">GSTIN (15 Digits)</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 29AAACJ9953G1Z5"
-                    value={newCompanyForm.gstin || ''}
-                    onChange={(e) => setNewCompanyForm({ ...newCompanyForm, gstin: e.target.value.toUpperCase() })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono uppercase text-slate-800"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Contact Phone</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 9900046809"
-                    value={newCompanyForm.phone || ''}
-                    onChange={(e) => setNewCompanyForm({ ...newCompanyForm, phone: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Place of Supply</label>
-                  <input
-                    type="text"
-                    placeholder="29-Karnataka"
-                    value={newCompanyForm.placeOfSupply || '29-Karnataka'}
-                    onChange={(e) => setNewCompanyForm({ ...newCompanyForm, placeOfSupply: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Billing Office Address</label>
-                <textarea
-                  rows={2}
-                  placeholder="e.g. Ground Floor, Outer Ring Road, Bengaluru, Karnataka-560102"
-                  value={newCompanyForm.address || ''}
-                  onChange={(e) => setNewCompanyForm({ ...newCompanyForm, address: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800"
-                />
-              </div>
-
-              <div className="pt-2 border-t border-slate-200">
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
-                  Default Billing & Vehicle Defaults (Optional)
-                </span>
-                <div className="grid grid-cols-3 gap-2.5">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-600 mb-1">Vehicle Type</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. SEDAN"
-                      value={newCompanyForm.defaultVehicleType || ''}
-                      onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultVehicleType: e.target.value })}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-600 mb-1">Default Model</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 2024 / ETIOS"
-                      value={newCompanyForm.defaultVehicleModel || ''}
-                      onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultVehicleModel: e.target.value })}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-600 mb-1">Default Reg No</label>
-                    <input
-                      type="text"
-                      placeholder="KA 05 AB 1234"
-                      value={newCompanyForm.defaultVehicleReg || ''}
-                      onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultVehicleReg: e.target.value.toUpperCase() })}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono uppercase"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2.5 mt-2.5">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-600 mb-1">Service Item</label>
-                    <input
-                      type="text"
-                      placeholder="SEDAN ROUTE"
-                      value={newCompanyForm.defaultItemName || ''}
-                      onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultItemName: e.target.value })}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-600 mb-1">Rate / Unit (₹)</label>
-                    <input
-                      type="number"
-                      placeholder="650"
-                      value={newCompanyForm.defaultRatePerUnit || 0}
-                      onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultRatePerUnit: Number(e.target.value) })}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-600 mb-1">GST Rate (%)</label>
-                    <select
-                      value={newCompanyForm.defaultGstRate || 18}
-                      onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultGstRate: Number(e.target.value) })}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold"
-                    >
-                      <option value="18">18% (9+9)</option>
-                      <option value="5">5% (2.5+2.5)</option>
-                      <option value="12">12% (6+6)</option>
-                      <option value="0">0% (Nil)</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setShowAddCompanyModal(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md cursor-pointer flex items-center gap-1.5"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Save to Directory & Apply</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* MODAL: GENERATE DRIVER DUTY SETTLEMENT & PAYMENT INVOICE */}
-      {/* ======================================================== */}
-      {showDriverVoucherModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden border border-slate-200 my-8">
-            <div className="bg-[#071B49] text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-400/20 flex items-center justify-center text-amber-300">
-                  <Receipt className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-black">Generate Driver Duty Payment Invoice</h3>
-                  <p className="text-xs text-slate-300">Official commercial chauffeur duty & salary settlement voucher</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowDriverVoucherModal(false)}
-                className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const shiftEarn = Number(driverVoucherForm.shifts_count) * Number(driverVoucherForm.shift_rate);
-                const kmEarn = Number(driverVoucherForm.total_km) * Number(driverVoucherForm.km_rate);
-                const battaTot = Number(driverVoucherForm.batta_days) * Number(driverVoucherForm.batta_rate);
-                const customEarnTot = driverVoucherForm.custom_earnings.reduce((s, it) => s + (Number(it.amount) || 0), 0);
-                const gross = shiftEarn + kmEarn + battaTot + Number(driverVoucherForm.tolls_parking) + Number(driverVoucherForm.night_halt) + customEarnTot;
-
-                const customDedTot = driverVoucherForm.custom_deductions.reduce((s, it) => s + (Number(it.amount) || 0), 0);
-                const deductions = Number(driverVoucherForm.company_rent) + Number(driverVoucherForm.advance_deduction) + Number(driverVoucherForm.fuel_deduction) + Number(driverVoucherForm.damage_penalty) + Number(driverVoucherForm.tds_deduction) + customDedTot;
-
-                const net = Math.max(0, gross - deductions);
-
-                const voucher: DriverPaymentVoucher = {
-                  id: `drv-vouch-${Date.now()}`,
-                  driverId: driverVoucherForm.driver_id || 'DRV-101',
-                  driverName: driverVoucherForm.driver_name || 'Ramesh Kumar',
-                  driverPhone: driverVoucherForm.driver_phone || '+91 99009 75920',
-                  vehicleReg: driverVoucherForm.vehicle_reg || 'KA 05 AB 1234',
-                  vehicleName: driverVoucherForm.vehicle_name || 'Tempo Traveller / Sedan',
-                  voucherNumber: driverVoucherForm.voucher_number || `SJT-DRV-2026/${Math.floor(100 + Math.random() * 900)}`,
-                  date: driverVoucherForm.voucher_date || new Date().toLocaleDateString('en-GB'),
-                  voucherDate: driverVoucherForm.voucher_date || new Date().toLocaleDateString('en-GB'),
-                  billingPeriod: driverVoucherForm.billing_period || 'Month of October 2026',
-                  shiftsCount: Number(driverVoucherForm.shifts_count),
-                  shiftRate: Number(driverVoucherForm.shift_rate),
-                  shiftEarnings: shiftEarn,
-                  totalKm: Number(driverVoucherForm.total_km),
-                  kmRate: Number(driverVoucherForm.km_rate),
-                  kmEarnings: kmEarn,
-                  battaDays: Number(driverVoucherForm.batta_days),
-                  battaRate: Number(driverVoucherForm.batta_rate),
-                  battaTotal: battaTot,
-                  tollsParking: Number(driverVoucherForm.tolls_parking),
-                  nightHalt: Number(driverVoucherForm.night_halt),
-                  customEarnings: driverVoucherForm.custom_earnings,
-                  totalGrossEarnings: gross,
-                  companyRent: Number(driverVoucherForm.company_rent),
-                  advanceDeduction: Number(driverVoucherForm.advance_deduction),
-                  fuelDeduction: Number(driverVoucherForm.fuel_deduction),
-                  damagePenalty: Number(driverVoucherForm.damage_penalty),
-                  tdsDeduction: Number(driverVoucherForm.tds_deduction),
-                  customDeductions: driverVoucherForm.custom_deductions,
-                  totalDeductions: deductions,
-                  netPayable: net,
-                  bankName: 'THE KARNATAKA STATE COOPERATIVE APEX BANK LIMITED, SUNKADAKATTE',
-                  accountNumber: '1039111020000025',
-                  ifscCode: 'KSCB0001039',
-                  accountHolder: 'SHARANAPPA',
-                  paymentMode: driverVoucherForm.payment_mode,
-                  referenceNo: driverVoucherForm.reference_no,
-                  status: driverVoucherForm.status,
-                  notes: driverVoucherForm.notes
-                };
-
-                setActiveDriverVoucher(voucher);
-                setShowDriverVoucherModal(false);
-              }}
-              className="p-6 space-y-4 max-h-[75vh] overflow-y-auto"
-            >
-              {/* SECTION 1: CHAUFFEUR & VEHICLE DETAILS */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
-                  <UserCheck className="w-4 h-4 text-blue-600" />
-                  <span>1. Chauffeur & Vehicle Allocation</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Select Driver</label>
-                    <select
-                      value={driverVoucherForm.driver_id}
-                      onChange={(e) => {
-                        const d = drivers.find(x => String(x.id || (x as any)._id) === e.target.value);
-                        if (d) {
-                          setDriverVoucherForm(prev => ({
-                            ...prev,
-                            driver_id: String(d.id || (d as any)._id),
-                            driver_name: d.name,
-                            driver_phone: d.phone,
-                            vehicle_reg: d.assignedVehicleReg || prev.vehicle_reg
-                          }));
-                        }
-                      }}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
-                    >
-                      <option value="">-- Choose Registered Chauffeur --</option>
-                      {drivers.map(d => (
-                        <option key={d.id || (d as any)._id} value={d.id || (d as any)._id}>
-                          {d.name} ({d.assignedVehicleReg || 'Driver'})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Driver Full Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={driverVoucherForm.driver_name}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, driver_name: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Mobile Phone</label>
-                    <input
-                      type="text"
-                      value={driverVoucherForm.driver_phone}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, driver_phone: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Commercial Reg No</label>
-                    <input
-                      type="text"
-                      value={driverVoucherForm.vehicle_reg}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, vehicle_reg: e.target.value.toUpperCase() })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 uppercase"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Model</label>
-                    <input
-                      type="text"
-                      value={driverVoucherForm.vehicle_name}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, vehicle_name: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Voucher Number</label>
-                    <input
-                      type="text"
-                      value={driverVoucherForm.voucher_number}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, voucher_number: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Duty Period / Month</label>
-                    <input
-                      type="text"
-                      value={driverVoucherForm.billing_period}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, billing_period: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* SECTION 2: SHIFT DUTIES & EARNINGS */}
-              <div className="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-black text-emerald-900 uppercase tracking-wide">
-                    <TrendingUp className="w-4 h-4 text-emerald-700" />
-                    <span>2. Duty Shifts & Earnings Breakdown (Rate Card)</span>
-                  </div>
-                  <span className="text-xs font-black text-emerald-800">
-                    Gross: ₹{(
-                      (Number(driverVoucherForm.shifts_count) * Number(driverVoucherForm.shift_rate)) +
-                      (Number(driverVoucherForm.total_km) * Number(driverVoucherForm.km_rate)) +
-                      (Number(driverVoucherForm.batta_days) * Number(driverVoucherForm.batta_rate)) +
-                      Number(driverVoucherForm.tolls_parking) +
-                      Number(driverVoucherForm.night_halt) +
-                      driverVoucherForm.custom_earnings.reduce((s, it) => s + (Number(it.amount) || 0), 0)
-                    ).toLocaleString('en-IN')}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Completed Shifts</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.shifts_count}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, shifts_count: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-black text-slate-800"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Rate per Shift (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.shift_rate}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, shift_rate: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-black text-slate-800"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Food Batta (Days)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.batta_days}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, batta_days: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-medium text-slate-800"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Batta Rate / Day (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.batta_rate}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, batta_rate: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-medium text-slate-800"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Total KM Run</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.total_km}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, total_km: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">KM Allowance Rate (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.km_rate}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, km_rate: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Highway Tolls & Parking (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.tolls_parking}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, tolls_parking: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">Night Halt Allowance (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.night_halt}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, night_halt: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
-                    />
-                  </div>
-                </div>
-
-                {/* Custom Earnings List & Add */}
-                <div className="pt-2 border-t border-emerald-200 space-y-2">
-                  <div className="text-[11px] font-bold text-emerald-900 uppercase">
-                    Custom Earnings & Allowances:
-                  </div>
-                  {driverVoucherForm.custom_earnings.map(earn => (
-                    <div key={earn.id} className="flex items-center justify-between bg-white px-3 py-1.5 rounded-xl border border-emerald-200 text-xs">
-                      <span className="font-bold text-slate-800">{earn.title}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-emerald-700">+₹{earn.amount.toLocaleString('en-IN')}</span>
-                        <button
-                          type="button"
-                          onClick={() => setDriverVoucherForm({
-                            ...driverVoucherForm,
-                            custom_earnings: driverVoucherForm.custom_earnings.filter(x => x.id !== earn.id)
-                          })}
-                          className="p-1 text-slate-400 hover:text-red-600 cursor-pointer"
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Client Type</label>
+                        <select
+                          value={newCompanyForm.clientType || 'Corporate Enterprise'}
+                          onChange={(e) => setNewCompanyForm({ ...newCompanyForm, clientType: e.target.value as any })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
                         >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+                          {clientTypes.map((ct, idx) => (
+                            <option key={idx} value={ct}>{ct}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">GSTIN (15 Digits)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 29AAACJ9953G1Z5"
+                          value={newCompanyForm.gstin || ''}
+                          onChange={(e) => setNewCompanyForm({ ...newCompanyForm, gstin: e.target.value.toUpperCase() })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono uppercase text-slate-800"
+                        />
                       </div>
                     </div>
-                  ))}
 
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="e.g. Festival Duty Bonus / Sunday Overtime"
-                      value={customEarningTitle}
-                      onChange={(e) => setCustomEarningTitle(e.target.value)}
-                      className="flex-1 px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Amount ₹"
-                      value={customEarningAmount}
-                      onChange={(e) => setCustomEarningAmount(e.target.value)}
-                      className="w-24 px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-bold"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (customEarningTitle.trim() && Number(customEarningAmount) > 0) {
-                          setDriverVoucherForm({
-                            ...driverVoucherForm,
-                            custom_earnings: [
-                              ...driverVoucherForm.custom_earnings,
-                              { id: `earn-${Date.now()}`, title: customEarningTitle.trim(), amount: Number(customEarningAmount) }
-                            ]
-                          });
-                          setCustomEarningTitle('');
-                          setCustomEarningAmount('');
-                        }
-                      }}
-                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer"
-                    >
-                      + Add
-                    </button>
-                  </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Contact Phone</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 9900046809"
+                          value={newCompanyForm.phone || ''}
+                          onChange={(e) => setNewCompanyForm({ ...newCompanyForm, phone: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Place of Supply</label>
+                        <input
+                          type="text"
+                          placeholder="29-Karnataka"
+                          value={newCompanyForm.placeOfSupply || '29-Karnataka'}
+                          onChange={(e) => setNewCompanyForm({ ...newCompanyForm, placeOfSupply: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Billing Office Address</label>
+                      <textarea
+                        rows={2}
+                        placeholder="e.g. Ground Floor, Outer Ring Road, Bengaluru, Karnataka-560102"
+                        value={newCompanyForm.address || ''}
+                        onChange={(e) => setNewCompanyForm({ ...newCompanyForm, address: e.target.value })}
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800"
+                      />
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-200">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
+                        Default Billing & Vehicle Defaults (Optional)
+                      </span>
+                      <div className="grid grid-cols-3 gap-2.5">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 mb-1">Vehicle Type</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. SEDAN"
+                            value={newCompanyForm.defaultVehicleType || ''}
+                            onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultVehicleType: e.target.value })}
+                            className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 mb-1">Default Model</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 2024 / ETIOS"
+                            value={newCompanyForm.defaultVehicleModel || ''}
+                            onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultVehicleModel: e.target.value })}
+                            className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 mb-1">Default Reg No</label>
+                          <input
+                            type="text"
+                            placeholder="KA 05 AB 1234"
+                            value={newCompanyForm.defaultVehicleReg || ''}
+                            onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultVehicleReg: e.target.value.toUpperCase() })}
+                            className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono uppercase"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2.5 mt-2.5">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 mb-1">Service Item</label>
+                          <input
+                            type="text"
+                            placeholder="SEDAN ROUTE"
+                            value={newCompanyForm.defaultItemName || ''}
+                            onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultItemName: e.target.value })}
+                            className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 mb-1">Rate / Unit (₹)</label>
+                          <input
+                            type="number"
+                            placeholder="650"
+                            value={newCompanyForm.defaultRatePerUnit || 0}
+                            onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultRatePerUnit: Number(e.target.value) })}
+                            className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 mb-1">GST Rate (%)</label>
+                          <select
+                            value={newCompanyForm.defaultGstRate || 18}
+                            onChange={(e) => setNewCompanyForm({ ...newCompanyForm, defaultGstRate: Number(e.target.value) })}
+                            className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold"
+                          >
+                            <option value="18">18% (9+9)</option>
+                            <option value="5">5% (2.5+2.5)</option>
+                            <option value="12">12% (6+6)</option>
+                            <option value="0">0% (Nil)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setShowAddCompanyModal(false)}
+                        className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md cursor-pointer flex items-center gap-1.5"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Save to Directory & Apply</span>
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
+            )}
 
-              {/* SECTION 3: DEDUCTIONS & RECOVERIES */}
-              <div className="bg-rose-50/70 p-4 rounded-2xl border border-rose-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-black text-rose-900 uppercase tracking-wide">
-                    <ArrowDown className="w-4 h-4 text-rose-700" />
-                    <span>3. Deductions & Recoveries (Handwritten Formula)</span>
-                  </div>
-                  <span className="text-xs font-black text-rose-800">
-                    Deductions: -₹{(
-                      Number(driverVoucherForm.company_rent) +
-                      Number(driverVoucherForm.advance_deduction) +
-                      Number(driverVoucherForm.fuel_deduction) +
-                      Number(driverVoucherForm.damage_penalty) +
-                      Number(driverVoucherForm.tds_deduction) +
-                      driverVoucherForm.custom_deductions.reduce((s, it) => s + (Number(it.amount) || 0), 0)
-                    ).toLocaleString('en-IN')}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 mb-1">CNT Rent (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.company_rent}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, company_rent: Number(e.target.value) })}
-                      className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 mb-1">Advance Rec (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.advance_deduction}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, advance_deduction: Number(e.target.value) })}
-                      className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 mb-1">Fuel Card (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.fuel_deduction}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, fuel_deduction: Number(e.target.value) })}
-                      className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 mb-1">Penalty / Damage</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.damage_penalty}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, damage_penalty: Number(e.target.value) })}
-                      className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 mb-1">TDS Tax (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={driverVoucherForm.tds_deduction}
-                      onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, tds_deduction: Number(e.target.value) })}
-                      className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
-                    />
-                  </div>
-                </div>
-
-                {/* Custom Deductions List & Add */}
-                <div className="pt-2 border-t border-rose-200 space-y-2">
-                  <div className="text-[11px] font-bold text-rose-900 uppercase">
-                    Custom Deductions / Recoveries:
-                  </div>
-                  {driverVoucherForm.custom_deductions.map(ded => (
-                    <div key={ded.id} className="flex items-center justify-between bg-white px-3 py-1.5 rounded-xl border border-rose-200 text-xs">
-                      <span className="font-bold text-slate-800">{ded.title}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-rose-700">-₹{ded.amount.toLocaleString('en-IN')}</span>
-                        <button
-                          type="button"
-                          onClick={() => setDriverVoucherForm({
-                            ...driverVoucherForm,
-                            custom_deductions: driverVoucherForm.custom_deductions.filter(x => x.id !== ded.id)
-                          })}
-                          className="p-1 text-slate-400 hover:text-red-600 cursor-pointer"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+            {/* ======================================================== */}
+            {/* MODAL: GENERATE DRIVER DUTY SETTLEMENT & PAYMENT INVOICE */}
+            {/* ======================================================== */}
+            {showDriverVoucherModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+                <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden border border-slate-200 my-8">
+                  <div className="bg-[#071B49] text-white px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-amber-400/20 flex items-center justify-center text-amber-300">
+                        <Receipt className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black">Generate Driver Duty Payment Invoice</h3>
+                        <p className="text-xs text-slate-300">Official commercial chauffeur duty & salary settlement voucher</p>
                       </div>
                     </div>
-                  ))}
-
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="e.g. Fastag Overuse / Maintenance Share / Uniform"
-                      value={customDeductionTitle}
-                      onChange={(e) => setCustomDeductionTitle(e.target.value)}
-                      className="flex-1 px-3 py-1.5 bg-white border border-rose-300 rounded-xl text-xs"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Amount ₹"
-                      value={customDeductionAmount}
-                      onChange={(e) => setCustomDeductionAmount(e.target.value)}
-                      className="w-24 px-3 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold"
-                    />
                     <button
                       type="button"
-                      onClick={() => {
-                        if (customDeductionTitle.trim() && Number(customDeductionAmount) > 0) {
-                          setDriverVoucherForm({
-                            ...driverVoucherForm,
-                            custom_deductions: [
-                              ...driverVoucherForm.custom_deductions,
-                              { id: `ded-${Date.now()}`, title: customDeductionTitle.trim(), amount: Number(customDeductionAmount) }
-                            ]
-                          });
-                          setCustomDeductionTitle('');
-                          setCustomDeductionAmount('');
-                        }
-                      }}
-                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                      onClick={() => setShowDriverVoucherModal(false)}
+                      className="p-1 rounded-xl hover:bg-white/10 text-white transition-colors cursor-pointer"
                     >
-                      + Add
+                      <X className="w-5 h-5" />
                     </button>
                   </div>
-                </div>
-              </div>
 
-              {/* LIVE NET SETTLEMENT SUMMARY */}
-              {(() => {
-                const shiftEarn = Number(driverVoucherForm.shifts_count) * Number(driverVoucherForm.shift_rate);
-                const kmEarn = Number(driverVoucherForm.total_km) * Number(driverVoucherForm.km_rate);
-                const battaTot = Number(driverVoucherForm.batta_days) * Number(driverVoucherForm.batta_rate);
-                const customEarnTot = driverVoucherForm.custom_earnings.reduce((s, it) => s + (Number(it.amount) || 0), 0);
-                const gross = shiftEarn + kmEarn + battaTot + Number(driverVoucherForm.tolls_parking) + Number(driverVoucherForm.night_halt) + customEarnTot;
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const shiftEarn = Number(driverVoucherForm.shifts_count) * Number(driverVoucherForm.shift_rate);
+                      const kmEarn = Number(driverVoucherForm.total_km) * Number(driverVoucherForm.km_rate);
+                      const battaTot = Number(driverVoucherForm.batta_days) * Number(driverVoucherForm.batta_rate);
+                      const customEarnTot = driverVoucherForm.custom_earnings.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+                      const gross = shiftEarn + kmEarn + battaTot + Number(driverVoucherForm.tolls_parking) + Number(driverVoucherForm.night_halt) + customEarnTot;
 
-                const customDedTot = driverVoucherForm.custom_deductions.reduce((s, it) => s + (Number(it.amount) || 0), 0);
-                const deductions = Number(driverVoucherForm.company_rent) + Number(driverVoucherForm.advance_deduction) + Number(driverVoucherForm.fuel_deduction) + Number(driverVoucherForm.damage_penalty) + Number(driverVoucherForm.tds_deduction) + customDedTot;
+                      const customDedTot = driverVoucherForm.custom_deductions.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+                      const deductions = Number(driverVoucherForm.company_rent) + Number(driverVoucherForm.advance_deduction) + Number(driverVoucherForm.fuel_deduction) + Number(driverVoucherForm.damage_penalty) + Number(driverVoucherForm.tds_deduction) + customDedTot;
 
-                const net = Math.max(0, gross - deductions);
+                      const net = Math.max(0, gross - deductions);
 
-                return (
-                  <div className="p-4 bg-gradient-to-r from-blue-900 to-[#071B49] rounded-2xl text-white shadow-md space-y-2">
-                    <div className="grid grid-cols-3 gap-3 text-center">
-                      <div className="bg-white/10 p-2.5 rounded-xl">
-                        <span className="text-[10px] text-slate-300 font-bold uppercase block">Gross Earnings</span>
-                        <span className="text-base font-black font-mono text-emerald-300">₹{gross.toLocaleString('en-IN')}</span>
-                      </div>
-                      <div className="bg-white/10 p-2.5 rounded-xl">
-                        <span className="text-[10px] text-slate-300 font-bold uppercase block">Total Deductions</span>
-                        <span className="text-base font-black font-mono text-rose-300">-₹{deductions.toLocaleString('en-IN')}</span>
-                      </div>
-                      <div className="bg-emerald-500/20 border border-emerald-400 p-2.5 rounded-xl">
-                        <span className="text-[10px] text-emerald-200 font-black uppercase block">Net Chauffeur Payout</span>
-                        <span className="text-xl font-black font-mono text-amber-300">₹{net.toLocaleString('en-IN')}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
+                      const voucher: DriverPaymentVoucher = {
+                        id: `drv-vouch-${Date.now()}`,
+                        driverId: driverVoucherForm.driver_id || 'DRV-101',
+                        driverName: driverVoucherForm.driver_name || 'Ramesh Kumar',
+                        driverPhone: driverVoucherForm.driver_phone || '+91 99009 75920',
+                        vehicleReg: driverVoucherForm.vehicle_reg || 'KA 05 AB 1234',
+                        vehicleName: driverVoucherForm.vehicle_name || 'Tempo Traveller / Sedan',
+                        voucherNumber: driverVoucherForm.voucher_number || `SJT-DRV-2026/${Math.floor(100 + Math.random() * 900)}`,
+                        date: driverVoucherForm.voucher_date || new Date().toLocaleDateString('en-GB'),
+                        voucherDate: driverVoucherForm.voucher_date || new Date().toLocaleDateString('en-GB'),
+                        billingPeriod: driverVoucherForm.billing_period || 'Month of October 2026',
+                        shiftsCount: Number(driverVoucherForm.shifts_count),
+                        shiftRate: Number(driverVoucherForm.shift_rate),
+                        shiftEarnings: shiftEarn,
+                        totalKm: Number(driverVoucherForm.total_km),
+                        kmRate: Number(driverVoucherForm.km_rate),
+                        kmEarnings: kmEarn,
+                        battaDays: Number(driverVoucherForm.batta_days),
+                        battaRate: Number(driverVoucherForm.batta_rate),
+                        battaTotal: battaTot,
+                        tollsParking: Number(driverVoucherForm.tolls_parking),
+                        nightHalt: Number(driverVoucherForm.night_halt),
+                        customEarnings: driverVoucherForm.custom_earnings,
+                        totalGrossEarnings: gross,
+                        companyRent: Number(driverVoucherForm.company_rent),
+                        advanceDeduction: Number(driverVoucherForm.advance_deduction),
+                        fuelDeduction: Number(driverVoucherForm.fuel_deduction),
+                        damagePenalty: Number(driverVoucherForm.damage_penalty),
+                        tdsDeduction: Number(driverVoucherForm.tds_deduction),
+                        customDeductions: driverVoucherForm.custom_deductions,
+                        totalDeductions: deductions,
+                        netPayable: net,
+                        bankName: 'THE KARNATAKA STATE COOPERATIVE APEX BANK LIMITED, SUNKADAKATTE',
+                        accountNumber: '1039111020000025',
+                        ifscCode: 'KSCB0001039',
+                        accountHolder: 'SHARANAPPA',
+                        paymentMode: driverVoucherForm.payment_mode,
+                        referenceNo: driverVoucherForm.reference_no,
+                        status: driverVoucherForm.status,
+                        notes: driverVoucherForm.notes
+                      };
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Disbursement Mode</label>
-                  <select
-                    value={driverVoucherForm.payment_mode}
-                    onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, payment_mode: e.target.value })}
-                    className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
+                      setActiveDriverVoucher(voucher);
+                      setShowDriverVoucherModal(false);
+                    }}
+                    className="p-6 space-y-4 max-h-[75vh] overflow-y-auto"
                   >
-                    <option value="UPI Instant Pay">UPI Instant Pay (GPay / PhonePe)</option>
-                    <option value="Apex Bank NEFT/RTGS">Apex Bank NEFT/RTGS</option>
-                    <option value="Cash at SJT Office">Cash Disbursement at SJT Counter</option>
-                    <option value="Cheque">Commercial Cheque</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">UTR / Ref No.</label>
-                  <input
-                    type="text"
-                    value={driverVoucherForm.reference_no}
-                    onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, reference_no: e.target.value })}
-                    className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800"
-                  />
-                </div>
-              </div>
+                    {/* SECTION 1: CHAUFFEUR & VEHICLE DETAILS */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-black text-[#071B49] uppercase tracking-wide">
+                        <UserCheck className="w-4 h-4 text-blue-600" />
+                        <span>1. Chauffeur & Vehicle Allocation</span>
+                      </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setShowDriverVoucherModal(false)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <Receipt className="w-4 h-4 text-amber-300" />
-                  <span>Generate Printable Voucher & Invoice</span>
-                </button>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Select Driver</label>
+                          <select
+                            value={driverVoucherForm.driver_id}
+                            onChange={(e) => {
+                              const d = drivers.find(x => String(x.id || (x as any)._id) === e.target.value);
+                              if (d) {
+                                setDriverVoucherForm(prev => ({
+                                  ...prev,
+                                  driver_id: String(d.id || (d as any)._id),
+                                  driver_name: d.name,
+                                  driver_phone: d.phone,
+                                  vehicle_reg: d.assignedVehicleReg || prev.vehicle_reg
+                                }));
+                              }
+                            }}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
+                          >
+                            <option value="">-- Choose Registered Chauffeur --</option>
+                            {drivers.map(d => (
+                              <option key={d.id || (d as any)._id} value={d.id || (d as any)._id}>
+                                {d.name} ({d.assignedVehicleReg || 'Driver'})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Driver Full Name</label>
+                          <input
+                            type="text"
+                            required
+                            value={driverVoucherForm.driver_name}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, driver_name: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Mobile Phone</label>
+                          <input
+                            type="text"
+                            value={driverVoucherForm.driver_phone}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, driver_phone: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Commercial Reg No</label>
+                          <input
+                            type="text"
+                            value={driverVoucherForm.vehicle_reg}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, vehicle_reg: e.target.value.toUpperCase() })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 uppercase"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Vehicle Model</label>
+                          <input
+                            type="text"
+                            value={driverVoucherForm.vehicle_name}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, vehicle_name: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Voucher Number</label>
+                          <input
+                            type="text"
+                            value={driverVoucherForm.voucher_number}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, voucher_number: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Duty Period / Month</label>
+                          <input
+                            type="text"
+                            value={driverVoucherForm.billing_period}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, billing_period: e.target.value })}
+                            className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 2: SHIFT DUTIES & EARNINGS */}
+                    <div className="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs font-black text-emerald-900 uppercase tracking-wide">
+                          <TrendingUp className="w-4 h-4 text-emerald-700" />
+                          <span>2. Duty Shifts & Earnings Breakdown (Rate Card)</span>
+                        </div>
+                        <span className="text-xs font-black text-emerald-800">
+                          Gross: ₹{(
+                            (Number(driverVoucherForm.shifts_count) * Number(driverVoucherForm.shift_rate)) +
+                            (Number(driverVoucherForm.total_km) * Number(driverVoucherForm.km_rate)) +
+                            (Number(driverVoucherForm.batta_days) * Number(driverVoucherForm.batta_rate)) +
+                            Number(driverVoucherForm.tolls_parking) +
+                            Number(driverVoucherForm.night_halt) +
+                            driverVoucherForm.custom_earnings.reduce((s, it) => s + (Number(it.amount) || 0), 0)
+                          ).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Completed Shifts</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.shifts_count}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, shifts_count: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-black text-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Rate per Shift (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.shift_rate}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, shift_rate: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-black text-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Food Batta (Days)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.batta_days}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, batta_days: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-medium text-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Batta Rate / Day (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.batta_rate}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, batta_rate: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-medium text-slate-800"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Total KM Run</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.total_km}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, total_km: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">KM Allowance Rate (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.km_rate}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, km_rate: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Highway Tolls & Parking (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.tolls_parking}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, tolls_parking: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Night Halt Allowance (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.night_halt}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, night_halt: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs text-slate-800"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Custom Earnings List & Add */}
+                      <div className="pt-2 border-t border-emerald-200 space-y-2">
+                        <div className="text-[11px] font-bold text-emerald-900 uppercase">
+                          Custom Earnings & Allowances:
+                        </div>
+                        {driverVoucherForm.custom_earnings.map(earn => (
+                          <div key={earn.id} className="flex items-center justify-between bg-white px-3 py-1.5 rounded-xl border border-emerald-200 text-xs">
+                            <span className="font-bold text-slate-800">{earn.title}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono font-bold text-emerald-700">+₹{earn.amount.toLocaleString('en-IN')}</span>
+                              <button
+                                type="button"
+                                onClick={() => setDriverVoucherForm({
+                                  ...driverVoucherForm,
+                                  custom_earnings: driverVoucherForm.custom_earnings.filter(x => x.id !== earn.id)
+                                })}
+                                className="p-1 text-slate-400 hover:text-red-600 cursor-pointer"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="e.g. Festival Duty Bonus / Sunday Overtime"
+                            value={customEarningTitle}
+                            onChange={(e) => setCustomEarningTitle(e.target.value)}
+                            className="flex-1 px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs"
+                          />
+                          <input
+                            type="number"
+                            placeholder="Amount ₹"
+                            value={customEarningAmount}
+                            onChange={(e) => setCustomEarningAmount(e.target.value)}
+                            className="w-24 px-3 py-1.5 bg-white border border-emerald-300 rounded-xl text-xs font-bold"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (customEarningTitle.trim() && Number(customEarningAmount) > 0) {
+                                setDriverVoucherForm({
+                                  ...driverVoucherForm,
+                                  custom_earnings: [
+                                    ...driverVoucherForm.custom_earnings,
+                                    { id: `earn-${Date.now()}`, title: customEarningTitle.trim(), amount: Number(customEarningAmount) }
+                                  ]
+                                });
+                                setCustomEarningTitle('');
+                                setCustomEarningAmount('');
+                              }
+                            }}
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                          >
+                            + Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 3: DEDUCTIONS & RECOVERIES */}
+                    <div className="bg-rose-50/70 p-4 rounded-2xl border border-rose-200 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs font-black text-rose-900 uppercase tracking-wide">
+                          <ArrowDown className="w-4 h-4 text-rose-700" />
+                          <span>3. Deductions & Recoveries (Handwritten Formula)</span>
+                        </div>
+                        <span className="text-xs font-black text-rose-800">
+                          Deductions: -₹{(
+                            Number(driverVoucherForm.company_rent) +
+                            Number(driverVoucherForm.advance_deduction) +
+                            Number(driverVoucherForm.fuel_deduction) +
+                            Number(driverVoucherForm.damage_penalty) +
+                            Number(driverVoucherForm.tds_deduction) +
+                            driverVoucherForm.custom_deductions.reduce((s, it) => s + (Number(it.amount) || 0), 0)
+                          ).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 mb-1">CNT Rent (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.company_rent}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, company_rent: Number(e.target.value) })}
+                            className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 mb-1">Advance Rec (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.advance_deduction}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, advance_deduction: Number(e.target.value) })}
+                            className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 mb-1">Fuel Card (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.fuel_deduction}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, fuel_deduction: Number(e.target.value) })}
+                            className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 mb-1">Penalty / Damage</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.damage_penalty}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, damage_penalty: Number(e.target.value) })}
+                            className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 mb-1">TDS Tax (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={driverVoucherForm.tds_deduction}
+                            onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, tds_deduction: Number(e.target.value) })}
+                            className="w-full px-2.5 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold text-rose-700"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Custom Deductions List & Add */}
+                      <div className="pt-2 border-t border-rose-200 space-y-2">
+                        <div className="text-[11px] font-bold text-rose-900 uppercase">
+                          Custom Deductions / Recoveries:
+                        </div>
+                        {driverVoucherForm.custom_deductions.map(ded => (
+                          <div key={ded.id} className="flex items-center justify-between bg-white px-3 py-1.5 rounded-xl border border-rose-200 text-xs">
+                            <span className="font-bold text-slate-800">{ded.title}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono font-bold text-rose-700">-₹{ded.amount.toLocaleString('en-IN')}</span>
+                              <button
+                                type="button"
+                                onClick={() => setDriverVoucherForm({
+                                  ...driverVoucherForm,
+                                  custom_deductions: driverVoucherForm.custom_deductions.filter(x => x.id !== ded.id)
+                                })}
+                                className="p-1 text-slate-400 hover:text-red-600 cursor-pointer"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="e.g. Fastag Overuse / Maintenance Share / Uniform"
+                            value={customDeductionTitle}
+                            onChange={(e) => setCustomDeductionTitle(e.target.value)}
+                            className="flex-1 px-3 py-1.5 bg-white border border-rose-300 rounded-xl text-xs"
+                          />
+                          <input
+                            type="number"
+                            placeholder="Amount ₹"
+                            value={customDeductionAmount}
+                            onChange={(e) => setCustomDeductionAmount(e.target.value)}
+                            className="w-24 px-3 py-1.5 bg-white border border-rose-300 rounded-xl text-xs font-bold"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (customDeductionTitle.trim() && Number(customDeductionAmount) > 0) {
+                                setDriverVoucherForm({
+                                  ...driverVoucherForm,
+                                  custom_deductions: [
+                                    ...driverVoucherForm.custom_deductions,
+                                    { id: `ded-${Date.now()}`, title: customDeductionTitle.trim(), amount: Number(customDeductionAmount) }
+                                  ]
+                                });
+                                setCustomDeductionTitle('');
+                                setCustomDeductionAmount('');
+                              }
+                            }}
+                            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                          >
+                            + Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* LIVE NET SETTLEMENT SUMMARY */}
+                    {(() => {
+                      const shiftEarn = Number(driverVoucherForm.shifts_count) * Number(driverVoucherForm.shift_rate);
+                      const kmEarn = Number(driverVoucherForm.total_km) * Number(driverVoucherForm.km_rate);
+                      const battaTot = Number(driverVoucherForm.batta_days) * Number(driverVoucherForm.batta_rate);
+                      const customEarnTot = driverVoucherForm.custom_earnings.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+                      const gross = shiftEarn + kmEarn + battaTot + Number(driverVoucherForm.tolls_parking) + Number(driverVoucherForm.night_halt) + customEarnTot;
+
+                      const customDedTot = driverVoucherForm.custom_deductions.reduce((s, it) => s + (Number(it.amount) || 0), 0);
+                      const deductions = Number(driverVoucherForm.company_rent) + Number(driverVoucherForm.advance_deduction) + Number(driverVoucherForm.fuel_deduction) + Number(driverVoucherForm.damage_penalty) + Number(driverVoucherForm.tds_deduction) + customDedTot;
+
+                      const net = Math.max(0, gross - deductions);
+
+                      return (
+                        <div className="p-4 bg-gradient-to-r from-blue-900 to-[#071B49] rounded-2xl text-white shadow-md space-y-2">
+                          <div className="grid grid-cols-3 gap-3 text-center">
+                            <div className="bg-white/10 p-2.5 rounded-xl">
+                              <span className="text-[10px] text-slate-300 font-bold uppercase block">Gross Earnings</span>
+                              <span className="text-base font-black font-mono text-emerald-300">₹{gross.toLocaleString('en-IN')}</span>
+                            </div>
+                            <div className="bg-white/10 p-2.5 rounded-xl">
+                              <span className="text-[10px] text-slate-300 font-bold uppercase block">Total Deductions</span>
+                              <span className="text-base font-black font-mono text-rose-300">-₹{deductions.toLocaleString('en-IN')}</span>
+                            </div>
+                            <div className="bg-emerald-500/20 border border-emerald-400 p-2.5 rounded-xl">
+                              <span className="text-[10px] text-emerald-200 font-black uppercase block">Net Chauffeur Payout</span>
+                              <span className="text-xl font-black font-mono text-amber-300">₹{net.toLocaleString('en-IN')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Disbursement Mode</label>
+                        <select
+                          value={driverVoucherForm.payment_mode}
+                          onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, payment_mode: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800"
+                        >
+                          <option value="UPI Instant Pay">UPI Instant Pay (GPay / PhonePe)</option>
+                          <option value="Apex Bank NEFT/RTGS">Apex Bank NEFT/RTGS</option>
+                          <option value="Cash at SJT Office">Cash Disbursement at SJT Counter</option>
+                          <option value="Cheque">Commercial Cheque</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">UTR / Ref No.</label>
+                        <input
+                          type="text"
+                          value={driverVoucherForm.reference_no}
+                          onChange={(e) => setDriverVoucherForm({ ...driverVoucherForm, reference_no: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setShowDriverVoucherModal(false)}
+                        className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-2"
+                      >
+                        <Receipt className="w-4 h-4 text-amber-300" />
+                        <span>Generate Printable Voucher & Invoice</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
-            </form>
+            )}
+
+            {/* ======================================================== */}
+            {/* PRINTABLE MODALS: DRIVER VOUCHER & INWARD PAY-IN RECEIPT */}
+            {/* ======================================================== */}
+            {activeDriverVoucher && (
+              <DriverVoucherModal
+                voucher={activeDriverVoucher}
+                onClose={() => setActiveDriverVoucher(null)}
+              />
+            )}
+
+            {selectedReceipt && (
+              <PayInReceiptModal
+                receipt={selectedReceipt}
+                onClose={() => setSelectedReceipt(null)}
+              />
+            )}
+
+            {selectedPayoutVoucher && (
+              <PayoutVoucherModal
+                voucher={selectedPayoutVoucher}
+                onClose={() => setSelectedPayoutVoucher(null)}
+              />
+            )}
+
           </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* PRINTABLE MODALS: DRIVER VOUCHER & INWARD PAY-IN RECEIPT */}
-      {/* ======================================================== */}
-      {activeDriverVoucher && (
-        <DriverVoucherModal
-          voucher={activeDriverVoucher}
-          onClose={() => setActiveDriverVoucher(null)}
-        />
-      )}
-
-      {selectedReceipt && (
-        <PayInReceiptModal
-          receipt={selectedReceipt}
-          onClose={() => setSelectedReceipt(null)}
-        />
-      )}
-
-      {selectedPayoutVoucher && (
-        <PayoutVoucherModal
-          voucher={selectedPayoutVoucher}
-          onClose={() => setSelectedPayoutVoucher(null)}
-        />
-      )}
-
-    </div>
-  );
+          );
 };
