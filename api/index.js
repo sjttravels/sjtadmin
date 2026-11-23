@@ -257,6 +257,51 @@ const VERIFIED_HIGHWAY_PAIRS = {
   'uttarahalli_electronic city': { km: 22, durationText: '~45 mins', via: 'via NICE Ring Rd / Hosur Rd' },
   'uttarahalli_airport': { km: 48, durationText: '~1 hr 15 mins', via: 'via Airport Elevated Expressway' },
   'uttarahalli_kempegowda airport': { km: 48, durationText: '~1 hr 15 mins', via: 'via Airport Elevated Expressway' },
+  'uttarahalli_majestic': { km: 13, durationText: '~35 mins', via: 'via Mysore Road & KR Market' },
+  'uttarahalli_koramangala': { km: 14, durationText: '~40 mins', via: 'via Inner Ring Rd' },
+  'uttarahalli_jayanagar': { km: 9, durationText: '~25 mins', via: 'via Kanakapura Road' },
+  'uttarahalli_jp nagar': { km: 6, durationText: '~20 mins', via: 'via 24th Main' },
+  'uttarahalli_banashankari': { km: 5, durationText: '~15 mins', via: 'via Outer Ring Rd' },
+  'uttarahalli_hebbal': { km: 24, durationText: '~1 hr', via: 'via Outer Ring Rd' },
+  'uttarahalli_yelahanka': { km: 32, durationText: '~1 hr 15 mins', via: 'via Outer Ring Rd & Bellary Rd' },
+
+  'whitefield_yelahanka': { km: 28, durationText: '~1 hr 5 mins', via: 'via SH 104 / Budigere & Bagalur' },
+  'whitefield_indiranagar': { km: 16, durationText: '~45 mins', via: 'via Old Airport Road' },
+  'whitefield_koramangala': { km: 18, durationText: '~50 mins', via: 'via Marathahalli & Sarjapur Rd' },
+  'whitefield_electronic city': { km: 26, durationText: '~55 mins', via: 'via Sarjapur Rd & Hosur Rd' },
+  'whitefield_hebbal': { km: 24, durationText: '~55 mins', via: 'via Outer Ring Rd & Nagavara' },
+  'whitefield_majestic': { km: 22, durationText: '~1 hr', via: 'via Old Madras Rd' },
+  'whitefield_banashankari': { km: 26, durationText: '~1 hr 5 mins', via: 'via Outer Ring Rd' },
+
+  'indiranagar_koramangala': { km: 7, durationText: '~20 mins', via: 'via Inner Ring Rd' },
+  'indiranagar_hebbal': { km: 13, durationText: '~35 mins', via: 'via Old Madras Rd & Outer Ring Rd' },
+  'indiranagar_electronic city': { km: 20, durationText: '~45 mins', via: 'via Hosur Road Elevated Expressway' },
+  'indiranagar_majestic': { km: 9, durationText: '~25 mins', via: 'via MG Road & Cubbon Park' },
+  'indiranagar_yelahanka': { km: 21, durationText: '~50 mins', via: 'via Bellary Road NH 44' },
+
+  'koramangala_electronic city': { km: 15, durationText: '~30 mins', via: 'via Hosur Road Elevated Expressway' },
+  'koramangala_hebbal': { km: 17, durationText: '~45 mins', via: 'via Outer Ring Rd' },
+  'koramangala_majestic': { km: 10, durationText: '~30 mins', via: 'via Hosur Road & Richmond Circle' },
+  'koramangala_yelahanka': { km: 24, durationText: '~55 mins', via: 'via Bellary Road' },
+
+  'hebbal_electronic city': { km: 32, durationText: '~1 hr 10 mins', via: 'via Outer Ring Rd & Hosur Rd' },
+  'hebbal_yelahanka': { km: 12, durationText: '~25 mins', via: 'via Bellary Road NH 44' },
+  'hebbal_majestic': { km: 11, durationText: '~30 mins', via: 'via Bellary Road' },
+
+  'banashankari_indiranagar': { km: 14, durationText: '~40 mins', via: 'via Marenahalli Rd & Inner Ring Rd' },
+  'banashankari_whitefield': { km: 26, durationText: '~1 hr 5 mins', via: 'via Outer Ring Rd' },
+  'banashankari_electronic city': { km: 19, durationText: '~40 mins', via: 'via NICE Road / Bannerghatta Rd' },
+  'banashankari_yelahanka': { km: 28, durationText: '~1 hr', via: 'via Outer Ring Rd & Bellary Rd' },
+
+  'kengeri_hebbal': { km: 25, durationText: '~55 mins', via: 'via Outer Ring Rd' },
+  'kengeri_whitefield': { km: 34, durationText: '~1 hr 20 mins', via: 'via Mysore Road & ORR' },
+  'kengeri_electronic city': { km: 24, durationText: '~45 mins', via: 'via NICE Ring Road' },
+  'kengeri_indiranagar': { km: 21, durationText: '~55 mins', via: 'via Mysore Road' },
+  'kengeri_yelahanka': { km: 31, durationText: '~1 hr 10 mins', via: 'via Outer Ring Rd' },
+
+  'jp nagar_yelahanka': { km: 27, durationText: '~1 hr', via: 'via Bellary Road' },
+  'jayanagar_yelahanka': { km: 24, durationText: '~55 mins', via: 'via Bellary Road' },
+  'majestic_yelahanka': { km: 16, durationText: '~40 mins', via: 'via Bellary Road' },
   'bangalore_airport': { km: 38, durationText: '~55 mins', via: 'via Bellary Road / Airport Expressway' },
   'bengaluru_airport': { km: 38, durationText: '~55 mins', via: 'via Bellary Road / Airport Expressway' },
   'bengaluru_coorg': { km: 250, durationText: '~5 hr 30 mins', via: 'via Mysore Expressway & Kushalnagar' },
@@ -266,12 +311,18 @@ const VERIFIED_HIGHWAY_PAIRS = {
   'bengaluru_hampi': { km: 340, durationText: '~6 hr 30 mins', via: 'via NH 48 / NH 50' }
 };
 
+const GENERIC_KEYS_SERVERLESS = new Set(['bangalore', 'bengaluru', 'karnataka', 'city']);
+
 function extractLocationKeyServerless(text) {
   const clean = String(text || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
   if (!clean) return null;
-  const sortedKeys = Object.keys(KNOWN_COORDINATES).sort((a, b) => b.length - a.length);
-  for (const key of sortedKeys) {
+  const allKeys = Object.keys(KNOWN_COORDINATES);
+  const specificKeys = allKeys.filter(k => !GENERIC_KEYS_SERVERLESS.has(k)).sort((a, b) => b.length - a.length);
+  for (const key of specificKeys) {
     if (clean.includes(key)) return key;
+  }
+  for (const key of GENERIC_KEYS_SERVERLESS) {
+    if (KNOWN_COORDINATES[key] && clean.includes(key)) return key;
   }
   return null;
 }
@@ -286,12 +337,15 @@ function calculateRouteServerless(pickup, destination, tripType) {
     const pair2 = `${k2}_${k1}`;
     const hit = VERIFIED_HIGHWAY_PAIRS[pair1] || VERIFIED_HIGHWAY_PAIRS[pair2];
     if (hit) {
+      const isOutstation = hit.km > 45 || normTripType === 'OUTSTATION' || normTripType === 'ROUND_TRIP';
+      const minR = Math.max(1, Math.round(hit.km * 0.94));
+      const maxR = Math.round(hit.km * 1.16);
       return {
         distanceKm: hit.km,
-        distanceRange: `${hit.km} km`,
+        distanceRange: isOutstation ? `${hit.km} km` : `${minR} km to ${maxR} km`,
         durationText: hit.durationText,
         routeVia: hit.via,
-        isOutstation: hit.km > 45 || normTripType === 'OUTSTATION' || normTripType === 'ROUND_TRIP'
+        isOutstation
       };
     }
 
@@ -317,9 +371,12 @@ function calculateRouteServerless(pickup, destination, tripType) {
         ? (isMysore ? 'via Bengaluru-Mysuru Expressway (NH 275)' : 'via National & State Highway Corridors')
         : (roadKm >= 15 ? 'via Outer Ring Rd & City Corridors' : 'via City Arterial Roads');
 
+      const minR = Math.max(1, Math.round(roadKm * 0.94));
+      const maxR = Math.round(roadKm * 1.16);
+
       return {
         distanceKm: roadKm,
-        distanceRange: `${roadKm} km`,
+        distanceRange: isOutstation ? `${roadKm} km` : `${minR} km to ${maxR} km`,
         durationText,
         routeVia,
         isOutstation
@@ -404,7 +461,7 @@ function calculateFareQuoteServerless(input) {
         fare = runningFare + driverAllowance;
         rateNote = `₹${v.cityPerKm}/km • ${distanceKm} km + ₹${driverAllowance} Driver Bata (Intercity)`;
       } else {
-        const minBase = v.seats <= 4 ? 150 : 250;
+        const minBase = v.seats <= 4 ? 150 : v.seats <= 6 ? 220 : v.seats <= 7 ? 280 : 500;
         runningFare = Math.max(minBase, Math.round(distanceKm * v.cityPerKm));
         driverAllowance = 0;
         fare = runningFare;
@@ -655,6 +712,14 @@ export default async function handler(req, res) {
       const body = await parseBody(req);
       const startOdo = Number(body.start_odometer || body.startOdometer || 12450);
 
+      const checkQ = await db.query('SELECT * FROM bookings WHERE id::text = $1 OR booking_code = $1', [id]);
+      if (checkQ.rows.length === 0) return res.status(404).json({ error: 'Booking not found' });
+      const currentBooking = checkQ.rows[0];
+      const submittedOtp = body.otp || body.rideOtp || body.start_otp;
+      if (submittedOtp && currentBooking.start_otp && String(submittedOtp).trim() !== String(currentBooking.start_otp).trim()) {
+        return res.status(400).json({ error: 'Invalid passenger OTP. Please ask customer for the 4-digit PIN.' });
+      }
+
       const updateQ = `
         UPDATE bookings SET 
           status = 'IN_PROGRESS',
@@ -665,7 +730,6 @@ export default async function handler(req, res) {
         RETURNING *;
       `;
       const resDb = await db.query(updateQ, [startOdo, id]);
-      if (resDb.rows.length === 0) return res.status(404).json({ error: 'Booking not found' });
       return res.status(200).json({ success: true, booking: formatBooking(resDb.rows[0]) });
     }
 
@@ -913,37 +977,49 @@ export default async function handler(req, res) {
     // 21. Driver Onboard: POST /api/driver/onboard
     if (pathname === '/api/driver/onboard' && method === 'POST') {
       const body = await parseBody(req);
-      const driverId = body.driver_id || crypto.randomUUID();
+      const isValidUuid = (str) => Boolean(str && typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str));
+      const kycId = isValidUuid(body.id) ? body.id : crypto.randomUUID();
+      const driverId = isValidUuid(body.driver_id) ? body.driver_id : crypto.randomUUID();
       const driverName = body.driver_name || body.name || 'Registered Driver';
       const driverPhone = body.driver_phone || body.phone || '';
       const driverEmail = body.driver_email || body.email || (driverPhone ? `driver.${driverPhone.replace(/\D/g, '')}@sjttravels.com` : '');
       const vehicleReg = body.vehicle_reg || 'KA 05 AB 1234';
 
+      const aadharNumber = body.aadhaar_number || body.aadhar_number || body.aadhaar || '5421 8892 1045';
+      const vehiclePref = body.vehicle_preference || body.vehicle_type || 'Commercial Fleet';
+      const vehicleDetails = JSON.stringify(body.vehicle_details || { reg: vehicleReg, type: body.vehicle_type || 'Commercial Fleet' });
+      const documentsJson = JSON.stringify(body.documents || {});
+
       try {
         await db.query(`
           INSERT INTO driver_kyc (
             id, driver_id, driver_name, driver_phone, driver_email,
-            license_number, vehicle_reg, vehicle_type, kyc_status,
-            documents, submitted_at, updated_at
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'PENDING', $9, NOW(), NOW())
+            license_number, aadhar_number, vehicle_preference, vehicle_reg, vehicle_type,
+            documents, vehicle_details, kyc_status, submitted_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'PENDING', NOW())
           ON CONFLICT (driver_id) DO UPDATE SET
             driver_name = EXCLUDED.driver_name,
             driver_phone = EXCLUDED.driver_phone,
             license_number = EXCLUDED.license_number,
+            aadhar_number = EXCLUDED.aadhar_number,
             vehicle_reg = EXCLUDED.vehicle_reg,
             documents = EXCLUDED.documents,
+            vehicle_details = EXCLUDED.vehicle_details,
             kyc_status = 'PENDING',
-            updated_at = NOW();
+            submitted_at = NOW();
         `, [
-          body.id || `kyc_${Date.now()}`,
+          kycId,
           driverId,
           driverName,
           driverPhone,
           driverEmail,
-          body.license_number || '',
+          body.license_number || 'KA05-2020-001234',
+          aadharNumber,
+          vehiclePref,
           vehicleReg,
           body.vehicle_type || 'Commercial Fleet',
-          JSON.stringify(body.documents || {})
+          documentsJson,
+          vehicleDetails
         ]);
       } catch (err) {
         console.warn('driver_kyc table insert warning:', err.message);
@@ -952,7 +1028,7 @@ export default async function handler(req, res) {
         success: true,
         message: 'Driver induction dossier submitted successfully for admin review.',
         kyc: {
-          id: body.id || `kyc_${Date.now()}`,
+          id: kycId,
           driver_id: driverId,
           driver_name: driverName,
           kyc_status: 'PENDING'
@@ -976,7 +1052,7 @@ export default async function handler(req, res) {
       const action = body.action || 'APPROVE';
       const status = action === 'APPROVE' ? 'APPROVED' : 'REJECTED';
       try {
-        await db.query('UPDATE driver_kyc SET kyc_status = $1, rejection_reason = $2, updated_at = NOW() WHERE id::text = $3 OR driver_id::text = $3', [
+        await db.query('UPDATE driver_kyc SET kyc_status = $1, rejection_reason = $2, verified_at = NOW() WHERE id::text = $3 OR driver_id::text = $3', [
           status,
           body.reason || null,
           kycId
