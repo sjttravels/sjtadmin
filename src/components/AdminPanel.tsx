@@ -3082,15 +3082,15 @@ export const AdminPanel: React.FC = () => {
                         </div>
                         <div className="text-[11px] text-slate-500 font-mono mt-0.5">{k.driver_phone} • {k.driver_email}</div>
                         <div className="text-[10px] text-slate-600 mt-1 flex flex-wrap gap-2">
-                          <span>Father: <strong>{k.father_name || 'Narayana Gowda'}</strong></span>
+                          <span>Father: <strong>{k.father_name || k.vehicle_details?.father_name || 'Not provided'}</strong></span>
                           <span>•</span>
-                          <span>DOB: <strong>{k.dob || '1988-06-15'}</strong></span>
+                          <span>DOB: <strong>{k.dob || k.vehicle_details?.dob || 'Not provided'}</strong></span>
                           <span>•</span>
-                          <span>Edu: <strong>{k.education || 'PUC'}</strong></span>
+                          <span>Edu: <strong>{k.education || k.vehicle_details?.education || 'Not provided'}</strong></span>
                           <span>•</span>
-                          <span>Exp: <strong>{k.experience_years || 10} Yrs</strong></span>
+                          <span>Exp: <strong>{k.experience_years ? `${k.experience_years} Yrs` : 'Not provided'}</strong></span>
                           <span>•</span>
-                          <span>Inducted: <strong>{k.inducted_date || '2026-11-14'}</strong></span>
+                          <span>Inducted: <strong>{k.inducted_date || k.vehicle_details?.inducted_date || (k.submitted_at ? String(k.submitted_at).slice(0, 10) : '—')}</strong></span>
                         </div>
                       </div>
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${k.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
@@ -3102,39 +3102,187 @@ export const AdminPanel: React.FC = () => {
                     </div>
 
                     {/* BIOMETRIC FACE COMPARISON WIDGET */}
+                    {(() => {
+                      const liveFaceSrc = k.live_face_photo_url || k.face_document?.data || k.face_document?.data_url || k.documents?.passport_photo?.data || k.documents?.passport_photo?.data_url || '';
+                      const dlPhotoSrc = k.license_doc_url || k.documents?.dl?.data || k.documents?.dl?.data_url || '';
+                      const facePreviewIsImage = liveFaceSrc.startsWith('data:image') || /\.(png|jpe?g|webp|gif)(\?|$)/i.test(liveFaceSrc);
+                      const dlPreviewIsImage = dlPhotoSrc.startsWith('data:image') || /\.(png|jpe?g|webp|gif)(\?|$)/i.test(dlPhotoSrc);
+
+                      const vehicleDocRows: [string, string][] = [
+                        ['rc', '1. RC Card (Registration Certificate)'],
+                        ['insurance', '2. Commercial Insurance Policy'],
+                        ['emissions', '3. Emission / Pollution Test (PUC)'],
+                        ['fitness', '4. Fitness Certificate (FC)'],
+                        ['permit', '5. Commercial Permit (Tourist / State)'],
+                        ['road_tax', '6. Road Tax Receipt / Token'],
+                        ['vehicle_photo', '7. Vehicle Photograph (Yellow Board)'],
+                        ...(k.documents?.b_extract ? [['b_extract', 'B-Extract (RTO History Extract)'] as [string, string]] : [])
+                      ];
+
+                      const driverDocRows: [string, string][] = [
+                        ['dl', '1. Commercial Driving License (Front)'],
+                        ['dl_back', '2. Commercial Driving License (Back)'],
+                        ['aadhaar', '3. Government ID / Aadhaar Card'],
+                        ['medical_certificate', '4. Medical Fitness Certificate'],
+                        ['police_certificate', '5. Police Verification Certificate'],
+                        ['passport_photo', '6. Passport Size Photo (Driver Portrait)'],
+                        ...(k.documents?.pan ? [['pan', 'PAN Card (IT Department)'] as [string, string]] : [])
+                      ];
+
+                      const openDocItem = async (item: any) => {
+                        const directSrc = item?.data || item?.data_url || item?.url || '';
+                        if (directSrc) {
+                          setDocPreviewUrl(directSrc);
+                          return;
+                        }
+                        if (item?.storage_key) {
+                          try {
+                            setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key));
+                          } catch (error) {
+                            alert(error instanceof Error ? error.message : 'Could not open document.');
+                          }
+                        } else {
+                          alert('Document file preview is not attached to this record.');
+                        }
+                      };
+
+                      const renderDocRow = (key: string, label: string, item: any, reviewKey = key) => {
+                        const directSrc = item?.data || item?.data_url || item?.url || '';
+                        const hasFile = Boolean(directSrc || item?.storage_key);
+                        const isImg = directSrc.startsWith('data:image') || /\.(png|jpe?g|webp|gif)(\?|$)/i.test(directSrc);
+                        const isPdf = directSrc.startsWith('data:application/pdf') || /\.pdf(\?|$)/i.test(directSrc) || /\.pdf$/i.test(item?.file_name || '');
+                        return (
+                          <div key={key} className="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg border border-slate-100 text-xs gap-2">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              {isImg ? (
+                                <button
+                                  type="button"
+                                  onClick={() => openDocItem(item)}
+                                  className="w-8 h-8 rounded-md overflow-hidden border border-slate-300 shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-500 transition"
+                                  title="Click to enlarge"
+                                >
+                                  <img src={directSrc} alt={label} className="w-full h-full object-cover" />
+                                </button>
+                              ) : (
+                                <div className="w-8 h-8 rounded-md bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0 text-[9px] font-black text-slate-600">
+                                  {isPdf ? 'PDF' : hasFile ? 'DOC' : '—'}
+                                </div>
+                              )}
+                              <div className="min-w-0 flex-1">
+                                <div className="font-bold text-[11px] text-slate-800 truncate">{label}</div>
+                                <div className="text-[9px] text-slate-500 truncate">
+                                  {item?.file_name || (hasFile ? 'Uploaded file ready to preview' : 'Not uploaded')}
+                                  {item?.expires_at ? ` · Expiry: ${item.expires_at}` : ''}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              <span className={`text-[9px] px-1.5 py-0.5 rounded font-black ${item?.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
+                                item?.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                                  'bg-amber-100 text-amber-800'
+                                }`}>
+                                {item?.status || 'PENDING'}
+                              </span>
+                              {hasFile && (
+                                <button
+                                  type="button"
+                                  onClick={() => openDocItem(item)}
+                                  className="px-2 py-0.5 rounded bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold cursor-pointer flex items-center gap-1"
+                                >
+                                  <Eye className="w-3 h-3" />
+                                  <span>Preview</span>
+                                </button>
+                              )}
+                              {item?.status !== 'APPROVED' && (
+                                <button
+                                  type="button"
+                                  title="Approve Document"
+                                  onClick={async () => {
+                                    try {
+                                      await reviewDriverDocument(k.id, reviewKey, 'APPROVE');
+                                    } catch (error) {
+                                      alert(error instanceof Error ? error.message : 'Review failed.');
+                                    }
+                                  }}
+                                  className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold cursor-pointer"
+                                >
+                                  ✓
+                                </button>
+                              )}
+                              {item?.status !== 'REJECTED' && (
+                                <button
+                                  type="button"
+                                  title="Reject Document"
+                                  onClick={async () => {
+                                    const reason = window.prompt(`Reason for rejecting ${label}:`, 'Unclear or expired document. Please re-upload.');
+                                    if (!reason) return;
+                                    try {
+                                      await reviewDriverDocument(k.id, reviewKey, 'REJECT', reason);
+                                    } catch (error) {
+                                      alert(error instanceof Error ? error.message : 'Reject failed.');
+                                    }
+                                  }}
+                                  className="px-2 py-0.5 rounded bg-red-100 hover:bg-red-200 text-red-700 text-[10px] font-bold cursor-pointer"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      };
+
+                      return (
+                        <>
                     <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         {/* Live Selfie Snapshot */}
                         <div className="text-center">
-                          <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-emerald-500 relative shadow-sm">
-                            {k.live_face_photo_url
-                              ? <img src={k.live_face_photo_url} alt="Live Face" className="w-full h-full object-cover" />
-                              : <span className="flex h-full items-center justify-center px-1 text-[8px] text-slate-500">See private preview below</span>}
+                          <button
+                            type="button"
+                            onClick={() => liveFaceSrc && setDocPreviewUrl(liveFaceSrc)}
+                            disabled={!liveFaceSrc}
+                            className="w-14 h-14 rounded-xl overflow-hidden border-2 border-emerald-500 relative shadow-sm cursor-pointer disabled:cursor-default block"
+                            title={liveFaceSrc ? 'Click to preview photo' : 'No portrait uploaded'}
+                          >
+                            {facePreviewIsImage
+                              ? <img src={liveFaceSrc} alt="Driver Photo" className="w-full h-full object-cover" />
+                              : liveFaceSrc
+                                ? <span className="flex h-full items-center justify-center px-1 text-[8px] font-bold text-blue-700 bg-blue-50">View File</span>
+                                : <span className="flex h-full items-center justify-center px-1 text-[8px] text-slate-500">No photo</span>}
                             <div className="absolute top-0 inset-x-0 bg-emerald-600 text-white text-[7px] font-bold">
-                              LIVE SELFIE
+                              DRIVER PHOTO
                             </div>
-                          </div>
+                          </button>
                         </div>
 
                         {/* Match Arrow & Score */}
                         <div className="text-center space-y-0.5">
                           <span className="text-[10px] bg-emerald-100 text-emerald-800 font-black px-1.5 py-0.5 rounded-full border border-emerald-300">
-                            {k.face_document?.status || 'PENDING'} REVIEW
+                            {k.kyc_status === 'APPROVED' ? 'VERIFIED' : `${k.face_document?.status || 'PENDING'} REVIEW`}
                           </span>
                           <div className="text-[8px] text-slate-500 font-bold">Manual admin review</div>
-                          <div className="text-[8px] text-slate-400">No automated liveness check</div>
+                          <div className="text-[8px] text-slate-400">Click thumbnails to zoom</div>
                         </div>
 
                         {/* DL Photo */}
                         <div className="text-center">
-                          <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-blue-500 relative shadow-sm">
-                            {k.license_doc_url
-                              ? <img src={k.license_doc_url} alt="DL Photo" className="w-full h-full object-cover" />
-                              : <span className="flex h-full items-center justify-center px-1 text-[8px] text-slate-500">See private preview below</span>}
+                          <button
+                            type="button"
+                            onClick={() => dlPhotoSrc && setDocPreviewUrl(dlPhotoSrc)}
+                            disabled={!dlPhotoSrc}
+                            className="w-14 h-14 rounded-xl overflow-hidden border-2 border-blue-500 relative shadow-sm cursor-pointer disabled:cursor-default block"
+                            title={dlPhotoSrc ? 'Click to preview DL' : 'No DL image'}
+                          >
+                            {dlPreviewIsImage
+                              ? <img src={dlPhotoSrc} alt="DL Photo" className="w-full h-full object-cover" />
+                              : dlPhotoSrc
+                                ? <span className="flex h-full items-center justify-center px-1 text-[8px] font-bold text-blue-700 bg-blue-50">View DL PDF</span>
+                                : <span className="flex h-full items-center justify-center px-1 text-[8px] text-slate-500">No DL</span>}
                             <div className="absolute top-0 inset-x-0 bg-blue-600 text-white text-[7px] font-bold">
                               DRIVER DL
                             </div>
-                          </div>
+                          </button>
                         </div>
                       </div>
 
@@ -3151,47 +3299,51 @@ export const AdminPanel: React.FC = () => {
                     <div className="grid grid-cols-2 gap-1.5 text-[10px]">
                       <div className="p-1.5 bg-white rounded-lg border border-slate-200">
                         <span className="text-slate-400 block text-[9px]">Driving licence number:</span>
-                        <span className="font-mono font-bold text-slate-800">{k.license_number}</span>
-                        <span className="text-[8px] text-amber-700 block font-bold">Admin review required</span>
+                        <span className="font-mono font-bold text-slate-800">{k.license_number || 'Not provided'}</span>
+                        <span className="text-[8px] text-amber-700 block font-bold">Manual verification</span>
                       </div>
                       <div className="p-1.5 bg-white rounded-lg border border-slate-200">
-                        <span className="text-slate-400 block text-[9px]">UIDAI Aadhaar:</span>
-                        <span className="font-mono font-bold text-slate-800">•••• •••• {String(k.aadhar_number || '').slice(-4)}</span>
-                        <span className="text-[8px] text-amber-700 block font-bold">Not checked with UIDAI</span>
+                        <span className="text-slate-400 block text-[9px]">Govt ID / Aadhaar:</span>
+                        <span className="font-mono font-bold text-slate-800">{k.aadhar_number ? `•••• •••• ${String(k.aadhar_number).slice(-4)}` : 'Not provided'}</span>
+                        <span className="text-[8px] text-amber-700 block font-bold">Manual verification</span>
                       </div>
                       <div className="p-1.5 bg-white rounded-lg border border-slate-200">
-                        <span className="text-slate-400 block text-[9px]">PSV Badge No:</span>
-                        <span className="font-mono font-bold text-slate-800">{k.badge_number || 'Not provided'}</span>
-                        <span className="text-[8px] text-amber-700 block font-bold">Admin review required</span>
+                        <span className="text-slate-400 block text-[9px]">Duty Profile:</span>
+                        <span className="font-bold text-slate-800">{(k.duty_mode || k.vehicle_details?.duty_mode || 'COMPANY_DUTY').replace('_', ' ')}</span>
+                        <span className="text-[8px] text-blue-700 block font-bold">Selected at induction</span>
                       </div>
                       <div className="p-1.5 bg-white rounded-lg border border-slate-200">
                         <span className="text-slate-400 block text-[9px]">Police & Medical:</span>
-                        <span className="font-bold text-slate-800">No registry check performed</span>
-                        <span className="text-[8px] text-amber-700 block font-bold">Admin review required</span>
+                        <span className="font-bold text-slate-800">
+                          {k.documents?.police_certificate?.status === 'APPROVED' && k.documents?.medical_certificate?.status === 'APPROVED'
+                            ? 'Verified by Admin'
+                            : 'Attached in dossier'}
+                        </span>
+                        <span className="text-[8px] text-amber-700 block font-bold">Preview documents below</span>
                       </div>
                     </div>
 
                     <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-1">
                       <div className="font-black text-[11px] text-slate-800">Driver-submitted vehicle details</div>
                       <div className="grid grid-cols-2 gap-2 text-[10px]">
-                        <div><span className="text-slate-500">Make / model:</span> <strong>{k.vehicle_details?.make_model || 'Not provided'}</strong></div>
+                        <div><span className="text-slate-500">Make / model:</span> <strong>{k.vehicle_details?.make_model || k.vehicle_model || k.vehicle_type || 'Not provided'}</strong></div>
                         <div><span className="text-slate-500">Year:</span> <strong>{k.vehicle_details?.year || 'Not provided'}</strong></div>
                         <div><span className="text-slate-500">Color:</span> <strong>{k.vehicle_details?.color || 'Not provided'}</strong></div>
-                        <div><span className="text-slate-500">Seats:</span> <strong>{k.vehicle_details?.seats || 'Not provided'}</strong></div>
+                        <div><span className="text-slate-500">Seats:</span> <strong>{k.vehicle_details?.seats || k.seating_capacity || 'Not provided'}</strong></div>
                         <div className="col-span-2"><span className="text-slate-500">Registration:</span> <strong className="font-mono">{k.vehicle_reg || 'Not provided'}</strong></div>
                       </div>
                     </div>
 
-                    {/* 12 KYC DOCUMENTS AUDIT SECTION */}
+                    {/* KYC DOCUMENTS AUDIT SECTION */}
                     <div className="rounded-2xl border border-slate-200 bg-white p-3.5 space-y-3">
                       <div className="flex items-center justify-between border-b pb-2">
                         <div>
                           <div className="font-black text-xs text-[#071B49] flex items-center gap-1.5">
                             <FileCheck className="w-4 h-4 text-emerald-600" />
-                            <span>12 Mandatory KYC Documents (7 Vehicle + 5 Driver)</span>
+                            <span>Uploaded KYC Documents ({vehicleDocRows.length} Vehicle + {driverDocRows.length} Driver)</span>
                           </div>
                           <p className="text-[10px] text-slate-500">
-                            Verify RTO vehicle validity and driver identification proofs
+                            Click Preview to inspect uploaded images & PDFs before approving
                           </p>
                         </div>
                         {k.kyc_status === 'PENDING' && (
@@ -3206,144 +3358,34 @@ export const AdminPanel: React.FC = () => {
                         )}
                       </div>
 
-                      {/* Group A: 7 Vehicle Documents */}
+                      {/* Group A: Vehicle Documents */}
                       <div className="space-y-1.5">
                         <div className="text-[10px] font-black text-blue-900 uppercase tracking-wider flex items-center gap-1">
                           <Car className="w-3 h-3 text-blue-600" />
-                          <span>Vehicle Documents (7 Items)</span>
+                          <span>Vehicle Documents ({vehicleDocRows.length} Items)</span>
                         </div>
                         <div className="space-y-1">
-                          {[
-                            ['rc', '1. RC Card (Registration Certificate)'],
-                            ['insurance', '2. Commercial Insurance Policy'],
-                            ['emissions', '3. Emission / Pollution Test (PUC)'],
-                            ['fitness', '4. Fitness Certificate (FC)'],
-                            ['b_extract', '5. B-Extract (RTO History Extract)'],
-                            ['permit', '6. Commercial Permit (Tourist / State)'],
-                            ['road_tax', '7. Road Tax Receipt / Token']
-                          ].map(([key, label]) => {
-                            const item = k.documents?.[key];
-                            return (
-                              <div key={key} className="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg border border-slate-100 text-xs">
-                                <div className="min-w-0 flex-1">
-                                  <div className="font-bold text-[11px] text-slate-800 truncate">{label}</div>
-                                  <div className="text-[9px] text-slate-400">
-                                    {item?.file_name || 'Attached in dossier'}
-                                    {item?.expires_at ? ` · Expiry: ${item.expires_at}` : ''}
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-1 shrink-0 ml-2">
-                                  <span className={`text-[9px] px-1.5 py-0.5 rounded font-black ${item?.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
-                                    item?.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                                      'bg-amber-100 text-amber-800'
-                                    }`}>
-                                    {item?.status || 'PENDING'}
-                                  </span>
-                                  {item?.storage_key && (
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        try {
-                                                                                    setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
-                                        } catch (error) {
-                                          alert(error instanceof Error ? error.message : 'Could not open document.');
-                                        }
-                                      }}
-                                      className="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold cursor-pointer"
-                                    >
-                                      Preview
-                                    </button>
-                                  )}
-                                  {item?.status !== 'APPROVED' && (
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        try {
-                                          await reviewDriverDocument(k.id, key, 'APPROVE');
-                                        } catch (error) {
-                                          alert(error instanceof Error ? error.message : 'Review failed.');
-                                        }
-                                      }}
-                                      className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold cursor-pointer"
-                                    >
-                                      ✓
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
+                          {vehicleDocRows.map(([key, label]) => renderDocRow(key, label, k.documents?.[key], key))}
                         </div>
                       </div>
 
-                      {/* Group B: 5 Driver Documents */}
+                      {/* Group B: Driver Documents */}
                       <div className="space-y-1.5 pt-1 border-t">
                         <div className="text-[10px] font-black text-purple-900 uppercase tracking-wider flex items-center gap-1">
                           <User className="w-3 h-3 text-purple-600" />
-                          <span>Driver Identity Documents (5 Items)</span>
+                          <span>Driver Identity Documents ({driverDocRows.length} Items)</span>
                         </div>
                         <div className="space-y-1">
-                          {[
-                            ['dl', '1. Commercial Driving License (DL)'],
-                            ['aadhaar', '2. Aadhaar Card (Front & Back)'],
-                            ['pan', '3. PAN Card (IT Department)'],
-                            ['police_certificate', '4. Police Verification Certificate'],
-                            ['passport_photo', '5. Passport Size Photo (Driver Portrait)']
-                          ].map(([key, label]) => {
-                            const item = key === 'passport_photo' ? (k.face_document || k.documents?.[key]) : k.documents?.[key];
-                            return (
-                              <div key={key} className="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg border border-slate-100 text-xs">
-                                <div className="min-w-0 flex-1">
-                                  <div className="font-bold text-[11px] text-slate-800 truncate">{label}</div>
-                                  <div className="text-[9px] text-slate-400">
-                                    {item?.file_name || 'Verified digital copy'}
-                                    {item?.expires_at ? ` · Expiry: ${item.expires_at}` : ''}
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-1 shrink-0 ml-2">
-                                  <span className={`text-[9px] px-1.5 py-0.5 rounded font-black ${item?.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
-                                    item?.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                                      'bg-amber-100 text-amber-800'
-                                    }`}>
-                                    {item?.status || 'PENDING'}
-                                  </span>
-                                  {item?.storage_key && (
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        try {
-                                                                                    setDocPreviewUrl(await getPrivateDriverDocument(item.storage_key!));
-                                        } catch (error) {
-                                          alert(error instanceof Error ? error.message : 'Could not open document.');
-                                        }
-                                      }}
-                                      className="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold cursor-pointer"
-                                    >
-                                      Preview
-                                    </button>
-                                  )}
-                                  {item?.status !== 'APPROVED' && (
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        try {
-                                          await reviewDriverDocument(k.id, key === 'passport_photo' ? 'face' : key, 'APPROVE');
-                                        } catch (error) {
-                                          alert(error instanceof Error ? error.message : 'Review failed.');
-                                        }
-                                      }}
-                                      className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold cursor-pointer"
-                                    >
-                                      ✓
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            );
+                          {driverDocRows.map(([key, label]) => {
+                            const item = key === 'passport_photo' ? (k.documents?.[key] || k.face_document) : k.documents?.[key];
+                            return renderDocRow(key, label, item, key === 'passport_photo' ? 'passport_photo' : key);
                           })}
                         </div>
                       </div>
                     </div>
+                        </>
+                      );
+                    })()}
 
                     {/* 18-POINT PHYSICAL INSPECTION: 9 ACCESSORIES + 9 CONDITION CHECKS */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
@@ -3417,28 +3459,27 @@ export const AdminPanel: React.FC = () => {
                     {/* Operational Duties & Professional References */}
                     <div className="p-3 bg-white rounded-xl border border-slate-200 text-[10px] space-y-1">
                       <div className="font-black text-slate-800 text-[11px] flex items-center justify-between">
-                        <span>Corporate Schedule & Professional References</span>
+                        <span>Operational Schedule & References</span>
                         <span className="text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded">
-                          {k.companies_serving || 'JCPenney Corporate Shuttle'}
+                          {k.companies_serving || k.vehicle_details?.companies_serving || 'SJT Commercial Fleet'}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-slate-600">
                         <div>
-                          <span>Duties/Day: <strong>{k.duties_per_day || '2 Shifts / Day'}</strong></span>
+                          <span>Duties/Day: <strong>{k.duties_per_day || k.vehicle_details?.duties_per_day || 'Not specified'}</strong></span>
                         </div>
                         <div>
-                          <span>Emergency Contact: <strong>{k.emergency_contact_name || 'Suma Gowda'}</strong> ({k.emergency_contact_phone || '+91 98450 99881'})</span>
+                          <span>Emergency Contact: <strong>{k.emergency_contact_name || k.vehicle_details?.emergency_contact_name || 'Not provided'}</strong>{(k.emergency_contact_phone || k.vehicle_details?.emergency_contact_phone) ? ` (${k.emergency_contact_phone || k.vehicle_details?.emergency_contact_phone})` : ''}</span>
                         </div>
                         <div>
-                          <span>Ref 1: <strong>{k.reference_1_name || 'Manjunath Swamy (Supervisor)'}</strong></span>
+                          <span>Ref 1: <strong>{k.reference_1_name || k.vehicle_details?.reference_1_name || 'Not provided'}</strong></span>
                         </div>
                         <div>
-                          <span>Ref 2: <strong>{k.reference_2_name || 'Suresh Patil (Senior Driver)'}</strong></span>
+                          <span>Ref 2: <strong>{k.reference_2_name || k.vehicle_details?.reference_2_name || 'Not provided'}</strong></span>
                         </div>
                         <div className="col-span-2 pt-1 border-t flex items-center justify-between text-[9px] text-slate-500">
-                          <span>Biometrics: <strong className="text-emerald-700">✓ Fingerprints Right/Left Scanned</strong></span>
-                          <span>Signature: <strong className="text-emerald-700">✓ Chauffeur Undertaking Signed</strong></span>
-                          <span>Inspected By: <strong>{k.inspected_by || 'Raghavendra K - Safety Inspector'}</strong></span>
+                          <span>Consent: <strong className="text-emerald-700">✓ Driver Declaration Accepted</strong></span>
+                          <span>Inspected By: <strong>{k.inspected_by || k.vehicle_details?.inspected_by || 'Admin Desk'}</strong></span>
                         </div>
                       </div>
                     </div>
@@ -5645,11 +5686,34 @@ export const AdminPanel: React.FC = () => {
               </button>
             </div>
             <div className="flex-1 flex items-center justify-center overflow-auto bg-slate-950 rounded-2xl p-3 border border-slate-800 min-h-[350px] max-h-[75vh]">
-              {docPreviewUrl.startsWith('data:image') || docPreviewUrl.endsWith('.jpg') || docPreviewUrl.endsWith('.png') || docPreviewUrl.endsWith('.webp') || docPreviewUrl.includes('data:image/svg+xml') ? (
+              {docPreviewUrl.startsWith('data:image') || /\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(docPreviewUrl) || docPreviewUrl.includes('data:image/svg+xml') ? (
                 <img src={docPreviewUrl} alt="Induction Document Preview" className="max-h-[70vh] max-w-full object-contain rounded-xl shadow-2xl" />
               ) : (
                 <iframe src={docPreviewUrl} title="Driver document preview" className="w-full h-[70vh] border rounded-xl bg-white" />
               )}
+            </div>
+            <div className="flex items-center justify-between pt-2">
+              <a
+                href={docPreviewUrl}
+                download="sjt-kyc-document"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+              >
+                Download / Open File
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  if (docPreviewUrl && !docPreviewUrl.startsWith('data:')) {
+                    try { URL.revokeObjectURL(docPreviewUrl); } catch (_) { }
+                  }
+                  setDocPreviewUrl(null);
+                }}
+                className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition cursor-pointer"
+              >
+                Close Preview
+              </button>
             </div>
           </div>
         </div>

@@ -798,7 +798,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const saved = localStorage.getItem('sjt_kyc_list');
       if (saved) return JSON.parse(saved);
     } catch { }
-    return DEFAULT_INDUCTION_APPLICATIONS;
+    return [];
   });
   const [driverKyc, setDriverKyc] = useState<DriverKycApplication | null>(null);
   const [drivers, setDrivers] = useState<DriverProfile[]>(DEFAULT_ADMIN_DRIVERS);
@@ -893,7 +893,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           ? fetch(`${API_BASE}/api/stats`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
         shouldFetchFull && hasSession && canAccess('accounts')
           ? fetch(`${API_BASE}/api/invoices`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        shouldFetchFull && hasSession && isAdmin
+        hasSession && canAccess('drivers')
           ? fetch(`${API_BASE}/api/admin/kyc-requests`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
         shouldFetchFull && hasSession && canAccess('drivers')
           ? fetch(`${API_BASE}/api/drivers`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
@@ -1001,7 +1001,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       if (kycRes && kycRes.ok) {
         const kycData = await kycRes.json();
-        setKycRequests(Array.isArray(kycData) ? kycData : []);
+        const normalizedList = Array.isArray(kycData) ? kycData : [];
+        setKycRequests(normalizedList);
+        try { localStorage.setItem('sjt_kyc_list', JSON.stringify(normalizedList)); } catch { }
       }
 
       if (drvRes && drvRes.ok) {
@@ -1247,22 +1249,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     reason?: string,
     credentials?: { login_id?: string; password?: string }
   ) => {
-    try {
-      if (API_BASE) {
-        await fetch(`${API_BASE}/api/admin/kyc/${kycId}/review`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
-          body: JSON.stringify({
-            action,
-            assigned_vehicle_reg: vehicleReg,
-            rejection_reason: reason,
-            login_id: credentials?.login_id,
-            password: credentials?.password
-          })
-        });
-      }
-    } catch (e) {
-      console.warn('API review unreachable, approving locally:', e);
+    const res = await fetch(`${API_BASE}/api/admin/kyc/${kycId}/review`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
+      body: JSON.stringify({
+        action,
+        assigned_vehicle_reg: vehicleReg,
+        rejection_reason: reason,
+        login_id: credentials?.login_id,
+        password: credentials?.password
+      })
+    });
+    if (!res.ok) {
+      let msg = 'Failed to save KYC decision on server.';
+      try { const errJson = await res.json(); msg = errJson.error || msg; } catch { }
+      throw new Error(msg);
     }
 
     const nextStatus = action === 'APPROVE' ? 'APPROVED' : 'REJECTED';
@@ -1343,15 +1344,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const reviewDriverDocument = async (kycId: string, key: string, action: 'APPROVE' | 'REJECT', reason?: string) => {
-    try {
-      if (API_BASE) {
-        await fetch(`${API_BASE}/api/admin/kyc/${kycId}/document-review`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
-          body: JSON.stringify({ document_key: key, action, rejection_reason: reason })
-        });
-      }
-    } catch (e) {
-      console.warn('API doc review offline, updating locally:', e);
+    const res = await fetch(`${API_BASE}/api/admin/kyc/${kycId}/document-review`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
+      body: JSON.stringify({ document_key: key, action, rejection_reason: reason })
+    });
+    if (!res.ok) {
+      let msg = 'Could not save document review on server.';
+      try { const errJson = await res.json(); msg = errJson.error || msg; } catch { }
+      throw new Error(msg);
     }
     setKycRequests(prev => {
       const updated: DriverKycApplication[] = prev.map(k => {

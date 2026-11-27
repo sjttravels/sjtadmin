@@ -236,16 +236,32 @@ export interface DriverKycApplication {
   submitted_at: string;
   verified_at?: string;
   address?: string;
+  duty_mode?: string;
   vehicle_details?: {
     make_model?: string;
-    year?: number;
+    year?: number | string;
     color?: string;
-    seats?: number;
+    seats?: number | string;
+    duty_mode?: string;
+    father_name?: string;
+    dob?: string;
+    education?: string;
+    inducted_date?: string;
+    companies_serving?: string;
+    duties_per_day?: string;
+    emergency_contact_name?: string;
+    emergency_contact_phone?: string;
+    reference_1_name?: string;
+    reference_2_name?: string;
+    inspected_by?: string;
+    [key: string]: any;
   };
   documents?: Record<string, {
     file_name: string;
     storage_key?: string;
     data?: string;
+    data_url?: string;
+    url?: string;
     expires_at?: string;
     status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     rejection_reason?: string;
@@ -254,6 +270,8 @@ export interface DriverKycApplication {
     file_name: string;
     storage_key?: string;
     data?: string;
+    data_url?: string;
+    url?: string;
     expires_at?: string;
     status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     rejection_reason?: string;
