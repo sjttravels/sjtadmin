@@ -878,7 +878,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
       const bookingQuery = bookingFilters.toString();
       const bookingsUrl = `${API_BASE}/api/bookings${bookingQuery ? `?${bookingQuery}` : ''}`;
-      const hasSession = Boolean(localStorage.getItem('sjt_token'));
+      const hasSession = Boolean(localStorage.getItem('sjt_token') || currentUser);
       const isAdmin = currentUser?.role === 'ADMIN';
       const isEmployee = currentUser?.role === 'EMPLOYEE';
       const isDriver = currentUser?.role === 'DRIVER';
@@ -893,7 +893,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           ? fetch(`${API_BASE}/api/stats`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
         shouldFetchFull && hasSession && canAccess('accounts')
           ? fetch(`${API_BASE}/api/invoices`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
-        hasSession && canAccess('drivers')
+        canAccess('drivers')
           ? fetch(`${API_BASE}/api/admin/kyc-requests`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
         shouldFetchFull && hasSession && canAccess('drivers')
           ? fetch(`${API_BASE}/api/drivers`, { headers: sessionHeaders() }).catch(() => null) : Promise.resolve(null),
@@ -1136,6 +1136,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (targetView) setActiveView(targetView);
       else setActiveView('ADMIN_PANEL');
 
+      await refreshData(true).catch(() => { });
       return adminUser;
     }
 
@@ -1162,6 +1163,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (targetView) setActiveView(targetView);
       else setActiveView('ADMIN_PANEL');
 
+      await refreshData(true).catch(() => { });
       return empUser;
     }
 
